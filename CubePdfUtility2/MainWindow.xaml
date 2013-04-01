@@ -1,0 +1,250 @@
+﻿<r:RibbonWindow x:Class="CubePdfUtility.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:r="clr-namespace:Microsoft.Windows.Controls.Ribbon;assembly=RibbonControlsLibrary"
+        xmlns:cube="clr-namespace:CubePdf.Wpf;assembly=CubePdf.Wpf"
+        xmlns:local="clr-namespace:CubePdfUtility"
+        x:Name="RibbonWindow"
+        Title="CubePDF Utility" Width="800" Height="600" Icon="/CubePdfUtility;component/app.ico">
+    
+    <Window.CommandBindings>
+        <CommandBinding Command="Open" CanExecute="OpenCommand_CanExecute" Executed="OpenCommand_Executed"/>
+        <CommandBinding Command="Close" CanExecute="CloseCommand_CanExecute" Executed="CloseCommand_Executed"/>
+        <CommandBinding Command="Save" CanExecute="SaveCommand_CanExecute" Executed="SaveCommand_Executed"/>
+        <CommandBinding Command="SaveAs" CanExecute="SaveAsCommand_CanExecute" Executed="SaveAsCommand_Executed"/>
+        <CommandBinding Command="{x:Static cube:ListViewCommands.Insert}" CanExecute="InsertCommand_CanExecute" Executed="InsertCommand_Executed"/>
+        <CommandBinding Command="{x:Static cube:ListViewCommands.Add}" CanExecute="AddCommand_CanExecute" Executed="AddCommand_Executed"/>
+        <CommandBinding Command="{x:Static cube:ListViewCommands.Remove}" CanExecute="RemoveCommand_CanExecute" Executed="RemoveCommand_Executed"/>
+        <CommandBinding Command="{x:Static cube:ListViewCommands.Extract}" CanExecute="ExtractCommand_CanExecute" Executed="ExtractCommand_Executed"/>
+        <CommandBinding Command="{x:Static cube:ListViewCommands.Split}" CanExecute="SplitCommand_CanExecute" Executed="SplitCommand_Executed"/>
+        <CommandBinding Command="{x:Static cube:ListViewCommands.Move}" CanExecute="MoveCommand_CanExecute" Executed="MoveCommand_Executed"/>
+        <CommandBinding Command="{x:Static cube:ListViewCommands.Rotate}" CanExecute="RotateCommand_CanExecute" Executed="RotateCommand_Executed"/>
+        <CommandBinding Command="{x:Static cube:ListViewCommands.Undo}" CanExecute="UndoCommand_CanExecute" Executed="UndoCommand_Executed"/>
+        <CommandBinding Command="{x:Static local:MainWindow.Select}" CanExecute="SelectCommand_CanExecute" Executed="SelectCommand_Executed"/>
+        <CommandBinding Command="{x:Static local:MainWindow.SelectAll}" CanExecute="SelectAllCommand_CanExecute" Executed="SelectAllCommand_Executed"/>
+        <CommandBinding Command="{x:Static local:MainWindow.UnSelect}" CanExecute="UnSelectCommand_CanExecute" Executed="UnSelectCommand_Executed"/>
+    </Window.CommandBindings>
+    
+    <Grid x:Name="LayoutRoot">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <r:Ribbon>
+            <r:Ribbon.ApplicationMenu>
+                <r:RibbonApplicationMenu SmallImageSource="Images\SmallIcons\Menu.png">
+                    <r:RibbonApplicationMenuItem Header="開く"
+                        ImageSource="Images\LargeIcons\Open.png"
+                        Command="Open"/>
+
+                    <r:RibbonApplicationMenuItem Header="上書き保存"
+                        ImageSource="Images\LargeIcons\Save.png"
+                        Command="Save"/>
+
+                    <r:RibbonApplicationMenuItem Header="名前を付けて保存"
+                        ImageSource="Images\LargeIcons\SaveAs.png"
+                        Command="SaveAs"/>
+
+                    <r:RibbonSeparator />
+
+                    <r:RibbonApplicationMenuItem Header="バージョン情報"
+                        ImageSource="Images\LargeIcons\Version.png"/>
+
+                    <r:RibbonSeparator />
+
+                    <r:RibbonApplicationMenuItem Header="閉じる"
+                        ImageSource="Images\LargeIcons\Close.png"
+                        Command="Close"/>
+
+                    <r:RibbonApplicationMenuItem Header="終了"
+                        ImageSource="Images\LargeIcons\Exit.png"
+                        Command="Close"
+                        CommandParameter="Exit"/>
+                </r:RibbonApplicationMenu>
+            </r:Ribbon.ApplicationMenu>
+            
+            <r:RibbonTab Header="編集">
+                <r:RibbonGroup Header="クイックリンク">
+                    <r:RibbonButton Label="開く"
+                        SmallImageSource="Images\SmallIcons\Open.png"
+                        LargeImageSource="Images\LargeIcons\Open.png"
+                        Command="Open"/>
+
+                    <r:RibbonButton Label="保存"
+                        SmallImageSource="Images\SmallIcons\SaveAs.png"
+                        LargeImageSource="Images\LargeIcons\SaveAs.png"
+                        Command="SaveAs"/>
+
+                    <r:RibbonButton Label="やり直し"
+                        SmallImageSource="Images\SmallIcons\Undo.png"
+                        LargeImageSource="Images\LargeIcons\Undo.png"
+                        Command="{x:Static cube:ListViewCommands.Undo}"/>
+
+                    <r:RibbonSplitButton Label="選択"
+                        x:Name="SelectButton"
+                        SmallImageSource="Images\SmallIcons\Select.png"
+                        LargeImageSource="Images\LargeIcons\Select.png"
+                        Command="{x:Static local:MainWindow.Select}">
+
+                        <r:RibbonMenuItem Header="すべて選択"
+                            ImageSource="Images\SmallIcons\Select.png"
+                            Command="{x:Static local:MainWindow.SelectAll}"/>
+
+                        <r:RibbonMenuItem Header="選択の切り替え"
+                            ImageSource="Images\SmallIcons\Select.png"
+                            Command="{x:Static local:MainWindow.Select}"
+                            CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedItems}"/>
+
+                        <r:RibbonMenuItem Header="選択の解除"
+                            ImageSource="Images\SmallIcons\Select.png"
+                            Command="{x:Static local:MainWindow.UnSelect}"/>
+                    </r:RibbonSplitButton>
+                </r:RibbonGroup>
+
+                <r:RibbonGroup Header="ページ操作">
+                    <r:RibbonSplitButton Label="挿入"
+                        x:Name="InsertButton"
+                        SmallImageSource="Images\SmallIcons\Insert.png"
+                        LargeImageSource="Images\LargeIcons\Insert.png"
+                        Command="{x:Static cube:ListViewCommands.Insert}"
+                        CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedIndex}">
+
+                        <r:RibbonMenuItem Header="選択位置に挿入"
+                            ImageSource="Images\SmallIcons\Insert.png"
+                            Command="{x:Static cube:ListViewCommands.Insert}"
+                            CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedIndex}"/>
+
+                        <r:RibbonMenuItem Header="先頭に挿入"
+                            ImageSource="Images\SmallIcons\Insert.png"
+                            Command="{x:Static cube:ListViewCommands.Insert}"/>
+
+                        <r:RibbonMenuItem Header="末尾に挿入"
+                            ImageSource="Images\SmallIcons\Insert.png"
+                            Command="{x:Static cube:ListViewCommands.Add}"/>
+                    </r:RibbonSplitButton>
+
+                    <r:RibbonSplitButton Label="抽出"
+                        x:Name="ExtractButton"
+                        SmallImageSource="Images\SmallIcons\Extract.png"
+                        LargeImageSource="Images\LargeIcons\Extract.png"
+                        Command="{x:Static cube:ListViewCommands.Extract}"
+                        CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedItems}">
+
+                        <r:RibbonMenuItem Header="選択ページを単一ファイルとして抽出"
+                            ImageSource="Images\SmallIcons\Extract.png"
+                            Command="{x:Static cube:ListViewCommands.Extract}"
+                            CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedItems}"/>
+
+                        <r:RibbonMenuItem Header="選択ページを個別のファイルとして抽出"
+                            ImageSource="Images\SmallIcons\Extract.png"
+                            Command="{x:Static cube:ListViewCommands.Split}"
+                            CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedItems}"/>
+                    </r:RibbonSplitButton>
+
+                    <r:RibbonSplitButton Label="削除"
+                        x:Name="RemoveButton"
+                        SmallImageSource="Images\SmallIcons\Delete.png"
+                        LargeImageSource="Images\LargeIcons\Delete.png"
+                        Command="{x:Static cube:ListViewCommands.Remove}">
+
+                        <r:RibbonMenuItem Header="選択ページを削除"
+                            ImageSource="Images\SmallIcons\Delete.png"
+                            Command="{x:Static cube:ListViewCommands.Remove}"/>
+
+                        <r:RibbonMenuItem Header="範囲を指定して削除"
+                            ImageSource="Images\SmallIcons\Delete.png"/>
+                    </r:RibbonSplitButton>
+                </r:RibbonGroup>
+                
+                <r:RibbonGroup Header="順序">
+                    <r:RibbonButton Label="前へ"
+                        SmallImageSource="Images\SmallIcons\Back.png"
+                        LargeImageSource="Images\LargeIcons\Back.png"
+                        Command="{x:Static cube:ListViewCommands.Move}"
+                        CommandParameter="-1"/>
+
+                    <r:RibbonButton Label="後へ"
+                        SmallImageSource="Images\SmallIcons\Forward.png"
+                        LargeImageSource="Images\LargeIcons\Forward.png"
+                        Command="{x:Static cube:ListViewCommands.Move}"
+                        CommandParameter="1"/>
+                </r:RibbonGroup>
+                
+                <r:RibbonGroup Header="回転">
+                    <r:RibbonButton Label="左90度"
+                        SmallImageSource="Images\SmallIcons\RotateLeft.png"
+                        LargeImageSource="Images\LargeIcons\RotateLeft.png"
+                        Command="{x:Static cube:ListViewCommands.Rotate}"
+                        CommandParameter="-90"/>
+
+                    <r:RibbonButton Label="右90度"
+                        SmallImageSource="Images\SmallIcons\RotateRight.png"
+                        LargeImageSource="Images\LargeIcons\RotateRight.png"
+                        Command="{x:Static cube:ListViewCommands.Rotate}"
+                        CommandParameter="90"/>
+                </r:RibbonGroup>
+
+                <r:RibbonGroup Header="プロパティ">
+                    <r:RibbonButton Label="文書プロパティ"
+                        MaxWidth="64"
+                        IsEnabled="False"
+                        SmallImageSource="Images\SmallIcons\Property.png"
+                        LargeImageSource="Images\LargeIcons\Property.png"/>
+
+                    <r:RibbonButton Label="セキュリティ"
+                        MaxWidth="64"
+                        IsEnabled="False"
+                        SmallImageSource="Images\SmallIcons\Security.png"
+                        LargeImageSource="Images\LargeIcons\Security.png"/>
+                </r:RibbonGroup>
+            </r:RibbonTab>
+            
+            <r:RibbonTab Header="表示">
+                <r:RibbonGroup Header="サムネイル">
+                    <r:RibbonButton Label="拡大"
+                        LargeImageSource="Images\LargeIcons\ZoomIn.png"/>
+
+                    <r:RibbonButton Label="縮小"
+                        LargeImageSource="Images\LargeIcons\ZoomOut.png"/>
+
+                    <r:RibbonComboBox Label="サイズ" IsReadOnly="True" Margin="2">
+                        <r:RibbonGallery>
+                            <r:RibbonGalleryCategory>
+                                <r:RibbonGalleryItem Content="64px"/>
+                                <r:RibbonGalleryItem Content="128px"/>
+                                <r:RibbonGalleryItem Content="150px"/>
+                                <r:RibbonGalleryItem Content="256px"/>
+                                <r:RibbonGalleryItem Content="512px"/>
+                            </r:RibbonGalleryCategory>
+                        </r:RibbonGallery>
+                    </r:RibbonComboBox>
+                    <r:RibbonComboBox Label="モード" IsReadOnly="True" Margin="2">
+                        <r:RibbonGallery>
+                            <r:RibbonGalleryCategory>
+                                <r:RibbonGalleryItem Content="画質優先"/>
+                                <r:RibbonGalleryItem Content="省メモリー"/>
+                                <r:RibbonGalleryItem Content="枠線のみ"/>
+                            </r:RibbonGalleryCategory>
+                        </r:RibbonGallery>
+                    </r:RibbonComboBox>
+                </r:RibbonGroup>
+            </r:RibbonTab>
+        </r:Ribbon>
+
+        <ListView Grid.Row="1" x:Name="Thumbnail"
+            VirtualizingStackPanel.VirtualizationMode="Recycling"
+            VirtualizingStackPanel.IsVirtualizing="True"
+            SelectionMode="Extended"
+            Background="DimGray">
+            <ListView.View>
+                <local:ImageView x:Name="ThumbnailImageView" ItemWidth="150"/>
+            </ListView.View>
+        </ListView>
+
+        <StatusBar Grid.Row="2" Height="23">
+            <StatusBarItem Name="PageCountStatusBarItem" Content=""/>
+        </StatusBar>
+    </Grid>
+</r:RibbonWindow>
