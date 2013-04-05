@@ -5,6 +5,7 @@
     WindowStartupLocation="CenterOwner" WindowStyle="SingleBorderWindow" ResizeMode="NoResize">
 
     <Window.CommandBindings>
+        <CommandBinding Command="Save"   CanExecute="SaveCommand_CanExecute"   Executed="SaveCommand_Executed"/>
         <CommandBinding Command="Close"  CanExecute="CloseCommand_CanExecute"  Executed="CloseCommand_Executed"/>
     </Window.CommandBindings>
 
@@ -24,15 +25,15 @@
         </Grid.ColumnDefinitions>
 
         <Label Grid.Row="1" Content="ページ数：" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-        <Label Grid.Row="1" Grid.Column="1" Content="10ページ" VerticalAlignment="Center"/>
+        <Label Grid.Row="1" Grid.Column="1" x:Name="PageCountLabel" Content="10ページ" VerticalAlignment="Center"/>
 
         <Label Grid.Row="2" Content="削除する範囲：" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-        <TextBox Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Margin="5,5,12,5"/>
+        <TextBox Grid.Row="2" Grid.Column="1" x:Name="PageRangeTextBox" VerticalAlignment="Center" Margin="5,5,12,5"/>
 
         <Label Grid.Row="3" Grid.Column="1" Content="例：1,2,4-7,9" VerticalAlignment="Center"/>
 
         <StackPanel Grid.Row="5" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Content="OK" Width="100" Margin="12,12,6,12"/>
+            <Button Content="OK" Command="Save" Width="100" Margin="12,12,6,12"/>
             <Button Content="キャンセル" Width="100" Margin="6,12,12,12" Command="Close"/>
         </StackPanel>
     </Grid>

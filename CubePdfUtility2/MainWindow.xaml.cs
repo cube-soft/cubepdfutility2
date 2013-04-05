@@ -215,9 +215,10 @@ namespace CubePdfUtility
             var src = e.Parameter as IList;
             if (src == null)
             {
-                var dialog = new RemoveWindow();
+                var dialog = new RemoveWindow(_viewmodel.ItemCount);
                 dialog.Owner = this;
-                dialog.ShowDialog();
+                if (dialog.ShowDialog() == false) return;
+                foreach (var i in dialog.PageRange) items.Add(_viewmodel.Items[i - 1]);
             }
             else items.AddRange(src);
 
