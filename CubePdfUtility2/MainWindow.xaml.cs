@@ -199,6 +199,8 @@ namespace CubePdfUtility
 
         private void AddCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
+            // TODO: Parameter に ItemCount - 1 を指定する方法
+            // e.Parameter = _viewmodel.ItemCount - 1;
             InsertCommand_Executed(sender, e);
         }
 
@@ -246,8 +248,9 @@ namespace CubePdfUtility
         private void ExtractCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             this.ExtractButton.IsEnabled = _viewmodel.ItemCount > 0;
-            var control = this.Thumbnail;
-            e.CanExecute = (control != null && control.SelectedItem != null);
+            var items = e.Parameter as IList;
+            if (items == null) items = _viewmodel.Items;
+            e.CanExecute = items.Count > 0;
         }
 
         private void ExtractCommand_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -255,7 +258,7 @@ namespace CubePdfUtility
             try
             {
                 var items = e.Parameter as IList;
-                if (items == null) return;
+                if (items == null) items = _viewmodel.Items;
 
                 var dialog = new System.Windows.Forms.SaveFileDialog();
                 dialog.Filter = Properties.Resources.PdfFilter;

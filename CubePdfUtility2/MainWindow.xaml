@@ -150,6 +150,14 @@
                             ImageSource="Images\SmallIcons\Extract.png"
                             Command="{x:Static cube:ListViewCommands.Split}"
                             CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedItems}"/>
+
+                        <r:RibbonMenuItem Header="全てのページを単一ファイルとして抽出"
+                            ImageSource="Images\SmallIcons\Extract.png"
+                            Command="{x:Static cube:ListViewCommands.Extract}"/>
+
+                        <r:RibbonMenuItem Header="全てのページを個別のファイルとして抽出"
+                            ImageSource="Images\SmallIcons\Extract.png"
+                            Command="{x:Static cube:ListViewCommands.Split}"/>
                     </r:RibbonSplitButton>
 
                     <r:RibbonSplitButton Label="削除"
