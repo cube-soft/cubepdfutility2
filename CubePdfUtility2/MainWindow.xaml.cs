@@ -49,6 +49,8 @@ namespace CubePdfUtility
     /* --------------------------------------------------------------------- */
     public partial class MainWindow : RibbonWindow
     {
+        #region Initialization and Termination
+
         /* ----------------------------------------------------------------- */
         /// MainWindow (constructor)
         /* ----------------------------------------------------------------- */
@@ -60,6 +62,8 @@ namespace CubePdfUtility
             _viewmodel.ItemWidth = (int)ThumbnailImageView.ItemWidth;
             Thumbnail.DataContext = _viewmodel.Items;
         }
+
+        #endregion
 
         #region Commands
 
@@ -215,7 +219,7 @@ namespace CubePdfUtility
             var src = e.Parameter as IList;
             if (src == null)
             {
-                var dialog = new RemoveWindow(_viewmodel.ItemCount);
+                var dialog = new RemoveWindow(_viewmodel);
                 dialog.Owner = this;
                 if (dialog.ShowDialog() == false) return;
                 foreach (var i in dialog.PageRange) items.Add(_viewmodel.Items[i - 1]);

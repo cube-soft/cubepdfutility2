@@ -38,6 +38,8 @@ namespace CubePdfUtility
     /* --------------------------------------------------------------------- */
     public partial class RemoveWindow : Window
     {
+        #region Initialization and Termination
+
         /* ----------------------------------------------------------------- */
         /// RemoveWindow (constructor)
         /* ----------------------------------------------------------------- */
@@ -56,11 +58,13 @@ namespace CubePdfUtility
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
-        public RemoveWindow(int count)
+        public RemoveWindow(CubePdf.Wpf.IListViewModel viewmodel)
             : this()
         {
-            PageCount = count;
+            PageCount = viewmodel.ItemCount;
         }
+
+        #endregion
 
         #region Properties
 

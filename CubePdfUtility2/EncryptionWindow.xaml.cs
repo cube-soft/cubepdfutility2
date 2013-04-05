@@ -49,6 +49,8 @@ namespace CubePdfUtility
     /* --------------------------------------------------------------------- */
     public partial class EncryptionWindow : Window
     {
+        #region Initialization and Termination
+
         /* ----------------------------------------------------------------- */
         /// EncryptionWindow (constructor)
         /* ----------------------------------------------------------------- */
@@ -67,6 +69,8 @@ namespace CubePdfUtility
             if (_crypt.Method == CubePdf.Data.EncryptionMethod.Unknown) _crypt.Method = CubePdf.Data.EncryptionMethod.Standard128;
             DataContext = _crypt;
         }
+
+        #endregion
 
         #region Properties
 

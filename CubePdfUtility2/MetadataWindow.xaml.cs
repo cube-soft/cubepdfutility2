@@ -1,30 +1,55 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿/* ------------------------------------------------------------------------- */
+///
+/// MetadataWindow.xaml.cs
+///
+/// Copyright (c) 2013 CubeSoft, Inc. All rights reserved.
+///
+/// This program is free software: you can redistribute it and/or modify
+/// it under the terms of the GNU General Public License as published by
+/// the Free Software Foundation, either version 3 of the License, or
+/// (at your option) any later version.
+///
+/// This program is distributed in the hope that it will be useful,
+/// but WITHOUT ANY WARRANTY; without even the implied warranty of
+/// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+/// GNU General Public License for more details.
+///
+/// You should have received a copy of the GNU General Public License
+/// along with this program.  If not, see < http://www.gnu.org/licenses/ >.
+///
+/* ------------------------------------------------------------------------- */
+using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace CubePdfUtility
 {
+    /* --------------------------------------------------------------------- */
+    ///
+    /// MetadataWindow
+    /// 
     /// <summary>
     /// MetadataWindow.xaml の相互作用ロジック
     /// </summary>
+    /// 
+    /* --------------------------------------------------------------------- */
     public partial class MetadataWindow : Window
     {
         #region Initializing and Terminating
 
+        /* ----------------------------------------------------------------- */
+        /// MetadataWindow (constructor)
+        /* ----------------------------------------------------------------- */
         public MetadataWindow()
         {
             InitializeComponent();
         }
 
+        /* ----------------------------------------------------------------- */
+        /// MetadataWindow (constructor)
+        /* ----------------------------------------------------------------- */
         public MetadataWindow(CubePdf.Wpf.IListViewModel viewmodel)
             : this()
         {
@@ -38,7 +63,7 @@ namespace CubePdfUtility
             CreationTime.Content = viewmodel.CreationTime.ToString();
             UpdateTime.Content   = viewmodel.UpdateTime.ToString();
 
-            // TODO: Version.Minor の値を SelectedIndex にバインディングしたい
+            // Version.Minor は読み取り専用なので Binding ではなくコード側で対応
             PdfVersion.SelectedIndex = _metadata.Version.Minor;
         }
 
@@ -46,6 +71,15 @@ namespace CubePdfUtility
 
         #region Properties
 
+        /* ----------------------------------------------------------------- */
+        ///
+        /// Metadata
+        /// 
+        /// <summary>
+        /// 設定した文書プロパティの情報を取得します。
+        /// </summary>
+        /// 
+        /* ----------------------------------------------------------------- */
         public CubePdf.Data.Metadata Metadata
         {
             get { return _metadata; }
