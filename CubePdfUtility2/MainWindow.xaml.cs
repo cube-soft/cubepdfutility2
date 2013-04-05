@@ -205,18 +205,29 @@ namespace CubePdfUtility
         private void RemoveCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             this.RemoveButton.IsEnabled = _viewmodel.ItemCount > 0;
-            var control = this.Thumbnail;
-            e.CanExecute = (control != null && control.SelectedItem != null && control.SelectedItems.Count < control.Items.Count);
+            var items = e.Parameter as IList;
+            e.CanExecute = (items == null || items.Count > 0 && items.Count < Thumbnail.Items.Count);
         }
 
         private void RemoveCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
+            var items = new ArrayList();
+            var src = e.Parameter as IList;
+            if (src == null)
+            {
+                var dialog = new RemoveWindow();
+                dialog.Owner = this;
+                dialog.ShowDialog();
+            }
+            else items.AddRange(src);
+
             try
             {
-                while (this.Thumbnail.SelectedItems.Count > 0)
+                while (items.Count > 0)
                 {
-                    var index = this.Thumbnail.SelectedItems.Count - 1;
-                    _viewmodel.Remove(this.Thumbnail.SelectedItems[index]);
+                    var index = items.Count - 1;
+                    _viewmodel.Remove(items[index]);
+                    items.RemoveAt(index);
                 }
             }
             catch (Exception err) { Debug.WriteLine(err); }
@@ -361,6 +372,21 @@ namespace CubePdfUtility
 
         #endregion
 
+        #region Redo
+
+        private void RedoCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            // TODO: implementation
+            e.CanExecute = false;
+        }
+
+        private void RedoCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            // TODO: implementation
+        }
+
+        #endregion
+
         #region Select
 
         private void SelectCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -427,6 +453,40 @@ namespace CubePdfUtility
 
         #endregion
 
+        #region Metadata
+
+        private void MetadataCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = _viewmodel.ItemCount > 0;
+        }
+
+        private void MetadataCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var dialog = new MetadataWindow(_viewmodel);
+            dialog.Owner = this;
+            dialog.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
+            if (dialog.ShowDialog() == true) _viewmodel.Metadata = dialog.Metadata;
+        }
+
+        #endregion
+
+        #region Encryption
+
+        private void EncryptionCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = _viewmodel.ItemCount > 0;
+        }
+
+        private void EncryptionCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var dialog = new EncryptionWindow(_viewmodel);
+            dialog.Owner = this;
+            dialog.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
+            if (dialog.ShowDialog() == true) _viewmodel.Encryption = dialog.Encryption;
+        }
+
+        #endregion
+
         #endregion
 
         #region Other Methods
@@ -456,9 +516,11 @@ namespace CubePdfUtility
         #endregion
 
         #region ICommand variables
-        public static readonly ICommand Select = new RoutedCommand("Select", typeof(MainWindow));
-        public static readonly ICommand SelectAll = new RoutedCommand("SelectAll", typeof(MainWindow));
-        public static readonly ICommand UnSelect = new RoutedCommand("UnSelect", typeof(MainWindow));
+        public static readonly ICommand Select     = new RoutedCommand("Select",     typeof(MainWindow));
+        public static readonly ICommand SelectAll  = new RoutedCommand("SelectAll",  typeof(MainWindow));
+        public static readonly ICommand UnSelect   = new RoutedCommand("UnSelect",   typeof(MainWindow));
+        public static readonly ICommand Metadata   = new RoutedCommand("Metadata",   typeof(MainWindow));
+        public static readonly ICommand Encryption = new RoutedCommand("Encryption", typeof(MainWindow));
         #endregion
     }
 }
