@@ -7,25 +7,25 @@
     x:Name="RibbonWindow" Title="CubePDF Utility" Width="800" Height="600" Icon="/CubePdfUtility;component/app.ico" ResizeMode="CanResizeWithGrip">
     
     <Window.CommandBindings>
-        <CommandBinding Command="Open"   CanExecute="OpenCommand_CanExecute"   Executed="OpenCommand_Executed"/>
-        <CommandBinding Command="Close"  CanExecute="CloseCommand_CanExecute"  Executed="CloseCommand_Executed"/>
-        <CommandBinding Command="Save"   CanExecute="SaveCommand_CanExecute"   Executed="SaveCommand_Executed"/>
-        <CommandBinding Command="SaveAs" CanExecute="SaveAsCommand_CanExecute" Executed="SaveAsCommand_Executed"/>
+        <CommandBinding Command="Open"      CanExecute="OpenCommand_CanExecute"      Executed="OpenCommand_Executed"/>
+        <CommandBinding Command="Close"     CanExecute="CloseCommand_CanExecute"     Executed="CloseCommand_Executed"/>
+        <CommandBinding Command="Save"      CanExecute="SaveCommand_CanExecute"      Executed="SaveCommand_Executed"/>
+        <CommandBinding Command="SaveAs"    CanExecute="SaveAsCommand_CanExecute"    Executed="SaveAsCommand_Executed"/>
+        <CommandBinding Command="SelectAll" CanExecute="SelectAllCommand_CanExecute" Executed="SelectAllCommand_Executed"/>
+        <CommandBinding Command="Undo"      CanExecute="UndoCommand_CanExecute"      Executed="UndoCommand_Executed"/>
+        <CommandBinding Command="Redo"      CanExecute="RedoCommand_CanExecute"      Executed="RedoCommand_Executed"/>
 
-        <CommandBinding Command="{x:Static cube:ListViewCommands.Insert}"  CanExecute="InsertCommand_CanExecute"  Executed="InsertCommand_Executed"/>
-        <CommandBinding Command="{x:Static cube:ListViewCommands.Remove}"  CanExecute="RemoveCommand_CanExecute"  Executed="RemoveCommand_Executed"/>
-        <CommandBinding Command="{x:Static cube:ListViewCommands.Extract}" CanExecute="ExtractCommand_CanExecute" Executed="ExtractCommand_Executed"/>
-        <CommandBinding Command="{x:Static cube:ListViewCommands.Split}"   CanExecute="SplitCommand_CanExecute"   Executed="SplitCommand_Executed"/>
-        <CommandBinding Command="{x:Static cube:ListViewCommands.Move}"    CanExecute="MoveCommand_CanExecute"    Executed="MoveCommand_Executed"/>
-        <CommandBinding Command="{x:Static cube:ListViewCommands.Rotate}"  CanExecute="RotateCommand_CanExecute"  Executed="RotateCommand_Executed"/>
-        <CommandBinding Command="{x:Static cube:ListViewCommands.Undo}"    CanExecute="UndoCommand_CanExecute"    Executed="UndoCommand_Executed"/>
-        <CommandBinding Command="{x:Static cube:ListViewCommands.Redo}"    CanExecute="RedoCommand_CanExecute"    Executed="RedoCommand_Executed"/>
+        <CommandBinding Command="{x:Static cube:ListViewCommands.Insert}"     CanExecute="InsertCommand_CanExecute"     Executed="InsertCommand_Executed"/>
+        <CommandBinding Command="{x:Static cube:ListViewCommands.Remove}"     CanExecute="RemoveCommand_CanExecute"     Executed="RemoveCommand_Executed"/>
+        <CommandBinding Command="{x:Static cube:ListViewCommands.Extract}"    CanExecute="ExtractCommand_CanExecute"    Executed="ExtractCommand_Executed"/>
+        <CommandBinding Command="{x:Static cube:ListViewCommands.Split}"      CanExecute="SplitCommand_CanExecute"      Executed="SplitCommand_Executed"/>
+        <CommandBinding Command="{x:Static cube:ListViewCommands.Move}"       CanExecute="MoveCommand_CanExecute"       Executed="MoveCommand_Executed"/>
+        <CommandBinding Command="{x:Static cube:ListViewCommands.Rotate}"     CanExecute="RotateCommand_CanExecute"     Executed="RotateCommand_Executed"/>
+        <CommandBinding Command="{x:Static cube:ListViewCommands.Metadata}"   CanExecute="MetadataCommand_CanExecute"   Executed="MetadataCommand_Executed"/>
+        <CommandBinding Command="{x:Static cube:ListViewCommands.Encryption}" CanExecute="EncryptionCommand_CanExecute" Executed="EncryptionCommand_Executed"/>
 
-        <CommandBinding Command="{x:Static local:MainWindow.Select}"     CanExecute="SelectCommand_CanExecute"     Executed="SelectCommand_Executed"/>
-        <CommandBinding Command="{x:Static local:MainWindow.SelectAll}"  CanExecute="SelectAllCommand_CanExecute"  Executed="SelectAllCommand_Executed"/>
-        <CommandBinding Command="{x:Static local:MainWindow.UnSelect}"   CanExecute="UnSelectCommand_CanExecute"   Executed="UnSelectCommand_Executed"/>
-        <CommandBinding Command="{x:Static local:MainWindow.Metadata}"   CanExecute="MetadataCommand_CanExecute"   Executed="MetadataCommand_Executed"/>
-        <CommandBinding Command="{x:Static local:MainWindow.Encryption}" CanExecute="EncryptionCommand_CanExecute" Executed="EncryptionCommand_Executed"/>
+        <CommandBinding Command="{x:Static local:MainWindow.Select}"   CanExecute="SelectCommand_CanExecute"    Executed="SelectCommand_Executed"/>
+        <CommandBinding Command="{x:Static local:MainWindow.UnSelect}" CanExecute="UnSelectCommand_CanExecute"  Executed="UnSelectCommand_Executed"/>
     </Window.CommandBindings>
     
     <Grid x:Name="LayoutRoot">
@@ -83,12 +83,12 @@
                     <r:RibbonButton Label="元に戻す"
                         SmallImageSource="Images\SmallIcons\Undo.png"
                         LargeImageSource="Images\LargeIcons\Undo.png"
-                        Command="{x:Static cube:ListViewCommands.Undo}"/>
+                        Command="Undo"/>
 
                     <r:RibbonButton Label="やり直し"
                         SmallImageSource="Images\SmallIcons\Redo.png"
                         LargeImageSource="Images\LargeIcons\Redo.png"
-                        Command="{x:Static cube:ListViewCommands.Redo}"/>
+                        Command="Redo"/>
 
                     <r:RibbonSplitButton Label="選択"
                         x:Name="SelectButton"
@@ -98,7 +98,7 @@
 
                         <r:RibbonMenuItem Header="すべて選択"
                             ImageSource="Images\SmallIcons\Select.png"
-                            Command="{x:Static local:MainWindow.SelectAll}"/>
+                            Command="SelectAll"/>
 
                         <r:RibbonMenuItem Header="選択の切り替え"
                             ImageSource="Images\SmallIcons\Select.png"
@@ -211,13 +211,13 @@
                         MaxWidth="64"
                         SmallImageSource="Images\SmallIcons\Property.png"
                         LargeImageSource="Images\LargeIcons\Property.png"
-                        Command="{x:Static local:MainWindow.Metadata}"/>
+                        Command="{x:Static cube:ListViewCommands.Metadata}"/>
 
                     <r:RibbonButton Label="セキュリティ"
                         MaxWidth="64"
                         SmallImageSource="Images\SmallIcons\Security.png"
                         LargeImageSource="Images\LargeIcons\Security.png"
-                        Command="{x:Static local:MainWindow.Encryption}"/>
+                        Command="{x:Static cube:ListViewCommands.Encryption}"/>
                 </r:RibbonGroup>
             </r:RibbonTab>
             

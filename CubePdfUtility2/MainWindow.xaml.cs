@@ -67,6 +67,9 @@ namespace CubePdfUtility
 
         #region Commands
 
+        /* ----------------------------------------------------------------- */
+        /// Open
+        /* ----------------------------------------------------------------- */
         #region Open
 
         private void OpenCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -90,6 +93,20 @@ namespace CubePdfUtility
 
         #endregion
 
+        /* ----------------------------------------------------------------- */
+        ///
+        /// Close
+        /// 
+        /// <summary>
+        /// 現在、開いている PDF ファイルを閉じます。
+        /// パラメータ (e.Parameter) に "Exit" の文字列（を含む文字列）が
+        /// 指定された場合はアプリケーション自体も終了します。
+        /// 
+        /// TODO: 内容が編集されている場合は、保存するかどうかを尋ねる
+        /// ダイアログを表示する。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
         #region Close
 
         private void CloseCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -114,6 +131,9 @@ namespace CubePdfUtility
 
         #endregion
 
+        /* ----------------------------------------------------------------- */
+        /// Save
+        /* ----------------------------------------------------------------- */
         #region Save
 
         private void SaveCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -134,6 +154,17 @@ namespace CubePdfUtility
 
         #endregion
 
+        /* ----------------------------------------------------------------- */
+        ///
+        /// SaveAs
+        /// 
+        /// <summary>
+        /// 現在の内容を別名として保存します。パラメータ (e.Parameter) は
+        /// 常に null です。新しいファイル名（パス）は、ダイアログを表示
+        /// して指定させます。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
         #region SaveAs
 
         private void SaveAsCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -157,6 +188,18 @@ namespace CubePdfUtility
 
         #endregion
 
+        /* ----------------------------------------------------------------- */
+        ///
+        /// Insert
+        /// 
+        /// <summary>
+        /// 現在のサムネイルに新しい PDF ファイルの全ページを挿入します。
+        /// パラメータ (e.Parameter) は、null、または挿入位置へのインデックス
+        /// が指定されます。挿入位置へのインデックスが指定された場合は
+        /// その直後に、null の場合は先頭に挿入します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
         #region Insert
 
         private void InsertCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -169,8 +212,7 @@ namespace CubePdfUtility
         {
             try
             {
-                var index = (e.Parameter != null) ? (int)e.Parameter + 1 : 0;
-                if (index > _viewmodel.ItemCount) index = _viewmodel.ItemCount;
+                var index = (e.Parameter != null) ? Math.Min((int)e.Parameter + 1, _viewmodel.ItemCount) : 0;
                 var dialog = new System.Windows.Forms.OpenFileDialog();
                 dialog.Filter = Properties.Resources.PdfFilter;
                 dialog.CheckFileExists = true;
@@ -184,24 +226,9 @@ namespace CubePdfUtility
 
         #endregion
 
-        #region Add
-
-        private void AddCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            bool enabled = _viewmodel.ItemCount > 0;
-            this.InsertButton.IsEnabled = enabled;
-            e.CanExecute = enabled;
-        }
-
-        private void AddCommand_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            // TODO: Parameter に ItemCount - 1 を指定する方法
-            // e.Parameter = _viewmodel.ItemCount - 1;
-            InsertCommand_Executed(sender, e);
-        }
-
-        #endregion
-
+        /* ----------------------------------------------------------------- */
+        /// Remove
+        /* ----------------------------------------------------------------- */
         #region Remove
 
         private void RemoveCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -239,6 +266,9 @@ namespace CubePdfUtility
 
         #endregion
 
+        /* ----------------------------------------------------------------- */
+        /// Extract
+        /* ----------------------------------------------------------------- */
         #region Extract
 
         private void ExtractCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -268,6 +298,9 @@ namespace CubePdfUtility
 
         #endregion
 
+        /* ----------------------------------------------------------------- */
+        /// Split
+        /* ----------------------------------------------------------------- */
         #region Split
 
         private void SplitCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -294,6 +327,9 @@ namespace CubePdfUtility
 
         #endregion
 
+        /* ----------------------------------------------------------------- */
+        /// Move
+        /* ----------------------------------------------------------------- */
         #region Move
 
         private void MoveCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -333,6 +369,9 @@ namespace CubePdfUtility
 
         #endregion
 
+        /* ----------------------------------------------------------------- */
+        /// Rotate
+        /* ----------------------------------------------------------------- */
         #region Rotate
 
         private void RotateCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -361,6 +400,9 @@ namespace CubePdfUtility
 
         #endregion
 
+        /* ----------------------------------------------------------------- */
+        /// Undo
+        /* ----------------------------------------------------------------- */
         #region Undo
 
         private void UndoCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -376,6 +418,9 @@ namespace CubePdfUtility
 
         #endregion
 
+        /* ----------------------------------------------------------------- */
+        /// Redo
+        /* ----------------------------------------------------------------- */
         #region Redo
 
         private void RedoCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -391,6 +436,9 @@ namespace CubePdfUtility
 
         #endregion
 
+        /* ----------------------------------------------------------------- */
+        /// Select
+        /* ----------------------------------------------------------------- */
         #region Select
 
         private void SelectCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -426,6 +474,9 @@ namespace CubePdfUtility
 
         #endregion
 
+        /* ----------------------------------------------------------------- */
+        /// SelectAll
+        /* ----------------------------------------------------------------- */
         #region SelectAll
 
         private void SelectAllCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -441,6 +492,9 @@ namespace CubePdfUtility
 
         #endregion
 
+        /* ----------------------------------------------------------------- */
+        /// UnSelect
+        /* ----------------------------------------------------------------- */
         #region UnSelect
 
         private void UnSelectCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -457,6 +511,9 @@ namespace CubePdfUtility
 
         #endregion
 
+        /* ----------------------------------------------------------------- */
+        /// Metadata
+        /* ----------------------------------------------------------------- */
         #region Metadata
 
         private void MetadataCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -474,6 +531,9 @@ namespace CubePdfUtility
 
         #endregion
 
+        /* ----------------------------------------------------------------- */
+        /// Encryption
+        /* ----------------------------------------------------------------- */
         #region Encryption
 
         private void EncryptionCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -496,7 +556,15 @@ namespace CubePdfUtility
         #region Other Methods
 
         /* ----------------------------------------------------------------- */
+        ///
         /// Refresh
+        ///
+        /// <summary>
+        /// 各種コマンドを実行した後に、各種コントロールで表示されている
+        /// 情報を更新します。データ・バインディング可能なものに関しては、
+        /// できるだけバインディングで対応します。
+        /// </summary>
+        ///
         /* ----------------------------------------------------------------- */
         private void Refresh()
         {
@@ -519,12 +587,18 @@ namespace CubePdfUtility
         private CubePdf.Wpf.IListViewModel _viewmodel = new CubePdf.Wpf.ListViewModel();
         #endregion
 
+        /* ----------------------------------------------------------------- */
+        ///
+        /// ICommands
+        ///
+        /// <summary>
+        /// このアプリケーション専用で必要とされるコマンド群を定義します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
         #region ICommand variables
-        public static readonly ICommand Select     = new RoutedCommand("Select",     typeof(MainWindow));
-        public static readonly ICommand SelectAll  = new RoutedCommand("SelectAll",  typeof(MainWindow));
-        public static readonly ICommand UnSelect   = new RoutedCommand("UnSelect",   typeof(MainWindow));
-        public static readonly ICommand Metadata   = new RoutedCommand("Metadata",   typeof(MainWindow));
-        public static readonly ICommand Encryption = new RoutedCommand("Encryption", typeof(MainWindow));
+        public static readonly ICommand Select   = new RoutedCommand("Select",   typeof(MainWindow));
+        public static readonly ICommand UnSelect = new RoutedCommand("UnSelect", typeof(MainWindow));
         #endregion
     }
 }
