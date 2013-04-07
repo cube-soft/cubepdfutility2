@@ -75,10 +75,20 @@
                         LargeImageSource="Images\LargeIcons\Open.png"
                         Command="Open"/>
 
-                    <r:RibbonButton Label="保存"
-                        SmallImageSource="Images\SmallIcons\SaveAs.png"
-                        LargeImageSource="Images\LargeIcons\SaveAs.png"
-                        Command="SaveAs"/>
+                    <r:RibbonSplitButton Label="保存"
+                        x:Name="SaveButton"
+                        SmallImageSource="Images\SmallIcons\Save.png"
+                        LargeImageSource="Images\LargeIcons\Save.png"
+                        Command="Save">
+
+                        <r:RibbonMenuItem Header="上書き保存"
+                            ImageSource="Images\SmallIcons\Save.png"
+                            Command="Save"/>
+
+                        <r:RibbonMenuItem Header="名前を付けて保存"
+                            ImageSource="Images\SmallIcons\SaveAs.png"
+                            Command="SaveAs"/>
+                    </r:RibbonSplitButton>
 
                     <r:RibbonButton Label="元に戻す"
                         SmallImageSource="Images\SmallIcons\Undo.png"

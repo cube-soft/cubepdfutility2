@@ -138,6 +138,7 @@ namespace CubePdfUtility
 
         private void SaveCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
+            if (SaveButton != null) SaveButton.IsEnabled = _viewmodel.ItemCount > 0;
             e.CanExecute = _viewmodel.ItemCount > 0;
         }
 
