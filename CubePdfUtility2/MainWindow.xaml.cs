@@ -138,8 +138,7 @@ namespace CubePdfUtility
 
         private void SaveCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            //e.CanExecute = _viewmodel.ItemCount > 0;
-            e.CanExecute = false;
+            e.CanExecute = _viewmodel.ItemCount > 0;
         }
 
         private void SaveCommand_Executed(object sender, ExecutedRoutedEventArgs e)
