@@ -4,7 +4,7 @@
     xmlns:r="clr-namespace:Microsoft.Windows.Controls.Ribbon;assembly=RibbonControlsLibrary"
     xmlns:cube="clr-namespace:CubePdf.Wpf;assembly=CubePdf.Wpf"
     xmlns:local="clr-namespace:CubePdfUtility"
-    x:Name="RibbonWindow" Title="CubePDF Utility" Width="800" Height="600" Icon="/CubePdfUtility;component/app.ico">
+    x:Name="RibbonWindow" Title="CubePDF Utility" Width="800" Height="600" Icon="/CubePdfUtility;component/app.ico" ResizeMode="CanResizeWithGrip">
     
     <Window.CommandBindings>
         <CommandBinding Command="Open"   CanExecute="OpenCommand_CanExecute"   Executed="OpenCommand_Executed"/>
@@ -13,7 +13,6 @@
         <CommandBinding Command="SaveAs" CanExecute="SaveAsCommand_CanExecute" Executed="SaveAsCommand_Executed"/>
 
         <CommandBinding Command="{x:Static cube:ListViewCommands.Insert}"  CanExecute="InsertCommand_CanExecute"  Executed="InsertCommand_Executed"/>
-        <CommandBinding Command="{x:Static cube:ListViewCommands.Add}"     CanExecute="AddCommand_CanExecute"     Executed="AddCommand_Executed"/>
         <CommandBinding Command="{x:Static cube:ListViewCommands.Remove}"  CanExecute="RemoveCommand_CanExecute"  Executed="RemoveCommand_Executed"/>
         <CommandBinding Command="{x:Static cube:ListViewCommands.Extract}" CanExecute="ExtractCommand_CanExecute" Executed="ExtractCommand_Executed"/>
         <CommandBinding Command="{x:Static cube:ListViewCommands.Split}"   CanExecute="SplitCommand_CanExecute"   Executed="SplitCommand_Executed"/>
@@ -131,7 +130,8 @@
 
                         <r:RibbonMenuItem Header="末尾に挿入"
                             ImageSource="Images\SmallIcons\Insert.png"
-                            Command="{x:Static cube:ListViewCommands.Add}"/>
+                            Command="{x:Static cube:ListViewCommands.Insert}"
+                            CommandParameter="{Binding ElementName=Thumbnail, Path=Items.Count}"/>
                     </r:RibbonSplitButton>
 
                     <r:RibbonSplitButton Label="抽出"

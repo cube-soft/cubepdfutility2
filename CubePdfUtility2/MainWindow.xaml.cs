@@ -162,12 +162,7 @@ namespace CubePdfUtility
         private void InsertCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             this.InsertButton.IsEnabled = _viewmodel.ItemCount > 0;
-            if (e.Parameter == null) e.CanExecute = true;
-            else
-            {
-                var control = this.Thumbnail;
-                e.CanExecute = (control != null && control.SelectedItem != null);
-            }
+            e.CanExecute = (e.Parameter == null || (int)e.Parameter >= 0);
         }
 
         private void InsertCommand_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -175,6 +170,7 @@ namespace CubePdfUtility
             try
             {
                 var index = (e.Parameter != null) ? (int)e.Parameter + 1 : 0;
+                if (index > _viewmodel.ItemCount) index = _viewmodel.ItemCount;
                 var dialog = new System.Windows.Forms.OpenFileDialog();
                 dialog.Filter = Properties.Resources.PdfFilter;
                 dialog.CheckFileExists = true;
