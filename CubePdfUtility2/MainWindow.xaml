@@ -29,9 +29,10 @@
     </Window.CommandBindings>
     
     <Window.Resources>
+        <cube:ControlToTagConverter x:Key="ControlToTagConverter"/>
+
         <ContextMenu x:Key="EditMenu">
-            <MenuItem Header="プレビュー"
-                Click="Previewing"/>
+            <MenuItem Header="プレビュー" Click="Previewing"/>
 
             <Separator/>
 
@@ -39,10 +40,8 @@
                 <MenuItem Header="選択位置に挿入"
                     Command="{x:Static cube:ListViewCommands.Insert}"
                     CommandParameter="{Binding PlacementTarget.SelectedIndex, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"/>
-
                 <MenuItem Header="先頭に挿入"
                     Command="{x:Static cube:ListViewCommands.Insert}"/>
-
                 <MenuItem Header="末尾に挿入"
                     Command="{x:Static cube:ListViewCommands.Insert}"
                     CommandParameter="{Binding PlacementTarget.Items.Count, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"/>
@@ -52,14 +51,11 @@
                 <MenuItem Header="選択ページを単一ファイルとして抽出"
                     Command="{x:Static cube:ListViewCommands.Extract}"
                     CommandParameter="{Binding PlacementTarget.SelectedItems, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"/>
-
                 <MenuItem Header="選択ページを個別ファイルとして抽出"
                     Command="{x:Static cube:ListViewCommands.Split}"
                     CommandParameter="{Binding Placement.SelectedItems, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"/>
-
                 <MenuItem Header="全てのページを単一ファイルとして抽出"
                     Command="{x:Static cube:ListViewCommands.Extract}"/>
-
                 <MenuItem Header="全てのページを個別ファイルとして抽出"
                     Command="{x:Static cube:ListViewCommands.Split}"/>
             </MenuItem>
@@ -68,7 +64,6 @@
                 <MenuItem Header="選択ページを削除"
                     Command="{x:Static cube:ListViewCommands.Remove}"
                     CommandParameter="{Binding PlacementTarget.SelectedItems, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"/>
-
                 <MenuItem Header="範囲を指定して削除"
                     Command="{x:Static cube:ListViewCommands.Remove}"/>
             </MenuItem>
@@ -78,7 +73,6 @@
             <MenuItem Header="前へ"
                 Command="{x:Static cube:ListViewCommands.Move}"
                 CommandParameter="-1"/>
-
             <MenuItem Header="後へ"
                 Command="{x:Static cube:ListViewCommands.Move}"
                 CommandParameter="1"/>
@@ -88,7 +82,6 @@
             <MenuItem Header="左90度に回転"
                 Command="{x:Static cube:ListViewCommands.Rotate}"
                 CommandParameter="-90"/>
-
             <MenuItem Header="右90度に回転"
                 Command="{x:Static cube:ListViewCommands.Rotate}"
                 CommandParameter="90"/>
@@ -97,7 +90,6 @@
 
             <MenuItem Header="文書プロパティ"
                 Command="{x:Static cube:ListViewCommands.Metadata}"/>
-
             <MenuItem Header="セキュリティ"
                 Command="{x:Static cube:ListViewCommands.Encryption}"/>
         </ContextMenu>
@@ -146,7 +138,10 @@
                         CommandParameter="Exit"/>
 
                     <r:RibbonApplicationMenu.AuxiliaryPaneContent>
-                        <r:RibbonGallery>
+                        <r:RibbonGallery
+                            x:Name="RecentGallery"
+                            Command="Open"
+                            CommandParameter="{Binding ElementName=RecentGallery, Path=SelectedItem, Converter={StaticResource ControlToTagConverter}}">
                             <r:RibbonGalleryCategory x:Name="RecentFiles" Header="最近開いたファイル"/>
                         </r:RibbonGallery>
                     </r:RibbonApplicationMenu.AuxiliaryPaneContent>

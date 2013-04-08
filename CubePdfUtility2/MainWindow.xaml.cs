@@ -74,8 +74,9 @@ namespace CubePdfUtility
         ///
         /// <summary>
         /// PDF ファイルを開きます。
-        /// パラメータ (e.Parameter) は常に null です。ファイル名は、ファイル
-        /// を開くためのダイアログから指定します。
+        /// パラメータ (e.Parameter) は、PDF ファイルへのパス、または null
+        /// です。パラメータが null の場合、ファイルを開くためのダイアログ
+        /// から指定します。
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
@@ -90,11 +91,16 @@ namespace CubePdfUtility
         {
             try
             {
-                var dialog = new System.Windows.Forms.OpenFileDialog();
-                dialog.Filter = Properties.Resources.PdfFilter;
-                dialog.CheckFileExists = true;
-                if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
-                _viewmodel.Open(dialog.FileName);
+                var path = e.Parameter as string;
+                if (path == null)
+                {
+                    var dialog = new System.Windows.Forms.OpenFileDialog();
+                    dialog.Filter = Properties.Resources.PdfFilter;
+                    dialog.CheckFileExists = true;
+                    if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
+                    path = dialog.FileName;
+                }
+                _viewmodel.Open(path);
             }
             catch (Exception err) { Debug.WriteLine(err); }
             finally { Refresh(); }
