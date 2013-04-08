@@ -51,10 +51,10 @@
                 </Grid.ColumnDefinitions>
 
                 <Label Grid.Row="0" Content="パスワード：" HorizontalAlignment="Right" VerticalAlignment="Center" />
-                <TextBox Grid.Row="0" Grid.Column="1" x:Name="OwnerPasswordTextBox" Margin="5" VerticalAlignment="Center" Text="{Binding OwnerPassword}"/>
+                <PasswordBox Grid.Row="0" Grid.Column="1" x:Name="OwnerPasswordBox" Margin="5" VerticalAlignment="Center" PasswordChar="*"/>
 
                 <Label Grid.Row="1" Content="パスワードの確認：" HorizontalAlignment="Right" VerticalAlignment="Center" />
-                <TextBox Grid.Row="1" Grid.Column="1" x:Name="OwnerPasswordConfirmTextBox" Margin="5" VerticalAlignment="Center" />
+                <PasswordBox Grid.Row="1" Grid.Column="1" x:Name="ConfirmOwnerPasswordBox" Margin="5" VerticalAlignment="Center" PasswordChar="*"/>
 
                 <Label Grid.Row="2" Content="暗号化レベル：" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                 <ComboBox Grid.Row="2" Grid.Column="1" SelectedIndex="{Binding Path=Method, Converter={StaticResource EncryptionMethodToIndex}}" Margin="5">
@@ -87,10 +87,10 @@
                     </Grid.ColumnDefinitions>
 
                     <Label Grid.Row="0" Content="閲覧パスワード：" HorizontalAlignment="Right" VerticalAlignment="Center" />
-                    <TextBox Grid.Row="0" Grid.Column="1" Margin="5" x:Name="UserPasswordTextBox" Text="{Binding UserPassword}" VerticalAlignment="Center" />
+                    <PasswordBox Grid.Row="0" Grid.Column="1" Margin="5" x:Name="UserPasswordBox" PasswordChar="*" VerticalAlignment="Center"/>
 
                     <Label Grid.Row="1" Content="閲覧パスワードの確認：" HorizontalAlignment="Right" VerticalAlignment="Center" />
-                    <TextBox Grid.Row="1" Grid.Column="1" Margin="5" x:Name="UserPasswordConfirmTextBox" VerticalAlignment="Center" />
+                    <PasswordBox Grid.Row="1" Grid.Column="1" Margin="5" x:Name="ConfirmUserPasswordBox" PasswordChar="*" VerticalAlignment="Center"/>
                 </Grid>
 
                 <CheckBox Grid.Row="6"  Grid.Column="1" Content="印刷を許可する" IsChecked="{Binding Permission.Printing}" Margin="5"/>

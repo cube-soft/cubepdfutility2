@@ -92,29 +92,43 @@ namespace CubePdfUtility
 
         #region Commands
 
+        /* ----------------------------------------------------------------- */
+        ///
+        /// Save
+        /// 
+        /// <summary>
+        /// OK ボタンをに該当するコマンドです。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
         #region Save
 
         private void SaveCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = (Encryption == null) ||
-                           (!Encryption.IsEnabled || IsValidPassword(OwnerPasswordTextBox, OwnerPasswordConfirmTextBox)) &&
-                           (!Encryption.IsUserPasswordEnabled || UserPasswordCheckBox.IsChecked == false || IsValidPassword(UserPasswordTextBox, UserPasswordConfirmTextBox));
-        }
-
-        private bool IsValidPassword(TextBox password, TextBox confirm)
-        {
-            if (String.IsNullOrEmpty(password.Text)) return false;
-            return password.Text == confirm.Text;
+                           (!Encryption.IsEnabled || IsValidPassword(OwnerPasswordBox, ConfirmOwnerPasswordBox)) &&
+                           (!Encryption.IsUserPasswordEnabled || UserPasswordCheckBox.IsChecked == false || IsValidPassword(UserPasswordBox, ConfirmUserPasswordBox));
         }
 
         private void SaveCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
+            Encryption.OwnerPassword = OwnerPasswordBox.Password;
+            Encryption.UserPassword = UserPasswordBox.Password;
             DialogResult = true;
             Close();
         }
 
         #endregion
 
+        /* ----------------------------------------------------------------- */
+        ///
+        /// Close
+        /// 
+        /// <summary>
+        /// キャンセルボタンをに該当するコマンドです。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
         #region Close
 
         private void CloseCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -129,6 +143,26 @@ namespace CubePdfUtility
         }
 
         #endregion
+
+        #endregion
+
+        #region Other methods
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// IsValidPassword
+        ///
+        /// <summary>
+        /// 確認用のテキストボックスに入力されたパスワードが元のパスワードと
+        /// 一致するかどうかを判断します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private bool IsValidPassword(PasswordBox password, PasswordBox confirm)
+        {
+            if (String.IsNullOrEmpty(password.Password)) return false;
+            return password.Password == confirm.Password;
+        }
 
         #endregion
 
