@@ -30,7 +30,8 @@
     
     <Window.Resources>
         <ContextMenu x:Key="EditMenu">
-            <MenuItem Header="プレビュー"/>
+            <MenuItem Header="プレビュー"
+                Click="Previewing"/>
 
             <Separator/>
 
@@ -342,7 +343,7 @@
             VirtualizingStackPanel.VirtualizationMode="Recycling"
             VirtualizingStackPanel.IsVirtualizing="True"
             SelectionMode="Extended"
-            Background="DimGray" MouseDoubleClick="ListViewItem_MouseDoubleClick">
+            Background="DimGray" MouseDoubleClick="Previewing">
             <ListView.View>
                 <local:ImageView x:Name="ThumbnailImageView" ItemWidth="150"/>
             </ListView.View>

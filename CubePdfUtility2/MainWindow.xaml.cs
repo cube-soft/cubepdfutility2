@@ -668,14 +668,25 @@ namespace CubePdfUtility
 
         #endregion
 
-        private void ListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            var control = sender as ListView;
-            if (control == null || control.SelectedIndex == -1) return;
+        #region Event handlers
 
-            var dialog = new PreviewWindow(_viewmodel, control.SelectedIndex);
+        /* ----------------------------------------------------------------- */
+        ///
+        /// Previewing
+        /// 
+        /// <summary>
+        /// プレビュー画面を開きます。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void Previewing(object sender, EventArgs e)
+        {
+            if (Thumbnail == null || Thumbnail.SelectedIndex == -1) return;
+            var dialog = new PreviewWindow(_viewmodel, Thumbnail.SelectedIndex);
             dialog.ShowDialog();
         }
+
+        #endregion
 
         #region Other Methods
 

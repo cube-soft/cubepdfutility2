@@ -25,7 +25,7 @@
 
         <GroupBox Grid.Row="0" Margin="12,8">
             <GroupBox.Header>
-                <CheckBox Content="パスワードによるセキュリティを設定する" IsChecked="{Binding IsEnabled}" Padding="5,0,5,5" Margin="5,5,0,5" />
+                <CheckBox Content="パスワードによるセキュリティを設定する" IsChecked="{Binding IsEnabled, Mode=TwoWay}" Padding="5,0,5,5" Margin="5,5,0,5" />
             </GroupBox.Header>
             <Grid IsEnabled="{Binding IsEnabled}">
                 <Grid.RowDefinitions>

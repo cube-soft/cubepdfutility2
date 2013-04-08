@@ -68,6 +68,8 @@ namespace CubePdfUtility
             _crypt = new CubePdf.Data.Encryption(viewmodel.Encryption);
             if (_crypt.Method == CubePdf.Data.EncryptionMethod.Unknown) _crypt.Method = CubePdf.Data.EncryptionMethod.Standard128;
             DataContext = _crypt;
+            if (_crypt.OwnerPassword.Length > 0) OwnerPasswordBox.Password = _crypt.OwnerPassword;
+            if (_crypt.UserPassword.Length > 0) UserPasswordBox.Password = _crypt.UserPassword;
         }
 
         #endregion
@@ -112,9 +114,9 @@ namespace CubePdfUtility
 
         private void SaveCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
+            DialogResult = true;
             Encryption.OwnerPassword = OwnerPasswordBox.Password;
             Encryption.UserPassword = UserPasswordBox.Password;
-            DialogResult = true;
             Close();
         }
 
