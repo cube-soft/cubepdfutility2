@@ -24,6 +24,7 @@
 *.lib
 *.sbr
 *.sdf
+*.dll
 ipch/
 obj/
 [Bb]in
