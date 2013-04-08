@@ -407,7 +407,7 @@ namespace CubePdfUtility
                 var indices = new List<int>();
                 foreach (var item in Thumbnail.SelectedItems)
                 {
-                    var index = _viewmodel.Items.IndexOf(item as ImageSource);
+                    var index = _viewmodel.Items.IndexOf(item as System.Drawing.Image);
                     if (delta < 0) indices.Add(index);
                     else indices.Insert(0, index);
                 }
@@ -453,7 +453,7 @@ namespace CubePdfUtility
                 var done = new System.Collections.ArrayList();
                 while (this.Thumbnail.SelectedItems.Count > 0)
                 {
-                    var index = _viewmodel.Items.IndexOf(Thumbnail.SelectedItems[0] as ImageSource);
+                    var index = _viewmodel.Items.IndexOf(Thumbnail.SelectedItems[0] as System.Drawing.Image);
                     _viewmodel.RotateAt(index, degree);
                     done.Add(_viewmodel.Items[index]);
                 }

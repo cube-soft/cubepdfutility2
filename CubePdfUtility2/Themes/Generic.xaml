@@ -1,6 +1,10 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:cube="clr-namespace:CubePdf.Wpf;assembly=CubePdf.Wpf"
                     xmlns:local="clr-namespace:CubePdfUtility">
+
+    <cube:ImageConverter x:Key="ImageConverter"/>
+
     <Style x:Key="{ComponentResourceKey TypeInTargetAssembly={x:Type local:ImageView},ResourceId=ImageView}"
          TargetType="{x:Type ListView}" BasedOn="{StaticResource {x:Type ListBox}}">
         <Setter Property="ItemsSource" Value="{Binding}"/>
@@ -33,7 +37,7 @@
             <Setter.Value>
                 <DataTemplate>
                     <Border Background="White">
-                        <Image Margin="3" Source="{Binding}"/>
+                        <Image Margin="3" Source="{Binding Converter={StaticResource ImageConverter}}"/>
                     </Border>
                 </DataTemplate>
             </Setter.Value>
