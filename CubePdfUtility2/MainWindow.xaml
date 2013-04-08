@@ -112,10 +112,12 @@
 
         <r:Ribbon>
             <r:Ribbon.ApplicationMenu>
-                <r:RibbonApplicationMenu SmallImageSource="Images\SmallIcons\Menu.png">
+                <r:RibbonApplicationMenu SmallImageSource="Images\SmallIcons\Menu.png"
+                                         Loaded="RibbonApplicationMenu_Loaded">
                     <r:RibbonApplicationMenuItem Header="開く"
                         ImageSource="Images\LargeIcons\Open.png"
-                        Command="Open"/>
+                        Command="Open">
+                    </r:RibbonApplicationMenuItem>
 
                     <r:RibbonApplicationMenuItem Header="上書き保存"
                         ImageSource="Images\LargeIcons\Save.png"
@@ -140,6 +142,14 @@
                         ImageSource="Images\LargeIcons\Exit.png"
                         Command="Close"
                         CommandParameter="Exit"/>
+
+                    <r:RibbonApplicationMenu.AuxiliaryPaneContent>
+                        <r:RibbonGallery>
+                            <r:RibbonGalleryCategory Name="RecentFiles" Header="最近開いたファイル">
+                            </r:RibbonGalleryCategory>
+                        </r:RibbonGallery>
+                    </r:RibbonApplicationMenu.AuxiliaryPaneContent>
+
                 </r:RibbonApplicationMenu>
             </r:Ribbon.ApplicationMenu>
             

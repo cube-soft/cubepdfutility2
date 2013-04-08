@@ -35,6 +35,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Windows.Controls.Ribbon;
+using IWshRuntimeLibrary;
 
 namespace CubePdfUtility
 {
@@ -669,6 +670,40 @@ namespace CubePdfUtility
         #endregion
 
         #region Event handlers
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// RibbonApplicationMenu_Loaded
+        /// 
+        /// <summary>
+        /// リボンアプリケーションが読み込まれた際に実行されます。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void RibbonApplicationMenu_Loaded(object sender, RoutedEventArgs e)
+        {
+            // 最近開いたファイルを（最大maxPrintItems個）取得する
+            // 名前順に取得されてるみたいなので、日付順へと並び替える必要がある
+            string[] recentFiles = System.IO.Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.Recent) +"\\", "*.pdf.lnk");
+            int maxPrintItems = 10;
+            string[] targetFiles = new string[maxPrintItems];
+            
+            for (int i = 0; i < Math.Min(maxPrintItems, recentFiles.Length); i++)
+            {
+                RibbonGalleryItem galleryItem = new RibbonGalleryItem();
+                galleryItem.Content = (i + 1).ToString() + ": " + System.IO.Path.GetFileNameWithoutExtension(recentFiles[i]);
+
+                RecentFiles.Items.Add(galleryItem);
+
+                // .lnkファイルからpathを拾う
+                IWshShell_Class shell = new IWshShell_Class();
+                IWshShortcut_Class shortCut;
+                shortCut = (IWshShortcut_Class)shell.CreateShortcut(recentFiles[i]);
+
+                targetFiles[i] = shortCut.TargetPath;
+            }
+        }
+
 
         /* ----------------------------------------------------------------- */
         ///
