@@ -28,6 +28,80 @@
         <CommandBinding Command="{x:Static local:MainWindow.UnSelect}" CanExecute="UnSelectCommand_CanExecute"  Executed="UnSelectCommand_Executed"/>
     </Window.CommandBindings>
     
+    <Window.Resources>
+        <ContextMenu x:Key="EditMenu">
+            <MenuItem Header="プレビュー"/>
+
+            <Separator/>
+
+            <MenuItem Header="挿入">
+                <MenuItem Header="選択位置に挿入"
+                    Command="{x:Static cube:ListViewCommands.Insert}"
+                    CommandParameter="{Binding PlacementTarget.SelectedIndex, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"/>
+
+                <MenuItem Header="先頭に挿入"
+                    Command="{x:Static cube:ListViewCommands.Insert}"/>
+
+                <MenuItem Header="末尾に挿入"
+                    Command="{x:Static cube:ListViewCommands.Insert}"
+                    CommandParameter="{Binding PlacementTarget.Items.Count, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"/>
+            </MenuItem>
+
+            <MenuItem Header="抽出">
+                <MenuItem Header="選択ページを単一ファイルとして抽出"
+                    Command="{x:Static cube:ListViewCommands.Extract}"
+                    CommandParameter="{Binding PlacementTarget.SelectedItems, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"/>
+
+                <MenuItem Header="選択ページを個別ファイルとして抽出"
+                    Command="{x:Static cube:ListViewCommands.Split}"
+                    CommandParameter="{Binding Placement.SelectedItems, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"/>
+
+                <MenuItem Header="全てのページを単一ファイルとして抽出"
+                    Command="{x:Static cube:ListViewCommands.Extract}"/>
+
+                <MenuItem Header="全てのページを個別ファイルとして抽出"
+                    Command="{x:Static cube:ListViewCommands.Split}"/>
+            </MenuItem>
+
+            <MenuItem Header="削除">
+                <MenuItem Header="選択ページを削除"
+                    Command="{x:Static cube:ListViewCommands.Remove}"
+                    CommandParameter="{Binding PlacementTarget.SelectedItems, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"/>
+
+                <MenuItem Header="範囲を指定して削除"
+                    Command="{x:Static cube:ListViewCommands.Remove}"/>
+            </MenuItem>
+
+            <Separator/>
+
+            <MenuItem Header="前へ"
+                Command="{x:Static cube:ListViewCommands.Move}"
+                CommandParameter="-1"/>
+
+            <MenuItem Header="後へ"
+                Command="{x:Static cube:ListViewCommands.Move}"
+                CommandParameter="1"/>
+
+            <Separator/>
+
+            <MenuItem Header="左90度に回転"
+                Command="{x:Static cube:ListViewCommands.Rotate}"
+                CommandParameter="-90"/>
+
+            <MenuItem Header="右90度に回転"
+                Command="{x:Static cube:ListViewCommands.Rotate}"
+                CommandParameter="90"/>
+
+            <Separator/>
+
+            <MenuItem Header="文書プロパティ"
+                Command="{x:Static cube:ListViewCommands.Metadata}"/>
+
+            <MenuItem Header="セキュリティ"
+                Command="{x:Static cube:ListViewCommands.Encryption}"/>
+        </ContextMenu>
+    </Window.Resources>
+
     <Grid x:Name="LayoutRoot">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -264,6 +338,7 @@
         </r:Ribbon>
 
         <ListView Grid.Row="1" x:Name="Thumbnail"
+            ContextMenu="{DynamicResource EditMenu}"
             VirtualizingStackPanel.VirtualizationMode="Recycling"
             VirtualizingStackPanel.IsVirtualizing="True"
             SelectionMode="Extended"
