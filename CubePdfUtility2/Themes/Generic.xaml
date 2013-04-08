@@ -5,39 +5,33 @@
 
     <cube:ImageConverter x:Key="ImageConverter"/>
 
-    <Style x:Key="{ComponentResourceKey TypeInTargetAssembly={x:Type local:ImageView},ResourceId=ImageView}"
-         TargetType="{x:Type ListView}" BasedOn="{StaticResource {x:Type ListBox}}">
+    <Style x:Key="{ComponentResourceKey TypeInTargetAssembly={x:Type local:ImageView}, ResourceId=ImageView}"
+        TargetType="{x:Type ListView}" BasedOn="{StaticResource {x:Type ListBox}}">
         <Setter Property="ItemsSource" Value="{Binding}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate>
-                    <Border BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            Background="{TemplateBinding Background}"
-                            Margin="{TemplateBinding Margin}">
-                        <ScrollViewer Margin="{TemplateBinding Padding}">
-                            <WrapPanel ItemWidth="{Binding (ListView.View).ItemWidth, RelativeSource={RelativeSource AncestorType=ListView}}"
-                                       IsItemsHost="True"
-                                       MinWidth="{Binding ItemWidth, RelativeSource={RelativeSource Self}}"
-                                       Width="{Binding ActualWidth,RelativeSource={RelativeSource AncestorType=ScrollContentPresenter}}">
-                            </WrapPanel>
-                        </ScrollViewer>
-                    </Border>
+                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" Background="{TemplateBinding Background}">
+                        <WrapPanel Margin="3" IsItemsHost="True"
+                            ItemWidth="{Binding (ListView.View).ItemWidth, RelativeSource={RelativeSource AncestorType=ListView}}"
+                            MinWidth="{Binding ItemWidth, RelativeSource={RelativeSource Self}}"
+                            Width="{Binding ActualWidth,RelativeSource={RelativeSource AncestorType=ScrollContentPresenter}}">
+                        </WrapPanel>
+                    </ScrollViewer>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
 
-    <Style x:Key="{ComponentResourceKey TypeInTargetAssembly={x:Type local:ImageView},ResourceId=ImageViewItem}"
-         TargetType='{x:Type ListViewItem}' BasedOn='{StaticResource {x:Type ListBoxItem}}'>
-        <Setter Property='Padding' Value='3'/>
-        <Setter Property='Margin' Value='5'/>
-        <Setter Property='HorizontalContentAlignment' Value='Center'/>
+    <Style x:Key="{ComponentResourceKey TypeInTargetAssembly={x:Type local:ImageView}, ResourceId=ImageViewItem}"
+        TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+        <Setter Property="Margin"  Value="3"/>
+        <Setter Property="Padding" Value="3"/>
         <Setter Property="ContentTemplate">
             <Setter.Value>
                 <DataTemplate>
                     <Border Background="White">
-                        <Image Margin="3" Source="{Binding Converter={StaticResource ImageConverter}}"/>
+                        <Image Source="{Binding Converter={StaticResource ImageConverter}}"/>
                     </Border>
                 </DataTemplate>
             </Setter.Value>
