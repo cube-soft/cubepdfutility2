@@ -677,30 +677,29 @@ namespace CubePdfUtility
         /// 
         /// <summary>
         /// リボンアプリケーションが読み込まれた際に実行されます。
+        /// 
+        /// TODO: Recent フォルダで GetFiles メソッドを実行すると名前順に
+        /// 取得されてるみたいなので、日付順へと並び替える必要がある。
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
         private void RibbonApplicationMenu_Loaded(object sender, RoutedEventArgs e)
         {
-            // 最近開いたファイルを（最大maxPrintItems個）取得する
-            // 名前順に取得されてるみたいなので、日付順へと並び替える必要がある
-            string[] recentFiles = System.IO.Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.Recent) +"\\", "*.pdf.lnk");
-            int maxPrintItems = 10;
-            string[] targetFiles = new string[maxPrintItems];
-            
-            for (int i = 0; i < Math.Min(maxPrintItems, recentFiles.Length); i++)
+            var folder = Environment.GetFolderPath(Environment.SpecialFolder.Recent);
+            var recents = System.IO.Directory.GetFiles(folder + "\\", "*.pdf.lnk");
+            int maxitems = 10;
+
+            for (int i = 0; i < Math.Min(maxitems, recents.Length); ++i)
             {
-                RibbonGalleryItem galleryItem = new RibbonGalleryItem();
-                galleryItem.Content = (i + 1).ToString() + ": " + System.IO.Path.GetFileNameWithoutExtension(recentFiles[i]);
+                // .lnk ファイルから path を拾う
+                var shell = new IWshShell_Class();
+                var shortcut = shell.CreateShortcut(recents[i]) as IWshShortcut_Class;
+                if (shortcut == null) continue;
 
-                RecentFiles.Items.Add(galleryItem);
-
-                // .lnkファイルからpathを拾う
-                IWshShell_Class shell = new IWshShell_Class();
-                IWshShortcut_Class shortCut;
-                shortCut = (IWshShortcut_Class)shell.CreateShortcut(recentFiles[i]);
-
-                targetFiles[i] = shortCut.TargetPath;
+                var gallery = new RibbonGalleryItem();
+                gallery.Content = String.Format("{0} {1}", i + 1, System.IO.Path.GetFileNameWithoutExtension(recents[i]));
+                gallery.Tag = shortcut.TargetPath;
+                RecentFiles.Items.Add(gallery);
             }
         }
 
