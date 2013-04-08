@@ -668,6 +668,15 @@ namespace CubePdfUtility
 
         #endregion
 
+        private void ListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var control = sender as ListView;
+            if (control == null || control.SelectedIndex == -1) return;
+
+            var dialog = new PreviewWindow(_viewmodel, control.SelectedIndex);
+            dialog.ShowDialog();
+        }
+
         #region Other Methods
 
         /* ----------------------------------------------------------------- */

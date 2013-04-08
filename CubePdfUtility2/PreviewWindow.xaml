@@ -1,0 +1,13 @@
+﻿<Window x:Class="CubePdfUtility.PreviewWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:cube="clr-namespace:CubePdf.Wpf;assembly=CubePdf.Wpf"
+        Title="PreviewWindow" Height="300" Width="300" Icon="/CubePdfUtility;component/app.ico">
+    <Window.Resources>
+        <cube:ImageConverter x:Key="ImageConverter"/>
+    </Window.Resources>
+
+    <ScrollViewer x:Name="MainViewer" DockPanel.Dock="Bottom" Background="DimGray">
+        <Image Source="{Binding Converter={StaticResource ImageConverter}}" Stretch="UniformToFill" VerticalAlignment="Center" Margin="5"/>
+    </ScrollViewer>
+</Window>
