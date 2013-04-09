@@ -284,6 +284,7 @@ namespace CubePdfUtility
 
             try
             {
+                _viewmodel.BeginCommand();
                 while (items.Count > 0)
                 {
                     var index = items.Count - 1;
@@ -292,7 +293,11 @@ namespace CubePdfUtility
                 }
             }
             catch (Exception err) { Debug.WriteLine(err); }
-            finally { Refresh(); }
+            finally
+            {
+                _viewmodel.EndCommand();
+                Refresh();
+            }
         }
 
         #endregion
