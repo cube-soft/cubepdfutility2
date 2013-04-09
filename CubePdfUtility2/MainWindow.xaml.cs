@@ -423,6 +423,7 @@ namespace CubePdfUtility
                     else indices.Insert(0, index);
                 }
 
+                _viewmodel.BeginCommand();
                 foreach (var oldindex in indices)
                 {
                     if (oldindex < 0) continue;
@@ -432,7 +433,11 @@ namespace CubePdfUtility
                 }
             }
             catch (Exception err) { Debug.WriteLine(err); }
-            finally { Refresh(); }
+            finally
+            {
+                _viewmodel.EndCommand();
+                Refresh();
+            }
         }
 
         #endregion
