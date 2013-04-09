@@ -242,7 +242,6 @@ namespace CubePdfUtility
                 if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
                 _viewmodel.Insert(index, dialog.FileName);
             }
-            catch (CubePdf.Wpf.MultipleLoadException err) { MessageBox.Show(err.Message); }
             catch (Exception err) { Debug.WriteLine(err); }
             finally { Refresh(); }
         }
