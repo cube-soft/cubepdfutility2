@@ -458,6 +458,7 @@ namespace CubePdfUtility
             {
                 var degree = int.Parse(e.Parameter as string);
                 var done = new System.Collections.ArrayList();
+                _viewmodel.BeginCommand();
                 while (this.Thumbnail.SelectedItems.Count > 0)
                 {
                     var index = _viewmodel.Items.IndexOf(Thumbnail.SelectedItems[0] as System.Drawing.Image);
@@ -467,7 +468,11 @@ namespace CubePdfUtility
                 foreach (var obj in done) Thumbnail.SelectedItems.Add(obj);
             }
             catch (Exception err) { Debug.WriteLine(err); }
-            finally { Refresh(); }
+            finally
+            {
+                _viewmodel.EndCommand();
+                Refresh();
+            }
         }
 
         #endregion
@@ -477,7 +482,8 @@ namespace CubePdfUtility
         /// Undo
         ///
         /// <summary>
-        /// 未実装
+        /// 直前の操作を元に戻します。
+        /// パラメータ (e.Parameter) は、常に null です。
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
@@ -485,13 +491,14 @@ namespace CubePdfUtility
 
         private void UndoCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            // TODO: implementation
-            e.CanExecute = false;
+            e.CanExecute = _viewmodel.History.Count > 0;
         }
 
         private void UndoCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            // TODO: implementation
+            try { _viewmodel.Undo(); }
+            catch (Exception err) { Debug.WriteLine(err); }
+            finally { Refresh(); }
         }
 
         #endregion
@@ -501,7 +508,8 @@ namespace CubePdfUtility
         /// Redo
         ///
         /// <summary>
-        /// 未実装
+        /// 直前に元に戻した操作を再実行します。
+        /// パラメータ (e.Parameter) は、常に null です。
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
@@ -509,13 +517,14 @@ namespace CubePdfUtility
 
         private void RedoCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            // TODO: implementation
-            e.CanExecute = false;
+            e.CanExecute = _viewmodel.UndoHistory.Count > 0;
         }
 
         private void RedoCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            // TODO: implementation
+            try { _viewmodel.Redo(); }
+            catch (Exception err) { Debug.WriteLine(err); }
+            finally { Refresh(); }
         }
 
         #endregion
