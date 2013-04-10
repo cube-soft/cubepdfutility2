@@ -35,7 +35,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Windows.Controls.Ribbon;
-using IWshRuntimeLibrary;
 
 namespace CubePdfUtility
 {
@@ -701,32 +700,20 @@ namespace CubePdfUtility
         /// 
         /// <summary>
         /// リボンアプリケーションが読み込まれた際に実行されます。
-        /// 
-        /// TODO: Recent フォルダで GetFiles メソッドを実行すると名前順に
-        /// 取得されてるみたいなので、日付順へと並び替える必要がある。
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
         private void RibbonApplicationMenu_Loaded(object sender, RoutedEventArgs e)
-        {
-            var folder = Environment.GetFolderPath(Environment.SpecialFolder.Recent);
-            var recents = System.IO.Directory.GetFiles(folder + "\\", "*.pdf.lnk");
-            int maxitems = 10;
-
-            for (int i = 0; i < Math.Min(maxitems, recents.Length); ++i)
+        {   
+            var recents = CubePdf.Data.SystemEnvironment.GetRecentFiles("*.pdf");
+            for (int i = 0; i < recents.Count; ++i)
             {
-                // .lnk ファイルから path を拾う
-                var shell = new IWshShell_Class();
-                var shortcut = shell.CreateShortcut(recents[i]) as IWshShortcut_Class;
-                if (shortcut == null) continue;
-
                 var gallery = new RibbonGalleryItem();
-                gallery.Content = String.Format("{0} {1}", i + 1, System.IO.Path.GetFileNameWithoutExtension(recents[i]));
-                gallery.Tag = shortcut.TargetPath;
+                gallery.Content = String.Format("{0} {1}", i + 1, System.IO.Path.GetFileName(recents[i]));
+                gallery.Tag = recents[i];
                 RecentFiles.Items.Add(gallery);
             }
         }
-
 
         /* ----------------------------------------------------------------- */
         ///

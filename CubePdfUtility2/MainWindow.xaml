@@ -140,6 +140,7 @@
                     <r:RibbonApplicationMenu.AuxiliaryPaneContent>
                         <r:RibbonGallery
                             x:Name="RecentGallery"
+                            MinColumnCount="1"
                             Command="Open"
                             CommandParameter="{Binding ElementName=RecentGallery, Path=SelectedItem, Converter={StaticResource ControlToTagConverter}}">
                             <r:RibbonGalleryCategory x:Name="RecentFiles" Header="最近開いたファイル"/>
