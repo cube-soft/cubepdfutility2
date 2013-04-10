@@ -418,12 +418,12 @@ namespace CubePdfUtility
                 foreach (var item in Thumbnail.SelectedItems)
                 {
                     var index = _viewmodel.Items.IndexOf(item as System.Drawing.Image);
-                    if (delta < 0) indices.Add(index);
-                    else indices.Insert(0, index);
+                    indices.Add(index);
                 }
 
                 _viewmodel.BeginCommand();
-                foreach (var oldindex in indices)
+                var sorted = (delta < 0) ? indices.OrderBy(i => i) : indices.OrderByDescending(i => i);
+                foreach (var oldindex in sorted)
                 {
                     if (oldindex < 0) continue;
                     var newindex = oldindex + delta;
@@ -732,6 +732,11 @@ namespace CubePdfUtility
         }
 
         #endregion
+
+        public CubePdf.Wpf.IListViewModel ViewModel
+        {
+            get { return _viewmodel; }
+        }
 
         #region Other Methods
 
