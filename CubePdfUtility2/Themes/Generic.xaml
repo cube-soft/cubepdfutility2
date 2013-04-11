@@ -11,11 +11,11 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate>
-                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" Background="{TemplateBinding Background}">
+                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Visible" Background="{TemplateBinding Background}">
                         <WrapPanel Margin="3" IsItemsHost="True"
                             ItemWidth="{Binding (ListView.View).ItemWidth, RelativeSource={RelativeSource AncestorType=ListView}}"
                             MinWidth="{Binding ItemWidth, RelativeSource={RelativeSource Self}}"
-                            Width="{Binding ActualWidth,RelativeSource={RelativeSource AncestorType=ScrollContentPresenter}}">
+                            Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ScrollContentPresenter}}">
                         </WrapPanel>
                     </ScrollViewer>
                 </ControlTemplate>
