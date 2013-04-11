@@ -33,7 +33,7 @@
         <cube:ControlToTagConverter x:Key="ControlToTagConverter"/>
 
         <ContextMenu x:Key="EditMenu">
-            <MenuItem Header="プレビュー" Click="Previewing"/>
+            <MenuItem Header="プレビュー" Click="OnPreviewing"/>
 
             <Separator/>
 
@@ -107,7 +107,7 @@
             <r:Ribbon.ApplicationMenu>
                 <r:RibbonApplicationMenu
                     SmallImageSource="Images\SmallIcons\Menu.png"
-                    Loaded="RibbonApplicationMenu_Loaded">
+                    Loaded="ApplicationMenu_Loaded">
 
                     <r:RibbonApplicationMenuItem Header="開く"
                         ImageSource="Images\LargeIcons\Open.png"
@@ -350,7 +350,7 @@
             VirtualizingStackPanel.IsVirtualizing="True"
             SelectionMode="Extended"
             Background="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}"
-            MouseDoubleClick="Previewing">
+            MouseDoubleClick="OnPreviewing">
 
             <ListView.View>
                 <local:ImageView x:Name="ThumbnailImageView" ItemWidth="150"/>

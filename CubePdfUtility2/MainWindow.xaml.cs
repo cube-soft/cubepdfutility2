@@ -65,6 +65,43 @@ namespace CubePdfUtility
 
         #endregion
 
+        #region Properties
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// ProductName
+        /// 
+        /// <summary>
+        /// このアプリケーションの製品名を取得します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        public string ProductName
+        {
+            get
+            {
+                var asm = Attribute.GetCustomAttribute(System.Reflection.Assembly.GetExecutingAssembly(),
+                    typeof(System.Reflection.AssemblyProductAttribute)) as System.Reflection.AssemblyProductAttribute;
+                return (asm != null) ? asm.Product : string.Empty;
+            }
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// ViewModel
+        /// 
+        /// <summary>
+        /// このウィンドウに関連付けられている ViewModel を取得します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        public CubePdf.Wpf.IListViewModel ViewModel
+        {
+            get { return _viewmodel; }
+        }
+
+        #endregion
+
         #region Commands
 
         /* ----------------------------------------------------------------- */
@@ -90,6 +127,8 @@ namespace CubePdfUtility
         {
             try
             {
+                if (!String.IsNullOrEmpty(_viewmodel.FilePath)) CloseCommand_Executed(sender, e);
+
                 var path = e.Parameter as string;
                 if (path == null)
                 {
@@ -132,13 +171,21 @@ namespace CubePdfUtility
         {
             try
             {
+                if (_viewmodel.IsModified)
+                {
+                    if (MessageBox.Show(Properties.Resources.IsOverwrite, ProductName,
+                        MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
+                    {
+                        SaveCommand_Executed(sender, e);
+                    }
+                }
                 _viewmodel.Close();
             }
             catch (Exception err) { Debug.WriteLine(err); }
             finally
             {
                 Refresh();
-                var name = e.Parameter as string;
+                var name = (e != null) ? e.Parameter as string : null;
                 if (name != null && name.IndexOf("Exit") >= 0) Application.Current.Shutdown();
             }
         }
@@ -696,23 +743,17 @@ namespace CubePdfUtility
 
         /* ----------------------------------------------------------------- */
         ///
-        /// RibbonApplicationMenu_Loaded
+        /// OnClosing
         /// 
         /// <summary>
-        /// リボンアプリケーションが読み込まれた際に実行されます。
+        /// アプリケーションの終了時に実行されます。
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
-        private void RibbonApplicationMenu_Loaded(object sender, RoutedEventArgs e)
-        {   
-            var recents = CubePdf.Data.SystemEnvironment.GetRecentFiles("*.pdf");
-            for (int i = 0; i < recents.Count; ++i)
-            {
-                var gallery = new RibbonGalleryItem();
-                gallery.Content = String.Format("{0} {1}", i + 1, System.IO.Path.GetFileName(recents[i]));
-                gallery.Tag = recents[i];
-                RecentFiles.Items.Add(gallery);
-            }
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        {
+            CloseCommand_Executed(this, null);
+            base.OnClosing(e);
         }
 
         /* ----------------------------------------------------------------- */
@@ -724,19 +765,35 @@ namespace CubePdfUtility
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
-        private void Previewing(object sender, EventArgs e)
+        private void OnPreviewing(object sender, EventArgs e)
         {
             if (Thumbnail == null || Thumbnail.SelectedIndex == -1) return;
             var dialog = new PreviewWindow(_viewmodel, Thumbnail.SelectedIndex);
             dialog.ShowDialog();
         }
 
-        #endregion
-
-        public CubePdf.Wpf.IListViewModel ViewModel
-        {
-            get { return _viewmodel; }
+        /* ----------------------------------------------------------------- */
+        ///
+        /// ApplicationMenu_Loaded
+        /// 
+        /// <summary>
+        /// リボンアプリケーションが読み込まれた際に実行されます。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void ApplicationMenu_Loaded(object sender, RoutedEventArgs e)
+        {   
+            var recents = CubePdf.Data.SystemEnvironment.GetRecentFiles("*.pdf");
+            for (int i = 0; i < recents.Count; ++i)
+            {
+                var gallery = new RibbonGalleryItem();
+                gallery.Content = String.Format("{0} {1}", i + 1, System.IO.Path.GetFileName(recents[i]));
+                gallery.Tag = recents[i];
+                RecentFiles.Items.Add(gallery);
+            }
         }
+
+        #endregion
 
         #region Other Methods
 
@@ -755,14 +812,15 @@ namespace CubePdfUtility
         {
             if (_viewmodel != null && _viewmodel.ItemCount > 0)
             {
-                this.Title = String.Format("{0} - CubePDF Utility", System.IO.Path.GetFileName(_viewmodel.FilePath));
-                this.PageCountStatusBarItem.Content = String.Format("{0} ページ", _viewmodel.ItemCount);
-                this.Thumbnail.Items.Refresh();
+                var modified = _viewmodel.IsModified ? "*" : "";
+                Title = String.Format("{0}{1} - {2}", System.IO.Path.GetFileName(_viewmodel.FilePath), modified, ProductName);
+                PageCountStatusBarItem.Content = String.Format("{0} ページ", _viewmodel.ItemCount);
+                Thumbnail.Items.Refresh();
             }
             else
             {
-                this.Title = "CubePDF Utility";
-                this.PageCountStatusBarItem.Content = string.Empty;
+                Title = ProductName;
+                if (PageCountStatusBarItem != null) PageCountStatusBarItem.Content = string.Empty;
             }
         }
 
