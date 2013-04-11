@@ -349,7 +349,8 @@
             VirtualizingStackPanel.VirtualizationMode="Recycling"
             VirtualizingStackPanel.IsVirtualizing="True"
             SelectionMode="Extended"
-            Background="DimGray" MouseDoubleClick="Previewing">
+            Background="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}"
+            MouseDoubleClick="Previewing">
 
             <ListView.View>
                 <local:ImageView x:Name="ThumbnailImageView" ItemWidth="150"/>
