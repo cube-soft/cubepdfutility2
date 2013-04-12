@@ -31,7 +31,7 @@
             <Setter.Value>
                 <DataTemplate>
                     <Border Background="White">
-                        <Image Source="{Binding Converter={StaticResource ImageConverter}}"/>
+                        <Image Source="{Binding Path=Image, Converter={StaticResource ImageConverter}}"/>
                     </Border>
                 </DataTemplate>
             </Setter.Value>
