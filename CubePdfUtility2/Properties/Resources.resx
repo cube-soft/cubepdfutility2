@@ -120,6 +120,9 @@
   <data name="IsOverwrite" xml:space="preserve">
     <value>PDFの内容が編集されています。上書き保存しますか？</value>
   </data>
+  <data name="PasswordPrompt" xml:space="preserve">
+    <value>「{0}」はパスワードで保護されています。パスワードを入力して下さい。</value>
+  </data>
   <data name="PdfFilter" xml:space="preserve">
     <value>PDF ファイル(*.pdf)|*.pdf|すべてのファイル(*.*)|*.*</value>
   </data>

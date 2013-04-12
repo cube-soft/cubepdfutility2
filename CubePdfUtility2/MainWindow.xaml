@@ -362,6 +362,7 @@
         </ListView>
 
         <StatusBar Grid.Row="2" Height="23">
+            <Image x:Name="LockStatusBarItem" Source="Images\SmallIcons\Lock.png" Visibility="Collapsed"/>
             <StatusBarItem Name="PageCountStatusBarItem" Content=""/>
         </StatusBar>
     </Grid>

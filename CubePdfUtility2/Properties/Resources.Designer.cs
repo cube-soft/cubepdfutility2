@@ -70,6 +70,15 @@ namespace CubePdfUtility.Properties {
         }
         
         /// <summary>
+        ///   「{0}」はパスワードで保護されています。パスワードを入力して下さい。 に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string PasswordPrompt {
+            get {
+                return ResourceManager.GetString("PasswordPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   PDF ファイル(*.pdf)|*.pdf|すべてのファイル(*.*)|*.* に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string PdfFilter {

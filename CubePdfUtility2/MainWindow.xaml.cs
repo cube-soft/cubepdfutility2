@@ -127,9 +127,8 @@ namespace CubePdfUtility
         {
             try
             {
-                if (!String.IsNullOrEmpty(_viewmodel.FilePath)) CloseCommand_Executed(sender, e);
-
                 var path = e.Parameter as string;
+                if (!String.IsNullOrEmpty(_viewmodel.FilePath)) CloseCommand_Executed(sender, e);
                 if (path == null)
                 {
                     var dialog = new System.Windows.Forms.OpenFileDialog();
@@ -138,9 +137,9 @@ namespace CubePdfUtility
                     if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
                     path = dialog.FileName;
                 }
-                _viewmodel.Open(path);
+                Open(path, "");
             }
-            catch (Exception err) { Debug.WriteLine(err); }
+            catch (Exception err) { Debug.WriteLine(err.GetType().ToString()); }
             finally { Refresh(); }
         }
 
@@ -799,6 +798,33 @@ namespace CubePdfUtility
 
         /* ----------------------------------------------------------------- */
         ///
+        /// Open
+        /// 
+        /// <summary>
+        /// 指定されたパスの PDF ファイルを開きます。パスワードが設定されて
+        /// いる場合は、パスワードを入力するためのダイアログを表示して
+        /// ユーザに入力してもらいます。入力されたパスワードが間違っていた
+        /// 場合は、正しいパスワードが入力されるか、またはキャンセルボタンが
+        /// 押下されるまでダイアログを表示し続けます。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void Open(string path, string password)
+        {
+            try
+            {
+                _viewmodel.Open(path, password);
+            }
+            catch (CubePdf.Data.EncryptionException /* err */)
+            {
+                var dialog = new PasswordWindow(path);
+                dialog.Owner = this;
+                if (dialog.ShowDialog() == true) Open(path, dialog.Password);
+            }
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
         /// Refresh
         ///
         /// <summary>
@@ -812,15 +838,22 @@ namespace CubePdfUtility
         {
             if (_viewmodel != null && _viewmodel.ItemCount > 0)
             {
-                var modified = _viewmodel.IsModified ? "*" : "";
-                Title = String.Format("{0}{1} - {2}", System.IO.Path.GetFileName(_viewmodel.FilePath), modified, ProductName);
+                var restricted = (_viewmodel.EncryptionStatus == CubePdf.Data.EncryptionStatus.RestrictedAccess);
+
+                var filename = System.IO.Path.GetFileName(_viewmodel.FilePath);
+                var rstr = restricted ? "（保護）" : "";
+                var mstr = _viewmodel.IsModified ? "*" : "";
+                Title = String.Format("{0}{1}{2} - {3}", filename, mstr, rstr, ProductName);
+
                 PageCountStatusBarItem.Content = String.Format("{0} ページ", _viewmodel.ItemCount);
+                LockStatusBarItem.Visibility = restricted ? Visibility.Visible : Visibility.Collapsed;
                 Thumbnail.Items.Refresh();
             }
             else
             {
                 Title = ProductName;
                 if (PageCountStatusBarItem != null) PageCountStatusBarItem.Content = string.Empty;
+                if (LockStatusBarItem != null) LockStatusBarItem.Visibility = Visibility.Collapsed;
             }
         }
 
