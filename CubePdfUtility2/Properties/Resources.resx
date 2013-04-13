@@ -123,6 +123,9 @@
   <data name="PasswordPrompt" xml:space="preserve">
     <value>「{0}」はパスワードで保護されています。パスワードを入力して下さい。</value>
   </data>
+  <data name="PdfExtension" xml:space="preserve">
+    <value>.pdf</value>
+  </data>
   <data name="PdfFilter" xml:space="preserve">
     <value>PDF ファイル(*.pdf)|*.pdf|すべてのファイル(*.*)|*.*</value>
   </data>

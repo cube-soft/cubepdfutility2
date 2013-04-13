@@ -5,7 +5,9 @@
     xmlns:r="clr-namespace:Microsoft.Windows.Controls.Ribbon;assembly=RibbonControlsLibrary"
     xmlns:cube="clr-namespace:CubePdf.Wpf;assembly=CubePdf.Wpf"
     xmlns:local="clr-namespace:CubePdfUtility"
-    x:Name="RibbonWindow" Title="CubePDF Utility" Width="800" Height="600" Icon="/CubePdfUtility;component/app.ico" ResizeMode="CanResizeWithGrip">
+    x:Name="RibbonWindow" Title="CubePDF Utility"
+    Width="800" Height="600" Icon="/CubePdfUtility;component/app.ico"
+    AllowDrop="True" ResizeMode="CanResizeWithGrip">
 
     <Window.CommandBindings>
         <CommandBinding Command="Open"      CanExecute="OpenCommand_CanExecute"      Executed="OpenCommand_Executed"/>
@@ -33,7 +35,7 @@
         <cube:ControlToTagConverter x:Key="ControlToTagConverter"/>
 
         <ContextMenu x:Key="EditMenu">
-            <MenuItem Header="プレビュー" Click="OnPreviewing"/>
+            <MenuItem Header="プレビュー" Click="OnPreview"/>
 
             <Separator/>
 
@@ -350,7 +352,7 @@
             VirtualizingStackPanel.IsVirtualizing="True"
             SelectionMode="Extended"
             Background="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}"
-            MouseDoubleClick="OnPreviewing">
+            MouseDoubleClick="OnPreview">
 
             <ListView.View>
                 <local:ImageView x:Name="ThumbnailImageView" ItemWidth="150"/>

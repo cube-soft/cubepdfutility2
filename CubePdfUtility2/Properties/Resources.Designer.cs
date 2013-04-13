@@ -79,6 +79,15 @@ namespace CubePdfUtility.Properties {
         }
         
         /// <summary>
+        ///   .pdf に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string PdfExtension {
+            get {
+                return ResourceManager.GetString("PdfExtension", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   PDF ファイル(*.pdf)|*.pdf|すべてのファイル(*.*)|*.* に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string PdfFilter {

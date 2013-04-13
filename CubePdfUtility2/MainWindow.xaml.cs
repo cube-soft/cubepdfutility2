@@ -757,14 +757,66 @@ namespace CubePdfUtility
 
         /* ----------------------------------------------------------------- */
         ///
-        /// Previewing
+        /// OnPreviewDragOver
+        ///
+        /// <summary>
+        /// ウィンドウに何らかの項目がドラッグされた時に実行されるイベント
+        /// ハンドラです。PDF ファイルの場合は受け入れる（開く）事を通知
+        /// します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        protected override void OnPreviewDragOver(DragEventArgs e)
+        {
+            base.OnPreviewDragOver(e);
+
+            e.Handled = true;
+            foreach (var file in e.Data.GetData(DataFormats.FileDrop) as string[])
+            {
+                if (System.IO.Path.GetExtension(file) == Properties.Resources.PdfExtension)
+                {
+                    e.Effects = DragDropEffects.All;
+                    return;
+                }
+            }
+            e.Effects = DragDropEffects.None;
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// OnDrop
+        ///
+        /// <summary>
+        /// ウィンドウにドロップされた時に実行されるイベントハンドラです。
+        /// PDF ファイルの場合は、該当ファイルを開きます。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        protected override void OnDrop(DragEventArgs e)
+        {
+            base.OnDrop(e);
+
+            foreach (var file in e.Data.GetData(DataFormats.FileDrop) as string[])
+            {
+                if (System.IO.Path.GetExtension(file) == Properties.Resources.PdfExtension)
+                {
+                    Open(file, "");
+                    e.Handled = true;
+                    return;
+                }
+            }
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// OnPreview
         /// 
         /// <summary>
         /// プレビュー画面を開きます。
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
-        private void OnPreviewing(object sender, EventArgs e)
+        private void OnPreview(object sender, EventArgs e)
         {
             if (Thumbnail == null || Thumbnail.SelectedIndex == -1) return;
             var dialog = new PreviewWindow(_viewmodel, Thumbnail.SelectedIndex);
