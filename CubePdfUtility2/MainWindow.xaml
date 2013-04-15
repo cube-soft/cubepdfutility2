@@ -1,10 +1,13 @@
 ﻿<r:RibbonWindow x:Class="CubePdfUtility.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
     xmlns:r="clr-namespace:Microsoft.Windows.Controls.Ribbon;assembly=RibbonControlsLibrary"
     xmlns:cube="clr-namespace:CubePdf.Wpf;assembly=CubePdf.Wpf"
     xmlns:local="clr-namespace:CubePdfUtility"
-    x:Name="RibbonWindow" Title="CubePDF Utility" Width="800" Height="600" Icon="/CubePdfUtility;component/app.ico" ResizeMode="CanResizeWithGrip">
+    x:Name="RibbonWindow" Title="CubePDF Utility"
+    Width="800" Height="600" Icon="/CubePdfUtility;component/app.ico"
+    AllowDrop="True" ResizeMode="CanResizeWithGrip">
 
     <Window.CommandBindings>
         <CommandBinding Command="Open"      CanExecute="OpenCommand_CanExecute"      Executed="OpenCommand_Executed"/>
@@ -29,9 +32,10 @@
     </Window.CommandBindings>
     
     <Window.Resources>
+        <cube:ControlToTagConverter x:Key="ControlToTagConverter"/>
+
         <ContextMenu x:Key="EditMenu">
-            <MenuItem Header="プレビュー"
-                Click="Previewing"/>
+            <MenuItem Header="プレビュー" Click="OnPreview"/>
 
             <Separator/>
 
@@ -39,10 +43,8 @@
                 <MenuItem Header="選択位置に挿入"
                     Command="{x:Static cube:ListViewCommands.Insert}"
                     CommandParameter="{Binding PlacementTarget.SelectedIndex, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"/>
-
                 <MenuItem Header="先頭に挿入"
                     Command="{x:Static cube:ListViewCommands.Insert}"/>
-
                 <MenuItem Header="末尾に挿入"
                     Command="{x:Static cube:ListViewCommands.Insert}"
                     CommandParameter="{Binding PlacementTarget.Items.Count, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"/>
@@ -52,14 +54,11 @@
                 <MenuItem Header="選択ページを単一ファイルとして抽出"
                     Command="{x:Static cube:ListViewCommands.Extract}"
                     CommandParameter="{Binding PlacementTarget.SelectedItems, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"/>
-
                 <MenuItem Header="選択ページを個別ファイルとして抽出"
                     Command="{x:Static cube:ListViewCommands.Split}"
                     CommandParameter="{Binding Placement.SelectedItems, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"/>
-
                 <MenuItem Header="全てのページを単一ファイルとして抽出"
                     Command="{x:Static cube:ListViewCommands.Extract}"/>
-
                 <MenuItem Header="全てのページを個別ファイルとして抽出"
                     Command="{x:Static cube:ListViewCommands.Split}"/>
             </MenuItem>
@@ -68,7 +67,6 @@
                 <MenuItem Header="選択ページを削除"
                     Command="{x:Static cube:ListViewCommands.Remove}"
                     CommandParameter="{Binding PlacementTarget.SelectedItems, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"/>
-
                 <MenuItem Header="範囲を指定して削除"
                     Command="{x:Static cube:ListViewCommands.Remove}"/>
             </MenuItem>
@@ -78,7 +76,6 @@
             <MenuItem Header="前へ"
                 Command="{x:Static cube:ListViewCommands.Move}"
                 CommandParameter="-1"/>
-
             <MenuItem Header="後へ"
                 Command="{x:Static cube:ListViewCommands.Move}"
                 CommandParameter="1"/>
@@ -88,7 +85,6 @@
             <MenuItem Header="左90度に回転"
                 Command="{x:Static cube:ListViewCommands.Rotate}"
                 CommandParameter="-90"/>
-
             <MenuItem Header="右90度に回転"
                 Command="{x:Static cube:ListViewCommands.Rotate}"
                 CommandParameter="90"/>
@@ -97,7 +93,6 @@
 
             <MenuItem Header="文書プロパティ"
                 Command="{x:Static cube:ListViewCommands.Metadata}"/>
-
             <MenuItem Header="セキュリティ"
                 Command="{x:Static cube:ListViewCommands.Encryption}"/>
         </ContextMenu>
@@ -112,8 +107,15 @@
 
         <r:Ribbon>
             <r:Ribbon.ApplicationMenu>
+<<<<<<< HEAD
                 <r:RibbonApplicationMenu SmallImageSource="Images\SmallIcons\Menu.png"
                                          Loaded="RibbonApplicationMenu_Loaded">
+=======
+                <r:RibbonApplicationMenu
+                    SmallImageSource="Images\SmallIcons\Menu.png"
+                    Loaded="ApplicationMenu_Loaded">
+
+>>>>>>> origin/develop
                     <r:RibbonApplicationMenuItem Header="開く"
                         ImageSource="Images\LargeIcons\Open.png"
                         Command="Open">
@@ -144,13 +146,14 @@
                         CommandParameter="Exit"/>
 
                     <r:RibbonApplicationMenu.AuxiliaryPaneContent>
-                        <r:RibbonGallery>
-                            <r:RibbonGalleryCategory Name="RecentFiles" Header="最近開いたファイル">
-                            </r:RibbonGalleryCategory>
+<r:RibbonGallery
+                            MinColumnCount="1"
+                            Command="Open"
+                            CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=SelectedItem, Converter={StaticResource ControlToTagConverter}}">
+                            <r:RibbonGalleryCategory x:Name="RecentFiles" Header="最近開いたファイル"/>
                         </r:RibbonGallery>
                     </r:RibbonApplicationMenu.AuxiliaryPaneContent>
-
-                </r:RibbonApplicationMenu>
+</r:RibbonApplicationMenu>
             </r:Ribbon.ApplicationMenu>
             
             <r:RibbonTab Header="編集">
@@ -353,13 +356,20 @@
             VirtualizingStackPanel.VirtualizationMode="Recycling"
             VirtualizingStackPanel.IsVirtualizing="True"
             SelectionMode="Extended"
-            Background="DimGray" MouseDoubleClick="Previewing">
+            Background="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}"
+            MouseDoubleClick="OnPreview">
+
             <ListView.View>
                 <local:ImageView x:Name="ThumbnailImageView" ItemWidth="150"/>
             </ListView.View>
+
+            <i:Interaction.Behaviors>
+                <cube:ListViewDragBehavior ViewModel="{Binding ElementName=RibbonWindow, Path=ViewModel}"/>
+            </i:Interaction.Behaviors>
         </ListView>
 
         <StatusBar Grid.Row="2" Height="23">
+            <Image x:Name="LockStatusBarItem" Source="Images\SmallIcons\Lock.png" Visibility="Collapsed"/>
             <StatusBarItem Name="PageCountStatusBarItem" Content=""/>
         </StatusBar>
     </Grid>

@@ -61,6 +61,33 @@ namespace CubePdfUtility.Properties {
         }
         
         /// <summary>
+        ///   PDFの内容が編集されています。上書き保存しますか？ に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string IsOverwrite {
+            get {
+                return ResourceManager.GetString("IsOverwrite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   「{0}」はパスワードで保護されています。パスワードを入力して下さい。 に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string PasswordPrompt {
+            get {
+                return ResourceManager.GetString("PasswordPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   .pdf に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string PdfExtension {
+            get {
+                return ResourceManager.GetString("PdfExtension", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   PDF ファイル(*.pdf)|*.pdf|すべてのファイル(*.*)|*.* に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string PdfFilter {
