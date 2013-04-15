@@ -142,10 +142,10 @@
 
                     <r:RibbonApplicationMenu.AuxiliaryPaneContent>
                         <r:RibbonGallery
-                            MinColumnCount="1"
+                            MaxColumnCount="1"
                             Command="Open"
                             CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=SelectedItem, Converter={StaticResource ControlToTagConverter}}">
-                            <r:RibbonGalleryCategory x:Name="RecentFiles" Header="最近開いたファイル"/>
+                            <r:RibbonGalleryCategory x:Name="RecentFilesGallery" Header="最近開いたファイル"/>
                         </r:RibbonGallery>
                     </r:RibbonApplicationMenu.AuxiliaryPaneContent>
                 </r:RibbonApplicationMenu>
@@ -173,15 +173,53 @@
                             Command="SaveAs"/>
                     </r:RibbonSplitButton>
 
-                    <r:RibbonButton Label="元に戻す"
+                    <r:RibbonSplitButton Label="元に戻す"
+                        x:Name="UndoButton"
                         SmallImageSource="Images\SmallIcons\Undo.png"
                         LargeImageSource="Images\LargeIcons\Undo.png"
-                        Command="Undo"/>
+                        Command="Undo">
 
-                    <r:RibbonButton Label="やり直し"
+                        <r:RibbonGallery
+                            MaxColumnCount="1"
+                            Command="Undo"
+                            CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=SelectedItem}">
+
+                            <r:RibbonGalleryCategory Header="一度に元に戻す"
+                                x:Name="HistoryGallery"
+                                ItemsSource="{Binding ElementName=RibbonWindow, Path=ViewModel.History}">
+
+                                <r:RibbonGalleryCategory.ItemTemplate>
+                                    <DataTemplate>
+                                        <r:RibbonGalleryItem Content="{Binding Text}"/>
+                                    </DataTemplate>
+                                </r:RibbonGalleryCategory.ItemTemplate>
+                            </r:RibbonGalleryCategory>
+                        </r:RibbonGallery>
+                    </r:RibbonSplitButton>
+
+                    <r:RibbonSplitButton Label="やり直し"
+                        x:Name="RedoButton"
                         SmallImageSource="Images\SmallIcons\Redo.png"
                         LargeImageSource="Images\LargeIcons\Redo.png"
-                        Command="Redo"/>
+                        Command="Redo">
+
+                        <r:RibbonGallery
+                            MaxColumnCount="1"
+                            Command="Redo"
+                            CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=SelectedItem}">
+
+                            <r:RibbonGalleryCategory Header="一度にやり直し"
+                                x:Name="UndoHistoryGallery"
+                                ItemsSource="{Binding ElementName=RibbonWindow, Path=ViewModel.UndoHistory}">
+
+                                <r:RibbonGalleryCategory.ItemTemplate>
+                                    <DataTemplate>
+                                        <r:RibbonGalleryItem Content="{Binding Text}"/>
+                                    </DataTemplate>
+                                </r:RibbonGalleryCategory.ItemTemplate>
+                            </r:RibbonGalleryCategory>
+                        </r:RibbonGallery>
+                    </r:RibbonSplitButton>
 
                     <r:RibbonSplitButton Label="選択"
                         x:Name="SelectButton"
@@ -213,15 +251,18 @@
                         CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedIndex}">
 
                         <r:RibbonMenuItem Header="選択位置に挿入"
+                            x:Name="InsertSelect"
                             ImageSource="Images\SmallIcons\Insert.png"
                             Command="{x:Static cube:ListViewCommands.Insert}"
                             CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedIndex}"/>
 
                         <r:RibbonMenuItem Header="先頭に挿入"
+                            x:Name="InsertHead"
                             ImageSource="Images\SmallIcons\Insert.png"
                             Command="{x:Static cube:ListViewCommands.Insert}"/>
 
                         <r:RibbonMenuItem Header="末尾に挿入"
+                            x:Name="InsertTail"
                             ImageSource="Images\SmallIcons\Insert.png"
                             Command="{x:Static cube:ListViewCommands.Insert}"
                             CommandParameter="{Binding ElementName=Thumbnail, Path=Items.Count}"/>
@@ -261,11 +302,13 @@
                         CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedItems}">
 
                         <r:RibbonMenuItem Header="選択ページを削除"
+                            x:Name="RemoveSelect"
                             ImageSource="Images\SmallIcons\Delete.png"
                             Command="{x:Static cube:ListViewCommands.Remove}"
                             CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedItems}"/>
 
                         <r:RibbonMenuItem Header="範囲を指定して削除"
+                            x:Name="RemoveRange"
                             ImageSource="Images\SmallIcons\Delete.png"
                             Command="{x:Static cube:ListViewCommands.Remove}"/>
                     </r:RibbonSplitButton>
@@ -273,12 +316,14 @@
                 
                 <r:RibbonGroup Header="順序">
                     <r:RibbonButton Label="前へ"
+                        x:Name="ForwardButton"
                         SmallImageSource="Images\SmallIcons\Back.png"
                         LargeImageSource="Images\LargeIcons\Back.png"
                         Command="{x:Static cube:ListViewCommands.Move}"
                         CommandParameter="-1"/>
 
                     <r:RibbonButton Label="後へ"
+                        x:Name="BackButton"
                         SmallImageSource="Images\SmallIcons\Forward.png"
                         LargeImageSource="Images\LargeIcons\Forward.png"
                         Command="{x:Static cube:ListViewCommands.Move}"
@@ -287,12 +332,14 @@
                 
                 <r:RibbonGroup Header="回転">
                     <r:RibbonButton Label="左90度"
+                        x:Name="RotateLeftButton"
                         SmallImageSource="Images\SmallIcons\RotateLeft.png"
                         LargeImageSource="Images\LargeIcons\RotateLeft.png"
                         Command="{x:Static cube:ListViewCommands.Rotate}"
                         CommandParameter="-90"/>
 
                     <r:RibbonButton Label="右90度"
+                        x:Name="RotateRightButton"
                         SmallImageSource="Images\SmallIcons\RotateRight.png"
                         LargeImageSource="Images\LargeIcons\RotateRight.png"
                         Command="{x:Static cube:ListViewCommands.Rotate}"
@@ -339,6 +386,7 @@
         </r:Ribbon>
 
         <ListView Grid.Row="1" x:Name="Thumbnail"
+            ItemsSource="{Binding ElementName=RibbonWindow, Path=ViewModel.Items}"
             ContextMenu="{DynamicResource EditMenu}"
             VirtualizingStackPanel.VirtualizationMode="Recycling"
             VirtualizingStackPanel.IsVirtualizing="True"

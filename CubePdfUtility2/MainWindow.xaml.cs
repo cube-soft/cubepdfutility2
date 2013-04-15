@@ -60,7 +60,6 @@ namespace CubePdfUtility
 
             // Insert code required on object creation below this point.
             _viewmodel.ItemWidth = (int)ThumbnailImageView.ItemWidth;
-            Thumbnail.DataContext = _viewmodel.Items;
         }
 
         #endregion
@@ -281,11 +280,15 @@ namespace CubePdfUtility
             try
             {
                 var index = (e.Parameter != null) ? Math.Min((int)e.Parameter + 1, _viewmodel.ItemCount) : 0;
+                var obj = (index == 0) ? InsertHead.Header
+                    : (index == _viewmodel.ItemCount) ? InsertTail.Header
+                    : InsertSelect.Header;
                 var dialog = new System.Windows.Forms.OpenFileDialog();
                 dialog.Filter = Properties.Resources.PdfFilter;
                 dialog.CheckFileExists = true;
                 if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
                 _viewmodel.Insert(index, dialog.FileName);
+                _viewmodel.History[0].Text = obj as string;
             }
             catch (Exception err) { Debug.WriteLine(err); }
             finally { Refresh(); }
@@ -336,6 +339,9 @@ namespace CubePdfUtility
                     _viewmodel.Remove(items[index]);
                     items.RemoveAt(index);
                 }
+
+                var obj = (src == null) ? RemoveRange.Header : RemoveSelect.Header;
+                _viewmodel.History[0].Text = obj as string;
             }
             catch (Exception err) { Debug.WriteLine(err); }
             finally
@@ -476,6 +482,7 @@ namespace CubePdfUtility
                     if (newindex < 0 || newindex >= _viewmodel.ItemCount) continue;
                     _viewmodel.Move(oldindex, newindex);
                 }
+                _viewmodel.History[0].Text = (delta < 0) ? ForwardButton.Label : BackButton.Label;
             }
             catch (Exception err) { Debug.WriteLine(err); }
             finally
@@ -521,6 +528,7 @@ namespace CubePdfUtility
                     Thumbnail.SelectedItems.Remove(obj);
                 }
                 foreach (var obj in done) Thumbnail.SelectedItems.Add(obj);
+                _viewmodel.History[0].Text = (degree < 0) ? RotateLeftButton.Label : RotateRightButton.Label;
             }
             catch (Exception err) { Debug.WriteLine(err); }
             finally
@@ -547,11 +555,21 @@ namespace CubePdfUtility
         private void UndoCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = _viewmodel.History.Count > 0;
+            UndoButton.IsEnabled = e.CanExecute;
         }
 
         private void UndoCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            try { _viewmodel.Undo(); }
+            try
+            {
+                var count = (e.Parameter != null) ? HistoryGallery.Items.IndexOf(e.Parameter) + 1 : 1;
+                for (var i = 0; i < count; ++i)
+                {
+                    var text = _viewmodel.History[0].Text;
+                    _viewmodel.Undo();
+                    _viewmodel.UndoHistory[0].Text = text;
+                }
+            }
             catch (Exception err) { Debug.WriteLine(err); }
             finally { Refresh(); }
         }
@@ -573,11 +591,21 @@ namespace CubePdfUtility
         private void RedoCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = _viewmodel.UndoHistory.Count > 0;
+            RedoButton.IsEnabled = e.CanExecute;
         }
 
         private void RedoCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            try { _viewmodel.Redo(); }
+            try
+            {
+                var count = (e.Parameter != null) ? UndoHistoryGallery.Items.IndexOf(e.Parameter) + 1 : 1;
+                for (var i = 0; i < count; ++i)
+                {
+                    var text = _viewmodel.UndoHistory[0].Text;
+                    _viewmodel.Redo();
+                    _viewmodel.History[0].Text = text;
+                }
+            }
             catch (Exception err) { Debug.WriteLine(err); }
             finally { Refresh(); }
         }
@@ -847,7 +875,7 @@ namespace CubePdfUtility
                 var gallery = new RibbonGalleryItem();
                 gallery.Content = String.Format("{0} {1}", i + 1, System.IO.Path.GetFileName(recents[i]));
                 gallery.Tag = recents[i];
-                RecentFiles.Items.Add(gallery);
+                RecentFilesGallery.Items.Add(gallery);
             }
         }
 
@@ -907,6 +935,7 @@ namespace CubePdfUtility
                 PageCountStatusBarItem.Content = String.Format("{0} ページ", _viewmodel.ItemCount);
                 LockStatusBarItem.Visibility = restricted ? Visibility.Visible : Visibility.Collapsed;
                 Thumbnail.Items.Refresh();
+                Thumbnail.Focus();
             }
             else
             {
