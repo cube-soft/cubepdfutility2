@@ -333,15 +333,7 @@
                             </r:RibbonGalleryCategory>
                         </r:RibbonGallery>
                     </r:RibbonComboBox>
-                    <r:RibbonComboBox Label="モード" IsReadOnly="True" Margin="2">
-                        <r:RibbonGallery>
-                            <r:RibbonGalleryCategory>
-                                <r:RibbonGalleryItem Content="画質優先"/>
-                                <r:RibbonGalleryItem Content="省メモリー"/>
-                                <r:RibbonGalleryItem Content="枠線のみ"/>
-                            </r:RibbonGalleryCategory>
-                        </r:RibbonGallery>
-                    </r:RibbonComboBox>
+                    <r:RibbonCheckBox Label="枠線のみを表示" Margin="0,3,0,0"/>
                 </r:RibbonGroup>
             </r:RibbonTab>
         </r:Ribbon>

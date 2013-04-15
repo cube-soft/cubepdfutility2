@@ -770,8 +770,11 @@ namespace CubePdfUtility
         {
             base.OnPreviewDragOver(e);
 
+            var files = e.Data.GetData(DataFormats.FileDrop) as string[];
+            if (files == null) return;
+
             e.Handled = true;
-            foreach (var file in e.Data.GetData(DataFormats.FileDrop) as string[])
+            foreach (var file in files)
             {
                 if (System.IO.Path.GetExtension(file) == Properties.Resources.PdfExtension)
                 {
@@ -796,7 +799,10 @@ namespace CubePdfUtility
         {
             base.OnDrop(e);
 
-            foreach (var file in e.Data.GetData(DataFormats.FileDrop) as string[])
+            var files = e.Data.GetData(DataFormats.FileDrop) as string[];
+            if (files == null) return;
+
+            foreach (var file in files)
             {
                 if (System.IO.Path.GetExtension(file) == Properties.Resources.PdfExtension)
                 {
