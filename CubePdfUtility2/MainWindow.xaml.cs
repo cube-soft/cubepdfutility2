@@ -513,11 +513,12 @@ namespace CubePdfUtility
                 var degree = int.Parse(e.Parameter as string);
                 var done = new System.Collections.ArrayList();
                 _viewmodel.BeginCommand();
-                while (this.Thumbnail.SelectedItems.Count > 0)
+                while (Thumbnail.SelectedItems.Count > 0)
                 {
-                    var index = _viewmodel.IndexOf(Thumbnail.SelectedItems[0]);
-                    _viewmodel.RotateAt(index, degree);
-                    done.Add(_viewmodel.Items[index]);
+                    var obj = Thumbnail.SelectedItems[0];
+                    _viewmodel.Rotate(obj, degree);
+                    done.Add(obj);
+                    Thumbnail.SelectedItems.Remove(obj);
                 }
                 foreach (var obj in done) Thumbnail.SelectedItems.Add(obj);
             }
