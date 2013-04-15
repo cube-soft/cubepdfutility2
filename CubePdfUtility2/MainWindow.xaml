@@ -386,6 +386,7 @@
         </r:Ribbon>
 
         <ListView Grid.Row="1" x:Name="Thumbnail"
+            ItemsSource="{Binding ElementName=RibbonWindow, Path=ViewModel.Items}"
             ContextMenu="{DynamicResource EditMenu}"
             VirtualizingStackPanel.VirtualizationMode="Recycling"
             VirtualizingStackPanel.IsVirtualizing="True"

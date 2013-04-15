@@ -60,7 +60,6 @@ namespace CubePdfUtility
 
             // Insert code required on object creation below this point.
             _viewmodel.ItemWidth = (int)ThumbnailImageView.ItemWidth;
-            Thumbnail.DataContext = _viewmodel.Items;
         }
 
         #endregion
