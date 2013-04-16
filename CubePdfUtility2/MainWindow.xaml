@@ -29,6 +29,7 @@
 
         <CommandBinding Command="{x:Static local:MainWindow.Select}"   CanExecute="SelectCommand_CanExecute"    Executed="SelectCommand_Executed"/>
         <CommandBinding Command="{x:Static local:MainWindow.UnSelect}" CanExecute="UnSelectCommand_CanExecute"  Executed="UnSelectCommand_Executed"/>
+        <CommandBinding Command="{x:Static local:MainWindow.Version}"  CanExecute="VersionCommand_CanExecute"   Executed="VersionCommand_Executed"/>
     </Window.CommandBindings>
     
     <Window.Resources>
@@ -127,7 +128,8 @@
                     <r:RibbonSeparator />
 
                     <r:RibbonApplicationMenuItem Header="バージョン情報"
-                        ImageSource="Images\LargeIcons\Version.png"/>
+                        ImageSource="Images\LargeIcons\Version.png"
+                        Command="{x:Static local:MainWindow.Version}"/>
 
                     <r:RibbonSeparator />
 
