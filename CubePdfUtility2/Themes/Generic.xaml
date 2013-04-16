@@ -29,9 +29,12 @@
         <Setter Property="ContentTemplate">
             <Setter.Value>
                 <DataTemplate>
-                    <Border Background="White">
-                        <Image Source="{Binding Path=Image, Converter={StaticResource ImageConverter}}"/>
-                    </Border>
+                    <StackPanel Orientation="Vertical">
+                        <Border Background="White">
+                            <Image Source="{Binding Path=Image, Converter={StaticResource ImageConverter}}"/>
+                        </Border>
+                        <TextBlock Text="{Binding Path=Text}" HorizontalAlignment="Right" Foreground="White"/>
+                    </StackPanel>
                 </DataTemplate>
             </Setter.Value>
         </Setter>
