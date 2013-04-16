@@ -8,6 +8,12 @@
     </Window.Resources>
 
     <ScrollViewer x:Name="MainViewer" DockPanel.Dock="Bottom" Background="DimGray">
-        <Image Source="{Binding Converter={StaticResource ImageConverter}}" Stretch="UniformToFill" VerticalAlignment="Center" Margin="5"/>
+        <Button Click="OnClick">
+            <Button.Template>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Image Source="{Binding Converter={StaticResource ImageConverter}}" Stretch="UniformToFill" VerticalAlignment="Center" Margin="5"/>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
     </ScrollViewer>
 </Window>

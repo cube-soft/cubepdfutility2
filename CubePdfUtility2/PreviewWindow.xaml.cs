@@ -21,6 +21,7 @@
 using System;
 using System.Diagnostics;
 using System.Windows;
+using System.Windows.Input;
 
 namespace CubePdfUtility
 {
@@ -81,6 +82,20 @@ namespace CubePdfUtility
             base.OnClosed(e);
             if (_image != null) _image.Dispose();
             _image = null;
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// OnClick
+        ///
+        /// <summary>
+        /// プレビュー画面がクリックされた時に行う処理です。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void OnClick(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
 
         #region Variables
