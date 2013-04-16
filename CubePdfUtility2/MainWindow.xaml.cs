@@ -760,6 +760,34 @@ namespace CubePdfUtility
 
         #endregion
 
+        /* ----------------------------------------------------------------- */
+        ///
+        /// Version
+        ///
+        /// <summary>
+        /// CubePDF Utility のバージョン情報を確認するためのダイアログを
+        /// 表示します。
+        /// パラメータ (e.Parameter) は常に null です。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        #region Version
+
+        private void VersionCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        private void VersionCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var dialog = new VersionWindow();
+            dialog.Owner = this;
+            dialog.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
+            dialog.ShowDialog();
+        }
+
+        #endregion
+
         #endregion
 
         #region Event handlers
@@ -984,6 +1012,7 @@ namespace CubePdfUtility
         #region ICommand variables
         public static readonly ICommand Select   = new RoutedCommand("Select",   typeof(MainWindow));
         public static readonly ICommand UnSelect = new RoutedCommand("UnSelect", typeof(MainWindow));
+        public static readonly ICommand Version  = new RoutedCommand("Version",  typeof(MainWindow));
         #endregion
     }
 }
