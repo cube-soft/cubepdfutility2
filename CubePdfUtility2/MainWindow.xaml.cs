@@ -127,7 +127,7 @@ namespace CubePdfUtility
             try
             {
                 var path = e.Parameter as string;
-                if (!String.IsNullOrEmpty(_viewmodel.FilePath)) CloseCommand_Executed(sender, e);
+                if (!String.IsNullOrEmpty(_viewmodel.FilePath) && !CloseFile()) return;
                 if (path == null)
                 {
                     var dialog = new System.Windows.Forms.OpenFileDialog();
@@ -136,7 +136,7 @@ namespace CubePdfUtility
                     if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
                     path = dialog.FileName;
                 }
-                Open(path, "");
+                OpenFile(path, "");
             }
             catch (Exception err) { Debug.WriteLine(err.GetType().ToString()); }
             finally { Refresh(); }
@@ -169,22 +169,17 @@ namespace CubePdfUtility
         {
             try
             {
-                if (_viewmodel.IsModified)
-                {
-                    if (MessageBox.Show(Properties.Resources.IsOverwrite, ProductName,
-                        MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
-                    {
-                        SaveCommand_Executed(sender, e);
-                    }
-                }
-                _viewmodel.Close();
+                e.Handled = CloseFile();
             }
             catch (Exception err) { Debug.WriteLine(err); }
             finally
             {
                 Refresh();
-                var name = (e != null) ? e.Parameter as string : null;
-                if (name != null && name.IndexOf("Exit") >= 0) Application.Current.Shutdown();
+                if (e.Handled)
+                {
+                    var name = (e != null) ? e.Parameter as string : null;
+                    if (name != null && name.IndexOf("Exit") >= 0) Application.Current.Shutdown();
+                }
             }
         }
 
@@ -780,7 +775,8 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
-            CloseCommand_Executed(this, null);
+            var result = CloseFile();
+            e.Cancel = !result;
             base.OnClosing(e);
         }
 
@@ -835,7 +831,7 @@ namespace CubePdfUtility
             {
                 if (System.IO.Path.GetExtension(file) == Properties.Resources.PdfExtension)
                 {
-                    Open(file, "");
+                    OpenFile(file, "");
                     e.Handled = true;
                     return;
                 }
@@ -885,7 +881,7 @@ namespace CubePdfUtility
 
         /* ----------------------------------------------------------------- */
         ///
-        /// Open
+        /// OpenFile
         /// 
         /// <summary>
         /// 指定されたパスの PDF ファイルを開きます。パスワードが設定されて
@@ -896,7 +892,7 @@ namespace CubePdfUtility
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
-        private void Open(string path, string password)
+        private void OpenFile(string path, string password)
         {
             try
             {
@@ -906,8 +902,33 @@ namespace CubePdfUtility
             {
                 var dialog = new PasswordWindow(path);
                 dialog.Owner = this;
-                if (dialog.ShowDialog() == true) Open(path, dialog.Password);
+                if (dialog.ShowDialog() == true) OpenFile(path, dialog.Password);
             }
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// CloseFile
+        /// 
+        /// <summary>
+        /// PDF ファイルを閉じます。編集されていた場合は、ファイルを上書き
+        /// 保存するかどうかを尋ねるダイアログを表示します。キャンセル
+        /// ボタンが押下された場合は false を、それ以外のボタンが押下された
+        /// 場合は true が返ります。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private bool CloseFile()
+        {
+            if (_viewmodel.IsModified)
+            {
+                var result = MessageBox.Show(Properties.Resources.IsOverwrite, ProductName,
+                    MessageBoxButton.YesNoCancel, MessageBoxImage.Information);
+                if (result == MessageBoxResult.Cancel) return false;
+                if (result == MessageBoxResult.Yes) SaveCommand_Executed(this, null);
+            }
+            _viewmodel.Close();
+            return true;
         }
 
         /* ----------------------------------------------------------------- */
