@@ -346,7 +346,7 @@
                         CommandParameter="90"/>
                 </r:RibbonGroup>
 
-                <r:RibbonGroup Header="プロパティ">
+                <r:RibbonGroup Header="プロパティ" LargeImageSource="Images\LargeIcons\Property.png" SmallImageSource="Images\SmallIcons\Property.png">
                     <r:RibbonButton Label="文書プロパティ"
                         MaxWidth="64"
                         SmallImageSource="Images\SmallIcons\Property.png"
