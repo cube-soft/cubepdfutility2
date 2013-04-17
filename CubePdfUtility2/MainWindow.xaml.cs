@@ -199,8 +199,8 @@ namespace CubePdfUtility
 
         private void SaveCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            if (SaveButton != null) SaveButton.IsEnabled = _viewmodel.ItemCount > 0;
-            e.CanExecute = _viewmodel.ItemCount > 0;
+            if (SaveButton != null) SaveButton.IsEnabled = _viewmodel.PageCount > 0;
+            e.CanExecute = _viewmodel.PageCount > 0;
         }
 
         private void SaveCommand_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -230,7 +230,7 @@ namespace CubePdfUtility
 
         private void SaveAsCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = _viewmodel.ItemCount > 0;
+            e.CanExecute = _viewmodel.PageCount > 0;
         }
 
         private void SaveAsCommand_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -266,7 +266,7 @@ namespace CubePdfUtility
 
         private void InsertCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            this.InsertButton.IsEnabled = _viewmodel.ItemCount > 0;
+            this.InsertButton.IsEnabled = _viewmodel.PageCount > 0;
             e.CanExecute = (e.Parameter == null || (int)e.Parameter >= 0);
         }
 
@@ -274,9 +274,9 @@ namespace CubePdfUtility
         {
             try
             {
-                var index = (e.Parameter != null) ? Math.Min((int)e.Parameter + 1, _viewmodel.ItemCount) : 0;
+                var index = (e.Parameter != null) ? Math.Min((int)e.Parameter + 1, _viewmodel.PageCount) : 0;
                 var obj = (index == 0) ? InsertHead.Header
-                    : (index == _viewmodel.ItemCount) ? InsertTail.Header
+                    : (index == _viewmodel.PageCount) ? InsertTail.Header
                     : InsertSelect.Header;
                 var dialog = new System.Windows.Forms.OpenFileDialog();
                 dialog.Filter = Properties.Resources.PdfFilter;
@@ -307,7 +307,7 @@ namespace CubePdfUtility
 
         private void RemoveCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            this.RemoveButton.IsEnabled = _viewmodel.ItemCount > 0;
+            this.RemoveButton.IsEnabled = _viewmodel.PageCount > 0;
             var items = e.Parameter as IList;
             e.CanExecute = (items == null || items.Count > 0 && items.Count < Thumbnail.Items.Count);
         }
@@ -367,7 +367,7 @@ namespace CubePdfUtility
 
         private void ExtractCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            this.ExtractButton.IsEnabled = _viewmodel.ItemCount > 0;
+            this.ExtractButton.IsEnabled = _viewmodel.PageCount > 0;
             var items = e.Parameter as IList;
             if (items == null) items = _viewmodel.Items;
             e.CanExecute = items.Count > 0;
@@ -474,7 +474,7 @@ namespace CubePdfUtility
                 {
                     if (oldindex < 0) continue;
                     var newindex = oldindex + delta;
-                    if (newindex < 0 || newindex >= _viewmodel.ItemCount) continue;
+                    if (newindex < 0 || newindex >= _viewmodel.PageCount) continue;
                     _viewmodel.Move(oldindex, newindex);
                 }
                 _viewmodel.History[0].Text = (delta < 0) ? ForwardButton.Label : BackButton.Label;
@@ -624,7 +624,7 @@ namespace CubePdfUtility
 
         private void SelectCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            bool enabled = _viewmodel.ItemCount > 0;
+            bool enabled = _viewmodel.PageCount > 0;
             SelectButton.IsEnabled = enabled;
             e.CanExecute = enabled;
         }
@@ -669,7 +669,7 @@ namespace CubePdfUtility
 
         private void SelectAllCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = _viewmodel.ItemCount > 0;
+            e.CanExecute = _viewmodel.PageCount > 0;
         }
 
         private void SelectAllCommand_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -720,7 +720,7 @@ namespace CubePdfUtility
 
         private void MetadataCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = _viewmodel.ItemCount > 0;
+            e.CanExecute = _viewmodel.PageCount > 0;
         }
 
         private void MetadataCommand_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -747,7 +747,7 @@ namespace CubePdfUtility
 
         private void EncryptionCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = _viewmodel.ItemCount > 0;
+            e.CanExecute = _viewmodel.PageCount > 0;
         }
 
         private void EncryptionCommand_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -972,7 +972,7 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         private void Refresh()
         {
-            if (_viewmodel != null && _viewmodel.ItemCount > 0)
+            if (_viewmodel != null && _viewmodel.PageCount > 0)
             {
                 var restricted = (_viewmodel.EncryptionStatus == CubePdf.Data.EncryptionStatus.RestrictedAccess);
 
@@ -981,7 +981,7 @@ namespace CubePdfUtility
                 var mstr = _viewmodel.IsModified ? "*" : "";
                 Title = String.Format("{0}{1}{2} - {3}", filename, mstr, rstr, ProductName);
 
-                PageCountStatusBarItem.Content = String.Format("{0} ページ", _viewmodel.ItemCount);
+                PageCountStatusBarItem.Content = String.Format("{0} ページ", _viewmodel.PageCount);
                 LockStatusBarItem.Visibility = restricted ? Visibility.Visible : Visibility.Collapsed;
                 Thumbnail.Items.Refresh();
                 Thumbnail.Focus();
