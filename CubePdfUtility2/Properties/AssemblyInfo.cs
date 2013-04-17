@@ -12,7 +12,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("株式会社キューブ・ソフト")]
 [assembly: AssemblyProduct("CubePDF Utility")]
-[assembly: AssemblyCopyright("Copyright © 2013 CubeSoft")]
+[assembly: AssemblyCopyright("Copyright © 2013 CubeSoft, Inc.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
