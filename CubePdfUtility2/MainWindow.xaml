@@ -153,9 +153,10 @@
                 </r:RibbonApplicationMenu>
             </r:Ribbon.ApplicationMenu>
             
-            <r:RibbonTab Header="編集">
-                <r:RibbonGroup Header="クイックリンク">
+            <r:RibbonTab Header="編集" x:Name="EditTab">
+                <r:RibbonGroup Header="クイックリンク" x:Name="QuickLinkGroup">
                     <r:RibbonButton Label="開く"
+                        x:Name="OpenButton"
                         SmallImageSource="Images\SmallIcons\Open.png"
                         LargeImageSource="Images\LargeIcons\Open.png"
                         Command="Open"/>
@@ -244,7 +245,7 @@
                     </r:RibbonSplitButton>
                 </r:RibbonGroup>
 
-                <r:RibbonGroup Header="ページ操作">
+                <r:RibbonGroup Header="ページ操作" x:Name="PagingGroup">
                     <r:RibbonSplitButton Label="挿入"
                         x:Name="InsertButton"
                         SmallImageSource="Images\SmallIcons\Insert.png"
@@ -316,7 +317,7 @@
                     </r:RibbonSplitButton>
                 </r:RibbonGroup>
                 
-                <r:RibbonGroup Header="順序">
+                <r:RibbonGroup Header="順序" x:Name="OrderGroup">
                     <r:RibbonButton Label="前へ"
                         x:Name="ForwardButton"
                         SmallImageSource="Images\SmallIcons\Back.png"
@@ -332,7 +333,7 @@
                         CommandParameter="1"/>
                 </r:RibbonGroup>
                 
-                <r:RibbonGroup Header="回転">
+                <r:RibbonGroup Header="回転" x:Name="RotationGroup">
                     <r:RibbonButton Label="左90度"
                         x:Name="RotateLeftButton"
                         SmallImageSource="Images\SmallIcons\RotateLeft.png"
@@ -348,7 +349,7 @@
                         CommandParameter="90"/>
                 </r:RibbonGroup>
 
-                <r:RibbonGroup Header="プロパティ" LargeImageSource="Images\LargeIcons\Property.png" SmallImageSource="Images\SmallIcons\Property.png">
+                <r:RibbonGroup Header="プロパティ" x:Name="PropertiesGroup">
                     <r:RibbonButton Label="文書プロパティ"
                         MaxWidth="64"
                         SmallImageSource="Images\SmallIcons\Property.png"
@@ -363,15 +364,17 @@
                 </r:RibbonGroup>
             </r:RibbonTab>
             
-            <r:RibbonTab Header="表示">
-                <r:RibbonGroup Header="サムネイル">
+            <r:RibbonTab Header="表示" x:Name="ViewTab">
+                <r:RibbonGroup Header="サムネイル" x:Name="ThumbnailViewGroup">
                     <r:RibbonButton Label="拡大"
+                        x:Name="ZommInButton"
                         LargeImageSource="Images\LargeIcons\ZoomIn.png"/>
 
                     <r:RibbonButton Label="縮小"
+                        x:Name="ZoomOutButton"
                         LargeImageSource="Images\LargeIcons\ZoomOut.png"/>
 
-                    <r:RibbonComboBox Label="サイズ" IsReadOnly="True" Margin="2">
+                    <r:RibbonComboBox Label="サイズ" x:Name="ThumbnailSizeComboBox" IsReadOnly="True" Margin="2">
                         <r:RibbonGallery>
                             <r:RibbonGalleryCategory>
                                 <r:RibbonGalleryItem Content="64px"/>
@@ -382,7 +385,7 @@
                             </r:RibbonGalleryCategory>
                         </r:RibbonGallery>
                     </r:RibbonComboBox>
-                    <r:RibbonCheckBox Label="枠線のみを表示" Margin="0,3,0,0"/>
+                    <r:RibbonCheckBox Label="枠線のみを表示" x:Name="ViewModeCheckBox" Margin="0,3,0,0"/>
                 </r:RibbonGroup>
             </r:RibbonTab>
         </r:Ribbon>
@@ -405,7 +408,7 @@
             </i:Interaction.Behaviors>
         </ListView>
 
-        <StatusBar Grid.Row="2" Height="23">
+        <StatusBar Grid.Row="2" x:Name="FooterStatusBar" Height="23">
             <Image x:Name="LockStatusBarItem" Source="Images\SmallIcons\Lock.png" Visibility="Collapsed"/>
             <StatusBarItem Name="PageCountStatusBarItem" Content=""/>
         </StatusBar>
