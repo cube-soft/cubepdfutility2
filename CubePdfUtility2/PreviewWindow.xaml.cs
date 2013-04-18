@@ -65,7 +65,7 @@ namespace CubePdfUtility
 
             var filename = System.IO.Path.GetFileName(page.FilePath);
             var pagenum  = index + 1;
-            Title = String.Format("{0}（{1}/{2} ページ）", filename, pagenum, viewmodel.ItemCount);
+            Title = String.Format("{0}（{1}/{2} ページ）", filename, pagenum, viewmodel.PageCount);
         }
 
         /* ----------------------------------------------------------------- */
