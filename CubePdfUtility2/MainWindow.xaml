@@ -374,18 +374,13 @@
                         x:Name="ZoomOutButton"
                         LargeImageSource="Images\LargeIcons\ZoomOut.png"/>
 
-                    <r:RibbonComboBox Label="サイズ" x:Name="ThumbnailSizeComboBox" IsReadOnly="True" Margin="2">
-                        <r:RibbonGallery>
-                            <r:RibbonGalleryCategory>
-                                <r:RibbonGalleryItem Content="64px"/>
-                                <r:RibbonGalleryItem Content="128px"/>
-                                <r:RibbonGalleryItem Content="150px"/>
-                                <r:RibbonGalleryItem Content="256px"/>
-                                <r:RibbonGalleryItem Content="512px"/>
-                            </r:RibbonGalleryCategory>
+                    <r:RibbonComboBox Label="サイズ" x:Name="ViewSizeComboBox" IsReadOnly="True" Margin="2">
+                        <r:RibbonGallery x:Name="ViewSizeGallery" SelectionChanged="ViewSize_Changed">
+                            <r:RibbonGalleryCategory x:Name="ViewSizeGalleryCategory" DisplayMemberPath="Value"/>
                         </r:RibbonGallery>
                     </r:RibbonComboBox>
-                    <r:RibbonCheckBox Label="枠線のみを表示" x:Name="ViewModeCheckBox" Margin="0,3,0,0"/>
+
+                    <r:RibbonCheckBox Label="枠線のみを表示" x:Name="ViewModeCheckBox" Checked="ViewMode_Changed" Margin="0,3,0,0"/>
                 </r:RibbonGroup>
             </r:RibbonTab>
         </r:Ribbon>

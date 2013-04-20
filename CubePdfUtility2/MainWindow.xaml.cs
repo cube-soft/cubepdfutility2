@@ -52,14 +52,33 @@ namespace CubePdfUtility
         #region Initialization and Termination
 
         /* ----------------------------------------------------------------- */
+        /// MainWindow (static constructor)
+        /* ----------------------------------------------------------------- */
+        static MainWindow()
+        {
+            _ViewSize = new Dictionary<int, string>() {
+                {  64,  "64px" },
+                { 128, "128px" },
+                { 150, "150px" },
+                { 256, "256px" },
+                { 300, "300px" },
+                { 512, "512px" },
+                { 600, "600px" },
+            };
+        }
+
+        /* ----------------------------------------------------------------- */
         /// MainWindow (constructor)
         /* ----------------------------------------------------------------- */
         public MainWindow()
         {
             InitializeComponent();
-
-            // Insert code required on object creation below this point.
-            _viewmodel.ItemWidth = (int)ThumbnailImageView.ItemWidth;
+            
+            int size = 150;
+            _viewmodel.ItemWidth = size;
+            ThumbnailImageView.ItemWidth = _viewmodel.ItemWidth;
+            ViewSizeGalleryCategory.ItemsSource = _ViewSize;
+            ViewSizeGallery.SelectedItem = _ViewSize[size];
         }
 
         #endregion
@@ -903,6 +922,48 @@ namespace CubePdfUtility
             }
         }
 
+        /* ----------------------------------------------------------------- */
+        ///
+        /// ViewSize_Changed
+        /// 
+        /// <summary>
+        /// サムネイルのサイズが変更された際に実行されます。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void ViewSize_Changed(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            try
+            {
+                var element = (KeyValuePair<int, string>)ViewSizeGallery.SelectedItem;
+                if (_viewmodel.ItemWidth != element.Key)
+                {
+                    _viewmodel.ItemWidth = element.Key;
+                    ThumbnailImageView.ItemWidth = _viewmodel.ItemWidth;
+                }
+            }
+            catch (Exception /* err */) { }
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// ViewMode_Changed
+        /// 
+        /// <summary>
+        /// 枠線のみ表示にするかどうかの状態が変更された時に実行されます。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void ViewMode_Changed(object sender, RoutedEventArgs e)
+        {
+            var control = sender as CheckBox;
+            if (control == null) return;
+
+            _viewmodel.ItemVisibility = (control.IsChecked == true) ?
+                CubePdf.Wpf.ListViewItemVisibility.Minimum :
+                CubePdf.Wpf.ListViewItemVisibility.Normal;
+        }
+
         #endregion
 
         #region Other Methods
@@ -998,6 +1059,10 @@ namespace CubePdfUtility
 
         #region Variables
         private CubePdf.Wpf.IListViewModel _viewmodel = new CubePdf.Wpf.ListViewModel();
+        #endregion
+
+        #region Static variables
+        private static readonly IDictionary<int, string> _ViewSize;
         #endregion
 
         /* ----------------------------------------------------------------- */
