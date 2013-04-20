@@ -380,11 +380,13 @@
                     <r:RibbonButton Label="拡大"
                         x:Name="ZommInButton"
                         LargeImageSource="Images\LargeIcons\ZoomIn.png"
+                        SmallImageSource="Images\SmallIcons\ZoomIn.png"
                         Command="{x:Static local:MainWindow.ZoomIn}"/>
 
                     <r:RibbonButton Label="縮小"
                         x:Name="ZoomOutButton"
                         LargeImageSource="Images\LargeIcons\ZoomOut.png"
+                        SmallImageSource="Images\SmallIcons\ZoomOut.png"
                         Command="{x:Static local:MainWindow.ZoomOut}"/>
 
                     <r:RibbonComboBox Label="サイズ" x:Name="ViewSizeComboBox" IsReadOnly="True" Margin="2">

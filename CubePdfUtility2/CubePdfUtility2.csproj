@@ -174,13 +174,10 @@
     <Resource Include="Images\LargeIcons\Back.png" />
     <Resource Include="Images\LargeIcons\Close.png" />
     <Resource Include="Images\LargeIcons\Delete.png" />
-    <Resource Include="Images\LargeIcons\DeleteRange.png" />
     <Resource Include="Images\LargeIcons\Exit.png" />
     <Resource Include="Images\LargeIcons\Extract.png" />
-    <Resource Include="Images\LargeIcons\ExtractRange.png" />
     <Resource Include="Images\LargeIcons\Forward.png" />
     <Resource Include="Images\LargeIcons\Insert.png" />
-    <Resource Include="Images\LargeIcons\InsertRange.png" />
     <Resource Include="Images\LargeIcons\Open.png" />
     <Resource Include="Images\LargeIcons\Property.png" />
     <Resource Include="Images\LargeIcons\RotateLeft.png" />
@@ -198,7 +195,6 @@
     <Resource Include="Images\SmallIcons\Close.png" />
     <Resource Include="Images\SmallIcons\Delete.png" />
     <Resource Include="Images\SmallIcons\Extract.png" />
-    <Resource Include="Images\SmallIcons\ExtractRange.png" />
     <Resource Include="Images\SmallIcons\Forward.png" />
     <Resource Include="Images\SmallIcons\Insert.png" />
     <Resource Include="Images\SmallIcons\Menu.png" />
@@ -237,6 +233,10 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\SmallIcons\Refresh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\SmallIcons\ZoomIn.png" />
+    <Resource Include="Images\SmallIcons\ZoomOut.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
