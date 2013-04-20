@@ -230,13 +230,13 @@
     <Resource Include="Images\Logo.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\LargeIcons\Help.png" />
-    <Resource Include="Images\LargeIcons\Web.png" />
+    <Resource Include="Images\SmallIcons\Version.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\SmallIcons\Help.png" />
-    <Resource Include="Images\SmallIcons\Version.png" />
-    <Resource Include="Images\SmallIcons\Web.png" />
+    <Resource Include="Images\LargeIcons\Refresh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\SmallIcons\Refresh.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

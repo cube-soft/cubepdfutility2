@@ -826,6 +826,35 @@ namespace CubePdfUtility
 
         /* ----------------------------------------------------------------- */
         ///
+        /// Redraw
+        ///
+        /// <summary>
+        /// サムネイルを再描画します。
+        /// パラメータ (e.Parameter) は常に null です。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        #region Redraw
+
+        private void RedrawCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = _viewmodel.PageCount > 0;
+        }
+
+        private void RedrawCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            try
+            {
+                _viewmodel.Reset();
+            }
+            catch (Exception err) { Debug.WriteLine(err); }
+            finally { Refresh(); }
+        }
+
+        #endregion
+
+        /* ----------------------------------------------------------------- */
+        ///
         /// Encryption
         ///
         /// <summary>
@@ -1152,6 +1181,7 @@ namespace CubePdfUtility
         public static readonly ICommand Version  = new RoutedCommand("Version",  typeof(MainWindow));
         public static readonly ICommand ZoomIn   = new RoutedCommand("ZoomIn",   typeof(MainWindow));
         public static readonly ICommand ZoomOut  = new RoutedCommand("ZoomOut",  typeof(MainWindow));
+        public static readonly ICommand Redraw   = new RoutedCommand("Redraw",   typeof(MainWindow));
         #endregion
     }
 }
