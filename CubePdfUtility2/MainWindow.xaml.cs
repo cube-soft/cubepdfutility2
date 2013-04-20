@@ -56,14 +56,14 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         static MainWindow()
         {
-            _ViewSize = new Dictionary<int, string>() {
-                {  64,  "64px" },
-                { 128, "128px" },
-                { 150, "150px" },
-                { 256, "256px" },
-                { 300, "300px" },
-                { 512, "512px" },
-                { 600, "600px" },
+            _ViewSize = new List<KeyValuePair<int, string>>() {
+                new KeyValuePair<int, string>(64,   "64px"),
+                new KeyValuePair<int, string>(128, "128px"),
+                new KeyValuePair<int, string>(150, "150px"),
+                new KeyValuePair<int, string>(256, "256px"),
+                new KeyValuePair<int, string>(300, "300px"),
+                new KeyValuePair<int, string>(512, "512px"),
+                new KeyValuePair<int, string>(600, "600px"),
             };
         }
 
@@ -74,11 +74,11 @@ namespace CubePdfUtility
         {
             InitializeComponent();
             
-            int size = 150;
-            _viewmodel.ItemWidth = size;
+            var size = _ViewSize[2];
+            _viewmodel.ItemWidth = size.Key;
             ThumbnailImageView.ItemWidth = _viewmodel.ItemWidth;
             ViewSizeGalleryCategory.ItemsSource = _ViewSize;
-            ViewSizeGallery.SelectedItem = _ViewSize[size];
+            ViewSizeGallery.SelectedItem = size;
         }
 
         #endregion
@@ -1062,7 +1062,7 @@ namespace CubePdfUtility
         #endregion
 
         #region Static variables
-        private static readonly IDictionary<int, string> _ViewSize;
+        private static readonly IList<KeyValuePair<int, string>> _ViewSize;
         #endregion
 
         /* ----------------------------------------------------------------- */
