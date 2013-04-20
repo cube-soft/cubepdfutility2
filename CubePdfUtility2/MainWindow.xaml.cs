@@ -754,6 +754,78 @@ namespace CubePdfUtility
 
         /* ----------------------------------------------------------------- */
         ///
+        /// ZoomIn
+        ///
+        /// <summary>
+        /// サムネイルのサイズを 1 段階拡大します。
+        /// パラメータ (e.Parameter) は常に null です。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        #region ZoomIn
+
+        private void ZoomInCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            try
+            {
+                var item = (KeyValuePair<int, string>)ViewSizeGallery.SelectedItem;
+                var index = _ViewSize.IndexOf(item);
+                e.CanExecute = index < _ViewSize.Count - 1;
+            }
+            catch (Exception err) { Debug.WriteLine(err); }
+        }
+
+        private void ZoomInCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            try
+            {
+                var item = (KeyValuePair<int, string>)ViewSizeGallery.SelectedItem;
+                var index = _ViewSize.IndexOf(item);
+                ViewSizeGallery.SelectedItem = _ViewSize[index + 1];
+            }
+            catch (Exception err) { Debug.WriteLine(err); }
+        }
+
+        #endregion
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// ZoomOut
+        ///
+        /// <summary>
+        /// サムネイルのサイズを 1 段階縮小します。
+        /// パラメータ (e.Parameter) は常に null です。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        #region ZoomOut
+
+        private void ZoomOutCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            try
+            {
+                var item = (KeyValuePair<int, string>)ViewSizeGallery.SelectedItem;
+                var index = _ViewSize.IndexOf(item);
+                e.CanExecute = index > 0;
+            }
+            catch (Exception err) { Debug.WriteLine(err); }
+        }
+
+        private void ZoomOutCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            try
+            {
+                var item = (KeyValuePair<int, string>)ViewSizeGallery.SelectedItem;
+                var index = _ViewSize.IndexOf(item);
+                ViewSizeGallery.SelectedItem = _ViewSize[index - 1];
+            }
+            catch (Exception err) { Debug.WriteLine(err); }
+        }
+
+        #endregion
+
+        /* ----------------------------------------------------------------- */
+        ///
         /// Encryption
         ///
         /// <summary>
@@ -942,7 +1014,7 @@ namespace CubePdfUtility
                     ThumbnailImageView.ItemWidth = _viewmodel.ItemWidth;
                 }
             }
-            catch (Exception /* err */) { }
+            catch (Exception err) { Debug.WriteLine(err); }
         }
 
         /* ----------------------------------------------------------------- */
@@ -1078,6 +1150,8 @@ namespace CubePdfUtility
         public static readonly ICommand Select   = new RoutedCommand("Select",   typeof(MainWindow));
         public static readonly ICommand UnSelect = new RoutedCommand("UnSelect", typeof(MainWindow));
         public static readonly ICommand Version  = new RoutedCommand("Version",  typeof(MainWindow));
+        public static readonly ICommand ZoomIn   = new RoutedCommand("ZoomIn",   typeof(MainWindow));
+        public static readonly ICommand ZoomOut  = new RoutedCommand("ZoomOut",  typeof(MainWindow));
         #endregion
     }
 }

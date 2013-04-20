@@ -30,6 +30,8 @@
         <CommandBinding Command="{x:Static local:MainWindow.Select}"   CanExecute="SelectCommand_CanExecute"    Executed="SelectCommand_Executed"/>
         <CommandBinding Command="{x:Static local:MainWindow.UnSelect}" CanExecute="UnSelectCommand_CanExecute"  Executed="UnSelectCommand_Executed"/>
         <CommandBinding Command="{x:Static local:MainWindow.Version}"  CanExecute="VersionCommand_CanExecute"   Executed="VersionCommand_Executed"/>
+        <CommandBinding Command="{x:Static local:MainWindow.ZoomIn}"   CanExecute="ZoomInCommand_CanExecute"    Executed="ZoomInCommand_Executed"/>
+        <CommandBinding Command="{x:Static local:MainWindow.ZoomOut}"  CanExecute="ZoomOutCommand_CanExecute"   Executed="ZoomOutCommand_Executed"/>
     </Window.CommandBindings>
     
     <Window.Resources>
@@ -368,11 +370,13 @@
                 <r:RibbonGroup Header="サムネイル" x:Name="ThumbnailViewGroup">
                     <r:RibbonButton Label="拡大"
                         x:Name="ZommInButton"
-                        LargeImageSource="Images\LargeIcons\ZoomIn.png"/>
+                        LargeImageSource="Images\LargeIcons\ZoomIn.png"
+                        Command="{x:Static local:MainWindow.ZoomIn}"/>
 
                     <r:RibbonButton Label="縮小"
                         x:Name="ZoomOutButton"
-                        LargeImageSource="Images\LargeIcons\ZoomOut.png"/>
+                        LargeImageSource="Images\LargeIcons\ZoomOut.png"
+                        Command="{x:Static local:MainWindow.ZoomOut}"/>
 
                     <r:RibbonComboBox Label="サイズ" x:Name="ViewSizeComboBox" IsReadOnly="True" Margin="2">
                         <r:RibbonGallery x:Name="ViewSizeGallery" SelectionChanged="ViewSize_Changed">
