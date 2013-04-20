@@ -52,14 +52,33 @@ namespace CubePdfUtility
         #region Initialization and Termination
 
         /* ----------------------------------------------------------------- */
+        /// MainWindow (static constructor)
+        /* ----------------------------------------------------------------- */
+        static MainWindow()
+        {
+            _ViewSize = new List<KeyValuePair<int, string>>() {
+                new KeyValuePair<int, string>(64,   "64px"),
+                new KeyValuePair<int, string>(128, "128px"),
+                new KeyValuePair<int, string>(150, "150px"),
+                new KeyValuePair<int, string>(256, "256px"),
+                new KeyValuePair<int, string>(300, "300px"),
+                new KeyValuePair<int, string>(512, "512px"),
+                new KeyValuePair<int, string>(600, "600px"),
+            };
+        }
+
+        /* ----------------------------------------------------------------- */
         /// MainWindow (constructor)
         /* ----------------------------------------------------------------- */
         public MainWindow()
         {
             InitializeComponent();
-
-            // Insert code required on object creation below this point.
-            _viewmodel.ItemWidth = (int)ThumbnailImageView.ItemWidth;
+            
+            var size = _ViewSize[2];
+            _viewmodel.ItemWidth = size.Key;
+            ThumbnailImageView.ItemWidth = _viewmodel.ItemWidth;
+            ViewSizeGalleryCategory.ItemsSource = _ViewSize;
+            ViewSizeGallery.SelectedItem = size;
         }
 
         #endregion
@@ -735,6 +754,107 @@ namespace CubePdfUtility
 
         /* ----------------------------------------------------------------- */
         ///
+        /// ZoomIn
+        ///
+        /// <summary>
+        /// サムネイルのサイズを 1 段階拡大します。
+        /// パラメータ (e.Parameter) は常に null です。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        #region ZoomIn
+
+        private void ZoomInCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            try
+            {
+                var item = (KeyValuePair<int, string>)ViewSizeGallery.SelectedItem;
+                var index = _ViewSize.IndexOf(item);
+                e.CanExecute = index < _ViewSize.Count - 1;
+            }
+            catch (Exception err) { Debug.WriteLine(err); }
+        }
+
+        private void ZoomInCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            try
+            {
+                var item = (KeyValuePair<int, string>)ViewSizeGallery.SelectedItem;
+                var index = _ViewSize.IndexOf(item);
+                ViewSizeGallery.SelectedItem = _ViewSize[index + 1];
+            }
+            catch (Exception err) { Debug.WriteLine(err); }
+        }
+
+        #endregion
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// ZoomOut
+        ///
+        /// <summary>
+        /// サムネイルのサイズを 1 段階縮小します。
+        /// パラメータ (e.Parameter) は常に null です。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        #region ZoomOut
+
+        private void ZoomOutCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            try
+            {
+                var item = (KeyValuePair<int, string>)ViewSizeGallery.SelectedItem;
+                var index = _ViewSize.IndexOf(item);
+                e.CanExecute = index > 0;
+            }
+            catch (Exception err) { Debug.WriteLine(err); }
+        }
+
+        private void ZoomOutCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            try
+            {
+                var item = (KeyValuePair<int, string>)ViewSizeGallery.SelectedItem;
+                var index = _ViewSize.IndexOf(item);
+                ViewSizeGallery.SelectedItem = _ViewSize[index - 1];
+            }
+            catch (Exception err) { Debug.WriteLine(err); }
+        }
+
+        #endregion
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// Redraw
+        ///
+        /// <summary>
+        /// サムネイルを再描画します。
+        /// パラメータ (e.Parameter) は常に null です。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        #region Redraw
+
+        private void RedrawCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = _viewmodel.PageCount > 0;
+        }
+
+        private void RedrawCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            try
+            {
+                _viewmodel.Reset();
+            }
+            catch (Exception err) { Debug.WriteLine(err); }
+            finally { Refresh(); }
+        }
+
+        #endregion
+
+        /* ----------------------------------------------------------------- */
+        ///
         /// Encryption
         ///
         /// <summary>
@@ -903,6 +1023,48 @@ namespace CubePdfUtility
             }
         }
 
+        /* ----------------------------------------------------------------- */
+        ///
+        /// ViewSize_Changed
+        /// 
+        /// <summary>
+        /// サムネイルのサイズが変更された際に実行されます。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void ViewSize_Changed(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            try
+            {
+                var element = (KeyValuePair<int, string>)ViewSizeGallery.SelectedItem;
+                if (_viewmodel.ItemWidth != element.Key)
+                {
+                    _viewmodel.ItemWidth = element.Key;
+                    ThumbnailImageView.ItemWidth = _viewmodel.ItemWidth;
+                }
+            }
+            catch (Exception err) { Debug.WriteLine(err); }
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// ViewMode_Changed
+        /// 
+        /// <summary>
+        /// 枠線のみ表示にするかどうかの状態が変更された時に実行されます。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void ViewMode_Changed(object sender, RoutedEventArgs e)
+        {
+            var control = sender as CheckBox;
+            if (control == null) return;
+
+            _viewmodel.ItemVisibility = (control.IsChecked == true) ?
+                CubePdf.Wpf.ListViewItemVisibility.Minimum :
+                CubePdf.Wpf.ListViewItemVisibility.Normal;
+        }
+
         #endregion
 
         #region Other Methods
@@ -1000,6 +1162,10 @@ namespace CubePdfUtility
         private CubePdf.Wpf.IListViewModel _viewmodel = new CubePdf.Wpf.ListViewModel();
         #endregion
 
+        #region Static variables
+        private static readonly IList<KeyValuePair<int, string>> _ViewSize;
+        #endregion
+
         /* ----------------------------------------------------------------- */
         ///
         /// ICommands
@@ -1013,6 +1179,9 @@ namespace CubePdfUtility
         public static readonly ICommand Select   = new RoutedCommand("Select",   typeof(MainWindow));
         public static readonly ICommand UnSelect = new RoutedCommand("UnSelect", typeof(MainWindow));
         public static readonly ICommand Version  = new RoutedCommand("Version",  typeof(MainWindow));
+        public static readonly ICommand ZoomIn   = new RoutedCommand("ZoomIn",   typeof(MainWindow));
+        public static readonly ICommand ZoomOut  = new RoutedCommand("ZoomOut",  typeof(MainWindow));
+        public static readonly ICommand Redraw   = new RoutedCommand("Redraw",   typeof(MainWindow));
         #endregion
     }
 }

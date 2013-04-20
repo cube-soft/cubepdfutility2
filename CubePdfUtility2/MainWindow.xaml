@@ -30,6 +30,9 @@
         <CommandBinding Command="{x:Static local:MainWindow.Select}"   CanExecute="SelectCommand_CanExecute"    Executed="SelectCommand_Executed"/>
         <CommandBinding Command="{x:Static local:MainWindow.UnSelect}" CanExecute="UnSelectCommand_CanExecute"  Executed="UnSelectCommand_Executed"/>
         <CommandBinding Command="{x:Static local:MainWindow.Version}"  CanExecute="VersionCommand_CanExecute"   Executed="VersionCommand_Executed"/>
+        <CommandBinding Command="{x:Static local:MainWindow.ZoomIn}"   CanExecute="ZoomInCommand_CanExecute"    Executed="ZoomInCommand_Executed"/>
+        <CommandBinding Command="{x:Static local:MainWindow.ZoomOut}"  CanExecute="ZoomOutCommand_CanExecute"   Executed="ZoomOutCommand_Executed"/>
+        <CommandBinding Command="{x:Static local:MainWindow.Redraw}"   CanExecute="RedrawCommand_CanExecute"    Executed="RedrawCommand_Executed"/>
     </Window.CommandBindings>
     
     <Window.Resources>
@@ -365,27 +368,34 @@
             </r:RibbonTab>
             
             <r:RibbonTab Header="表示" x:Name="ViewTab">
-                <r:RibbonGroup Header="サムネイル" x:Name="ThumbnailViewGroup">
+                <r:RibbonGroup Header="更新" x:Name="RefreshGroup">
+                    <r:RibbonButton Label="再描画"
+                        x:Name="RedrawButton"
+                        LargeImageSource="Images\LargeIcons\Refresh.png"
+                        SmallImageSource="Images\SmallIcons\Refresh.png"
+                        Command="{x:Static local:MainWindow.Redraw}"/>
+                </r:RibbonGroup>
+
+                <r:RibbonGroup Header="サムネイル設定" x:Name="ThumbnailViewGroup">
                     <r:RibbonButton Label="拡大"
                         x:Name="ZommInButton"
-                        LargeImageSource="Images\LargeIcons\ZoomIn.png"/>
+                        LargeImageSource="Images\LargeIcons\ZoomIn.png"
+                        SmallImageSource="Images\SmallIcons\ZoomIn.png"
+                        Command="{x:Static local:MainWindow.ZoomIn}"/>
 
                     <r:RibbonButton Label="縮小"
                         x:Name="ZoomOutButton"
-                        LargeImageSource="Images\LargeIcons\ZoomOut.png"/>
+                        LargeImageSource="Images\LargeIcons\ZoomOut.png"
+                        SmallImageSource="Images\SmallIcons\ZoomOut.png"
+                        Command="{x:Static local:MainWindow.ZoomOut}"/>
 
-                    <r:RibbonComboBox Label="サイズ" x:Name="ThumbnailSizeComboBox" IsReadOnly="True" Margin="2">
-                        <r:RibbonGallery>
-                            <r:RibbonGalleryCategory>
-                                <r:RibbonGalleryItem Content="64px"/>
-                                <r:RibbonGalleryItem Content="128px"/>
-                                <r:RibbonGalleryItem Content="150px"/>
-                                <r:RibbonGalleryItem Content="256px"/>
-                                <r:RibbonGalleryItem Content="512px"/>
-                            </r:RibbonGalleryCategory>
+                    <r:RibbonComboBox Label="サイズ" x:Name="ViewSizeComboBox" IsReadOnly="True" Margin="2">
+                        <r:RibbonGallery x:Name="ViewSizeGallery" SelectionChanged="ViewSize_Changed">
+                            <r:RibbonGalleryCategory x:Name="ViewSizeGalleryCategory" DisplayMemberPath="Value"/>
                         </r:RibbonGallery>
                     </r:RibbonComboBox>
-                    <r:RibbonCheckBox Label="枠線のみを表示" x:Name="ViewModeCheckBox" Margin="0,3,0,0"/>
+
+                    <r:RibbonCheckBox Label="枠線のみを表示" x:Name="ViewModeCheckBox" Checked="ViewMode_Changed" Unchecked="ViewMode_Changed" Margin="0,3,0,0"/>
                 </r:RibbonGroup>
             </r:RibbonTab>
         </r:Ribbon>
