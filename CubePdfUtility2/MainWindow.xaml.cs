@@ -19,10 +19,12 @@
 ///
 /* ------------------------------------------------------------------------- */
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -1084,16 +1086,28 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         private void OpenFile(string path, string password)
         {
-            try
-            {
-                _viewmodel.Open(path, password);
-            }
-            catch (CubePdf.Data.EncryptionException /* err */)
-            {
-                var dialog = new PasswordWindow(path);
-                dialog.Owner = this;
-                if (dialog.ShowDialog() == true) OpenFile(path, dialog.Password);
-            }
+            this.Cursor = Cursors.Wait;
+            ThreadPool.QueueUserWorkItem(new WaitCallback((Object parameter) => {
+                try
+                {
+                    var reader = new CubePdf.Editing.DocumentReader(path, password);
+                    Dispatcher.BeginInvoke(new Action(() => {
+                        _viewmodel.Open(reader);
+                        this.Cursor = Cursors.Arrow;
+                        Refresh();
+                        reader.Dispose();
+                    }));
+                }
+                catch (CubePdf.Data.EncryptionException /* err */)
+                {
+                    Dispatcher.BeginInvoke(new Action(() => {
+                        var dialog = new PasswordWindow(path);
+                        dialog.Owner = this;
+                        if (dialog.ShowDialog() == true) OpenFile(path, dialog.Password);
+                    }));
+                }
+                catch (Exception err) { Debug.WriteLine(err); }
+            }), null);
         }
 
         /* ----------------------------------------------------------------- */
