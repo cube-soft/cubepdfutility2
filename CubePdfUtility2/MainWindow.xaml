@@ -116,31 +116,37 @@
                     Loaded="ApplicationMenu_Loaded">
 
                     <r:RibbonApplicationMenuItem Header="開く"
+                        ToolTipTitle="PDFファイルを開きます"
                         ImageSource="Images\LargeIcons\Open.png"
                         Command="Open">
                     </r:RibbonApplicationMenuItem>
 
                     <r:RibbonApplicationMenuItem Header="上書き保存"
+                        ToolTipTitle="PDFファイルを上書き保存します"
                         ImageSource="Images\LargeIcons\Save.png"
                         Command="Save"/>
 
                     <r:RibbonApplicationMenuItem Header="名前を付けて保存"
+                        ToolTipTitle="PDFファイルに名前をつけて保存します"
                         ImageSource="Images\LargeIcons\SaveAs.png"
                         Command="SaveAs"/>
 
                     <r:RibbonSeparator />
 
                     <r:RibbonApplicationMenuItem Header="バージョン情報"
+                        ToolTipTitle="バージョン情報を表示します"
                         ImageSource="Images\LargeIcons\Version.png"
                         Command="{x:Static local:MainWindow.Version}"/>
 
                     <r:RibbonSeparator />
 
                     <r:RibbonApplicationMenuItem Header="閉じる"
+                        ToolTipTitle="PDFファイルを閉じます"
                         ImageSource="Images\LargeIcons\Close.png"
                         Command="Close"/>
 
                     <r:RibbonApplicationMenuItem Header="終了"
+                        ToolTipTitle="CubePDF Utilityを終了します"
                         ImageSource="Images\LargeIcons\Exit.png"
                         Command="Close"
                         CommandParameter="Exit"/>
@@ -159,27 +165,32 @@
             <r:RibbonTab Header="編集" x:Name="EditTab">
                 <r:RibbonGroup Header="クイックリンク" x:Name="QuickLinkGroup">
                     <r:RibbonButton Label="開く"
+                        ToolTipTitle="PDFファイルを開きます"
                         x:Name="OpenButton"
                         SmallImageSource="Images\SmallIcons\Open.png"
                         LargeImageSource="Images\LargeIcons\Open.png"
                         Command="Open"/>
 
                     <r:RibbonSplitButton Label="保存"
+                        ToolTipTitle="編集したPDFファイルを保存します"
                         x:Name="SaveButton"
                         SmallImageSource="Images\SmallIcons\SaveAs.png"
                         LargeImageSource="Images\LargeIcons\SaveAs.png"
                         Command="SaveAs">
 
                         <r:RibbonMenuItem Header="上書き保存"
+                            ToolTipTitle="PDFファイルを上書き保存します"
                             ImageSource="Images\SmallIcons\Save.png"
                             Command="Save"/>
 
                         <r:RibbonMenuItem Header="名前を付けて保存"
+                            ToolTipTitle="PDFファイルに名前をつけて保存します"
                             ImageSource="Images\SmallIcons\SaveAs.png"
                             Command="SaveAs"/>
                     </r:RibbonSplitButton>
 
                     <r:RibbonSplitButton Label="元に戻す"
+                        ToolTipTitle="編集状態を元に戻します"
                         x:Name="UndoButton"
                         SmallImageSource="Images\SmallIcons\Undo.png"
                         LargeImageSource="Images\LargeIcons\Undo.png"
@@ -204,6 +215,7 @@
                     </r:RibbonSplitButton>
 
                     <r:RibbonSplitButton Label="やり直し"
+                        ToolTipTitle="元に戻した編集をやり直します"
                         x:Name="RedoButton"
                         SmallImageSource="Images\SmallIcons\Redo.png"
                         LargeImageSource="Images\LargeIcons\Redo.png"
@@ -228,21 +240,25 @@
                     </r:RibbonSplitButton>
 
                     <r:RibbonSplitButton Label="選択"
+                        ToolTipTitle="編集するページを選択します"
                         x:Name="SelectButton"
                         SmallImageSource="Images\SmallIcons\Select.png"
                         LargeImageSource="Images\LargeIcons\Select.png"
                         Command="{x:Static local:MainWindow.Select}">
 
                         <r:RibbonMenuItem Header="すべて選択"
+                            ToolTipTitle="すべてのページを選択します"
                             ImageSource="Images\SmallIcons\Select.png"
                             Command="SelectAll"/>
 
                         <r:RibbonMenuItem Header="選択の切り替え"
+                            ToolTipTitle="選択するページを反転させます"
                             ImageSource="Images\SmallIcons\Select.png"
                             Command="{x:Static local:MainWindow.Select}"
                             CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedItems}"/>
 
                         <r:RibbonMenuItem Header="選択の解除"
+                            ToolTipTitle="ページの選択を解除します"
                             ImageSource="Images\SmallIcons\Select.png"
                             Command="{x:Static local:MainWindow.UnSelect}"/>
                     </r:RibbonSplitButton>
@@ -250,6 +266,7 @@
 
                 <r:RibbonGroup Header="ページ操作" x:Name="PagingGroup">
                     <r:RibbonSplitButton Label="挿入"
+                        ToolTipTitle="新たにPDFファイルを追加します"
                         x:Name="InsertButton"
                         SmallImageSource="Images\SmallIcons\Insert.png"
                         LargeImageSource="Images\LargeIcons\Insert.png"
@@ -257,17 +274,20 @@
                         CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedIndex}">
 
                         <r:RibbonMenuItem Header="選択位置に挿入"
+                            ToolTipTitle="選択位置にPDFファイルを挿入します"
                             x:Name="InsertSelect"
                             ImageSource="Images\SmallIcons\Insert.png"
                             Command="{x:Static cube:ListViewCommands.Insert}"
                             CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedIndex}"/>
 
                         <r:RibbonMenuItem Header="先頭に挿入"
+                            ToolTipTitle="先頭にPDFファイルを挿入します"
                             x:Name="InsertHead"
                             ImageSource="Images\SmallIcons\Insert.png"
                             Command="{x:Static cube:ListViewCommands.Insert}"/>
 
                         <r:RibbonMenuItem Header="末尾に挿入"
+                            ToolTipTitle="末尾にPDFファイルを挿入します"
                             x:Name="InsertTail"
                             ImageSource="Images\SmallIcons\Insert.png"
                             Command="{x:Static cube:ListViewCommands.Insert}"
@@ -275,6 +295,7 @@
                     </r:RibbonSplitButton>
 
                     <r:RibbonSplitButton Label="抽出"
+                        ToolTipTitle="選択ページをPDFファイルで抽出します"
                         x:Name="ExtractButton"
                         SmallImageSource="Images\SmallIcons\Extract.png"
                         LargeImageSource="Images\LargeIcons\Extract.png"
@@ -301,6 +322,7 @@
                     </r:RibbonSplitButton>
 
                     <r:RibbonSplitButton Label="削除"
+                        ToolTipTitle="ページの削除を行います"
                         x:Name="RemoveButton"
                         SmallImageSource="Images\SmallIcons\Delete.png"
                         LargeImageSource="Images\LargeIcons\Delete.png"
@@ -308,12 +330,14 @@
                         CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedItems}">
 
                         <r:RibbonMenuItem Header="選択ページを削除"
+                            ToolTipTitle="選択されたページを削除します"
                             x:Name="RemoveSelect"
                             ImageSource="Images\SmallIcons\Delete.png"
                             Command="{x:Static cube:ListViewCommands.Remove}"
                             CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedItems}"/>
 
                         <r:RibbonMenuItem Header="範囲を指定して削除"
+                            ToolTipTitle="ページ範囲を指定して削除します"
                             x:Name="RemoveRange"
                             ImageSource="Images\SmallIcons\Delete.png"
                             Command="{x:Static cube:ListViewCommands.Remove}"/>
@@ -322,6 +346,7 @@
                 
                 <r:RibbonGroup Header="順序" x:Name="OrderGroup">
                     <r:RibbonButton Label="前へ"
+                        ToolTipTitle="選択したページを前に移動させます"
                         x:Name="ForwardButton"
                         SmallImageSource="Images\SmallIcons\Back.png"
                         LargeImageSource="Images\LargeIcons\Back.png"
@@ -329,6 +354,7 @@
                         CommandParameter="-1"/>
 
                     <r:RibbonButton Label="後へ"
+                        ToolTipTitle="選択したページを後ろに移動させます"
                         x:Name="BackButton"
                         SmallImageSource="Images\SmallIcons\Forward.png"
                         LargeImageSource="Images\LargeIcons\Forward.png"
@@ -338,6 +364,7 @@
                 
                 <r:RibbonGroup Header="回転" x:Name="RotationGroup">
                     <r:RibbonButton Label="左90度"
+                        ToolTipTitle="選択したページを左に90度回転させます"
                         x:Name="RotateLeftButton"
                         SmallImageSource="Images\SmallIcons\RotateLeft.png"
                         LargeImageSource="Images\LargeIcons\RotateLeft.png"
@@ -345,6 +372,7 @@
                         CommandParameter="-90"/>
 
                     <r:RibbonButton Label="右90度"
+                        ToolTipTitle="選択したページを右に90度回転させます"
                         x:Name="RotateRightButton"
                         SmallImageSource="Images\SmallIcons\RotateRight.png"
                         LargeImageSource="Images\LargeIcons\RotateRight.png"
@@ -354,12 +382,14 @@
 
                 <r:RibbonGroup Header="プロパティ" x:Name="PropertiesGroup">
                     <r:RibbonButton Label="文書プロパティ"
+                        ToolTipTitle="PDFファイルのプロパティ情報を編集します"
                         MaxWidth="64"
                         SmallImageSource="Images\SmallIcons\Property.png"
                         LargeImageSource="Images\LargeIcons\Property.png"
                         Command="{x:Static cube:ListViewCommands.Metadata}"/>
 
                     <r:RibbonButton Label="セキュリティ"
+                        ToolTipTitle="PDFファイルのパスワード・許可情報を編集します"
                         MaxWidth="64"
                         SmallImageSource="Images\SmallIcons\Security.png"
                         LargeImageSource="Images\LargeIcons\Security.png"
@@ -370,6 +400,7 @@
             <r:RibbonTab Header="表示" x:Name="ViewTab">
                 <r:RibbonGroup Header="更新" x:Name="RefreshGroup">
                     <r:RibbonButton Label="再描画"
+                        ToolTipTitle="サムネイルの再描画を行います"
                         x:Name="RedrawButton"
                         LargeImageSource="Images\LargeIcons\Refresh.png"
                         SmallImageSource="Images\SmallIcons\Refresh.png"
@@ -378,24 +409,36 @@
 
                 <r:RibbonGroup Header="サムネイル設定" x:Name="ThumbnailViewGroup">
                     <r:RibbonButton Label="拡大"
+                        ToolTipTitle="サムネイルを拡大します"
                         x:Name="ZommInButton"
                         LargeImageSource="Images\LargeIcons\ZoomIn.png"
                         SmallImageSource="Images\SmallIcons\ZoomIn.png"
                         Command="{x:Static local:MainWindow.ZoomIn}"/>
 
                     <r:RibbonButton Label="縮小"
+                        ToolTipTitle="サムネイルを縮小します"
                         x:Name="ZoomOutButton"
                         LargeImageSource="Images\LargeIcons\ZoomOut.png"
                         SmallImageSource="Images\SmallIcons\ZoomOut.png"
                         Command="{x:Static local:MainWindow.ZoomOut}"/>
 
-                    <r:RibbonComboBox Label="サイズ" x:Name="ViewSizeComboBox" IsReadOnly="True" Margin="2">
+                    <r:RibbonComboBox Label="サイズ" 
+                        ToolTipTitle="サムネイルのサイズを変更します"
+                        x:Name="ViewSizeComboBox"
+                        IsReadOnly="True"
+                        Margin="2">
+                        
                         <r:RibbonGallery x:Name="ViewSizeGallery" SelectionChanged="ViewSize_Changed">
                             <r:RibbonGalleryCategory x:Name="ViewSizeGalleryCategory" DisplayMemberPath="Value"/>
                         </r:RibbonGallery>
                     </r:RibbonComboBox>
 
-                    <r:RibbonCheckBox Label="枠線のみを表示" x:Name="ViewModeCheckBox" Checked="ViewMode_Changed" Unchecked="ViewMode_Changed" Margin="0,3,0,0"/>
+                    <r:RibbonCheckBox Label="枠線のみを表示"
+                        ToolTipTitle="サムネイルの内容を非表示にします"
+                        x:Name="ViewModeCheckBox"
+                        Checked="ViewMode_Changed"
+                        Unchecked="ViewMode_Changed"
+                        Margin="0,3,0,0"/>
                 </r:RibbonGroup>
             </r:RibbonTab>
         </r:Ribbon>
