@@ -455,7 +455,7 @@
 
         <StatusBar Grid.Row="2" x:Name="FooterStatusBar" Height="23">
             <Image x:Name="LockStatusBarItem" Source="Images\SmallIcons\Lock.png" Visibility="Collapsed"/>
-            <StatusBarItem Name="PageCountStatusBarItem" Content=""/>
+            <StatusBarItem Name="InfoStatusBarItem" Content=""/>
         </StatusBar>
     </Grid>
 </r:RibbonWindow>

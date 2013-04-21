@@ -160,7 +160,6 @@ namespace CubePdfUtility
                 OpenFile(path, "");
             }
             catch (Exception err) { Debug.WriteLine(err.GetType().ToString()); }
-            finally { Refresh(); }
         }
 
         #endregion
@@ -1086,14 +1085,18 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         private void OpenFile(string path, string password)
         {
-            this.Cursor = Cursors.Wait;
+            Cursor = Cursors.Wait;
+            var filename = System.IO.Path.GetFileName(path);
+            var message = String.Format(Properties.Resources.OpenFile, filename);
+            InfoStatusBarItem.Content = message;
+
             ThreadPool.QueueUserWorkItem(new WaitCallback((Object parameter) => {
                 try
                 {
                     var reader = new CubePdf.Editing.DocumentReader(path, password);
                     Dispatcher.BeginInvoke(new Action(() => {
                         _viewmodel.Open(reader);
-                        this.Cursor = Cursors.Arrow;
+                        Cursor = Cursors.Arrow;
                         Refresh();
                         reader.Dispose();
                     }));
@@ -1104,6 +1107,8 @@ namespace CubePdfUtility
                         var dialog = new PasswordWindow(path);
                         dialog.Owner = this;
                         if (dialog.ShowDialog() == true) OpenFile(path, dialog.Password);
+                        Cursor = Cursors.Arrow;
+                        Refresh();
                     }));
                 }
                 catch (Exception err) { Debug.WriteLine(err); }
@@ -1157,7 +1162,7 @@ namespace CubePdfUtility
                 var mstr = _viewmodel.IsModified ? "*" : "";
                 Title = String.Format("{0}{1}{2} - {3}", filename, mstr, rstr, ProductName);
 
-                PageCountStatusBarItem.Content = String.Format("{0} ページ", _viewmodel.PageCount);
+                InfoStatusBarItem.Content = String.Format("{0} ページ", _viewmodel.PageCount);
                 LockStatusBarItem.Visibility = restricted ? Visibility.Visible : Visibility.Collapsed;
                 Thumbnail.Items.Refresh();
                 Thumbnail.Focus();
@@ -1165,7 +1170,7 @@ namespace CubePdfUtility
             else
             {
                 Title = ProductName;
-                if (PageCountStatusBarItem != null) PageCountStatusBarItem.Content = string.Empty;
+                if (InfoStatusBarItem != null) InfoStatusBarItem.Content = string.Empty;
                 if (LockStatusBarItem != null) LockStatusBarItem.Visibility = Visibility.Collapsed;
             }
         }

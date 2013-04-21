@@ -70,7 +70,16 @@ namespace CubePdfUtility.Properties {
         }
         
         /// <summary>
-        ///   「{0}」はパスワードで保護されています。パスワードを入力して下さい。 に類似しているローカライズされた文字列を検索します。
+        ///   {0} を開いています... に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string OpenFile {
+            get {
+                return ResourceManager.GetString("OpenFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   {0} はパスワードで保護されています。パスワードを入力して下さい。 に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string PasswordPrompt {
             get {
