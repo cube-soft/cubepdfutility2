@@ -141,7 +141,7 @@
                     <r:RibbonSeparator />
 
                     <r:RibbonApplicationMenuItem Header="閉じる"
-                        ToolTipTitle="閉じます"
+                        ToolTipTitle="閉じる"
                         ImageSource="Images\LargeIcons\Close.png"
                         Command="Close"/>
 
