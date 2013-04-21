@@ -145,8 +145,7 @@ namespace CubePdfUtility
         {
             try
             {
-                var path = e.Parameter as string;
-                if (!String.IsNullOrEmpty(_viewmodel.FilePath) && !CloseFile()) return;
+                var path = e.Parameter as string;                
                 if (path == null)
                 {
                     var dialog = new System.Windows.Forms.OpenFileDialog();
@@ -155,6 +154,7 @@ namespace CubePdfUtility
                     if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
                     path = dialog.FileName;
                 }
+                if (!String.IsNullOrEmpty(_viewmodel.FilePath) && !CloseFile()) return;
                 OpenFile(path, "");
             }
             catch (Exception err) { Debug.WriteLine(err.GetType().ToString()); }
