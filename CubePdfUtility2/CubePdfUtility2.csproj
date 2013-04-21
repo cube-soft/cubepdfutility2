@@ -41,6 +41,10 @@
     <ApplicationIcon>app.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="RibbonControlsLibrary, Version=3.5.41019.1, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\RibbonControlsLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -53,7 +57,6 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="RibbonControlsLibrary" />
     <Reference Include="Microsoft.Windows.Shell" />
   </ItemGroup>
   <ItemGroup>
@@ -61,6 +64,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="PasswordWindow.xaml.cs">
+      <DependentUpon>PasswordWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PreviewWindow.xaml.cs">
       <DependentUpon>PreviewWindow.xaml</DependentUpon>
     </Compile>
@@ -69,6 +75,9 @@
     </Compile>
     <Compile Include="EncryptionWindow.xaml.cs">
       <DependentUpon>EncryptionWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="VersionWindow.xaml.cs">
+      <DependentUpon>VersionWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -87,6 +96,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="PasswordWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="PreviewWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -102,6 +115,10 @@
     <Page Include="Themes\Generic.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="VersionWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -157,13 +174,10 @@
     <Resource Include="Images\LargeIcons\Back.png" />
     <Resource Include="Images\LargeIcons\Close.png" />
     <Resource Include="Images\LargeIcons\Delete.png" />
-    <Resource Include="Images\LargeIcons\DeleteRange.png" />
     <Resource Include="Images\LargeIcons\Exit.png" />
     <Resource Include="Images\LargeIcons\Extract.png" />
-    <Resource Include="Images\LargeIcons\ExtractRange.png" />
     <Resource Include="Images\LargeIcons\Forward.png" />
     <Resource Include="Images\LargeIcons\Insert.png" />
-    <Resource Include="Images\LargeIcons\InsertRange.png" />
     <Resource Include="Images\LargeIcons\Open.png" />
     <Resource Include="Images\LargeIcons\Property.png" />
     <Resource Include="Images\LargeIcons\RotateLeft.png" />
@@ -181,7 +195,6 @@
     <Resource Include="Images\SmallIcons\Close.png" />
     <Resource Include="Images\SmallIcons\Delete.png" />
     <Resource Include="Images\SmallIcons\Extract.png" />
-    <Resource Include="Images\SmallIcons\ExtractRange.png" />
     <Resource Include="Images\SmallIcons\Forward.png" />
     <Resource Include="Images\SmallIcons\Insert.png" />
     <Resource Include="Images\SmallIcons\Menu.png" />
@@ -205,6 +218,25 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\SmallIcons\Redo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\SmallIcons\Lock.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\SmallIcons\Version.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\LargeIcons\Refresh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\SmallIcons\Refresh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\SmallIcons\ZoomIn.png" />
+    <Resource Include="Images\SmallIcons\ZoomOut.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

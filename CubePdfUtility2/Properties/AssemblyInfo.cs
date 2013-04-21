@@ -12,7 +12,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("株式会社キューブ・ソフト")]
 [assembly: AssemblyProduct("CubePDF Utility")]
-[assembly: AssemblyCopyright("Copyright © 2013 CubeSoft")]
+[assembly: AssemblyCopyright("Copyright © 2013 CubeSoft, Inc.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -55,4 +55,4 @@ using System.Windows;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("0.1.*")]
-[assembly: AssemblyFileVersion("0.1.1.0")]
+[assembly: AssemblyFileVersion("0.1.3.0")]

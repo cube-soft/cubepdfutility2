@@ -1,13 +1,22 @@
 ﻿<Window x:Class="CubePdfUtility.PreviewWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:cube="clr-namespace:CubePdf.Wpf;assembly=CubePdf.Wpf"
-        Title="PreviewWindow" Height="300" Width="300" Icon="/CubePdfUtility;component/app.ico">
+        cube:WindowMenuBehavior.MinimizeBox="False"
+        cube:WindowMenuBehavior.MaximizeBox="False"
+        Title="PreviewWindow" Height="300" Width="300" Icon="/CubePdfUtility;component/app.ico" ShowInTaskbar="False">
     <Window.Resources>
         <cube:ImageConverter x:Key="ImageConverter"/>
     </Window.Resources>
 
     <ScrollViewer x:Name="MainViewer" DockPanel.Dock="Bottom" Background="DimGray">
-        <Image Source="{Binding Converter={StaticResource ImageConverter}}" Stretch="UniformToFill" VerticalAlignment="Center" Margin="5"/>
+        <Button Click="OnClick">
+            <Button.Template>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Image Source="{Binding Converter={StaticResource ImageConverter}}" Stretch="UniformToFill" VerticalAlignment="Center" Margin="5"/>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
     </ScrollViewer>
 </Window>
