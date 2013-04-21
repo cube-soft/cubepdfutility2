@@ -1,7 +1,10 @@
 ﻿<Window x:Class="CubePdfUtility.PreviewWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:cube="clr-namespace:CubePdf.Wpf;assembly=CubePdf.Wpf"
+        cube:WindowMenuBehavior.MinimizeBox="False"
+        cube:WindowMenuBehavior.MaximizeBox="False"
         Title="PreviewWindow" Height="300" Width="300" Icon="/CubePdfUtility;component/app.ico" ShowInTaskbar="False">
     <Window.Resources>
         <cube:ImageConverter x:Key="ImageConverter"/>
