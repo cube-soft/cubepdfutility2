@@ -196,6 +196,7 @@
 
                         <r:RibbonGallery
                             MaxColumnCount="1"
+                            MaxHeight="300"
                             Command="Undo"
                             CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=SelectedItem}">
 
@@ -221,6 +222,7 @@
 
                         <r:RibbonGallery
                             MaxColumnCount="1"
+                            MaxHeight="300"
                             Command="Redo"
                             CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=SelectedItem}">
 
