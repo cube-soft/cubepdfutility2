@@ -825,6 +825,71 @@ namespace CubePdfUtility
 
         /* ----------------------------------------------------------------- */
         ///
+        /// ViewSize
+        ///
+        /// <summary>
+        /// サムネイルのサイズを変更します。
+        /// パラメータ (e.Parameter) はサムネイルの新しい幅が指定されます。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        #region ViewSize
+
+        private void ViewSizeCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        private void ViewSizeCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            try
+            {
+                var width = (int)e.Parameter;
+                if (_viewmodel.ItemWidth != width)
+                {
+                    _viewmodel.ItemWidth = width;
+                    ThumbnailImageView.ItemWidth = _viewmodel.ItemWidth;
+                }
+            }
+            catch (Exception err) { Debug.WriteLine(err); }
+        }
+
+        #endregion
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// ViewMode
+        ///
+        /// <summary>
+        /// 枠線のみ表示するかどうかを変更します。
+        /// パラメータ (e.Parameter) は「枠線のみ表示するかどうか」を表す
+        /// 真偽値です。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        #region ViewMode
+
+        private void ViewModeCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        private void ViewModeCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            try
+            {
+                var enable = (bool)e.Parameter;
+                _viewmodel.ItemVisibility = enable ?
+                    CubePdf.Wpf.ListViewItemVisibility.Minimum :
+                    CubePdf.Wpf.ListViewItemVisibility.Normal;
+            }
+            catch (Exception err) { Debug.WriteLine(err); }
+        }
+
+        #endregion
+
+        /* ----------------------------------------------------------------- */
+        ///
         /// Redraw
         ///
         /// <summary>
@@ -1022,48 +1087,6 @@ namespace CubePdfUtility
             }
         }
 
-        /* ----------------------------------------------------------------- */
-        ///
-        /// ViewSize_Changed
-        /// 
-        /// <summary>
-        /// サムネイルのサイズが変更された際に実行されます。
-        /// </summary>
-        ///
-        /* ----------------------------------------------------------------- */
-        private void ViewSize_Changed(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-            try
-            {
-                var element = (KeyValuePair<int, string>)ViewSizeGallery.SelectedItem;
-                if (_viewmodel.ItemWidth != element.Key)
-                {
-                    _viewmodel.ItemWidth = element.Key;
-                    ThumbnailImageView.ItemWidth = _viewmodel.ItemWidth;
-                }
-            }
-            catch (Exception err) { Debug.WriteLine(err); }
-        }
-
-        /* ----------------------------------------------------------------- */
-        ///
-        /// ViewMode_Changed
-        /// 
-        /// <summary>
-        /// 枠線のみ表示にするかどうかの状態が変更された時に実行されます。
-        /// </summary>
-        ///
-        /* ----------------------------------------------------------------- */
-        private void ViewMode_Changed(object sender, RoutedEventArgs e)
-        {
-            var control = sender as CheckBox;
-            if (control == null) return;
-
-            _viewmodel.ItemVisibility = (control.IsChecked == true) ?
-                CubePdf.Wpf.ListViewItemVisibility.Minimum :
-                CubePdf.Wpf.ListViewItemVisibility.Normal;
-        }
-
         #endregion
 
         #region Other Methods
@@ -1244,6 +1267,8 @@ namespace CubePdfUtility
         public static readonly ICommand Version  = new RoutedCommand("Version",  typeof(MainWindow));
         public static readonly ICommand ZoomIn   = new RoutedCommand("ZoomIn",   typeof(MainWindow));
         public static readonly ICommand ZoomOut  = new RoutedCommand("ZoomOut",  typeof(MainWindow));
+        public static readonly ICommand ViewSize = new RoutedCommand("ViewSize", typeof(MainWindow));
+        public static readonly ICommand ViewMode = new RoutedCommand("ViewMode", typeof(MainWindow));
         public static readonly ICommand Redraw   = new RoutedCommand("Redraw",   typeof(MainWindow));
         #endregion
     }

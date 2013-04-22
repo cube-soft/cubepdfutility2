@@ -27,12 +27,14 @@
         <CommandBinding Command="{x:Static cube:ListViewCommands.Metadata}"   CanExecute="MetadataCommand_CanExecute"   Executed="MetadataCommand_Executed"/>
         <CommandBinding Command="{x:Static cube:ListViewCommands.Encryption}" CanExecute="EncryptionCommand_CanExecute" Executed="EncryptionCommand_Executed"/>
 
-        <CommandBinding Command="{x:Static local:MainWindow.Select}"   CanExecute="SelectCommand_CanExecute"    Executed="SelectCommand_Executed"/>
-        <CommandBinding Command="{x:Static local:MainWindow.UnSelect}" CanExecute="UnSelectCommand_CanExecute"  Executed="UnSelectCommand_Executed"/>
-        <CommandBinding Command="{x:Static local:MainWindow.Version}"  CanExecute="VersionCommand_CanExecute"   Executed="VersionCommand_Executed"/>
-        <CommandBinding Command="{x:Static local:MainWindow.ZoomIn}"   CanExecute="ZoomInCommand_CanExecute"    Executed="ZoomInCommand_Executed"/>
-        <CommandBinding Command="{x:Static local:MainWindow.ZoomOut}"  CanExecute="ZoomOutCommand_CanExecute"   Executed="ZoomOutCommand_Executed"/>
-        <CommandBinding Command="{x:Static local:MainWindow.Redraw}"   CanExecute="RedrawCommand_CanExecute"    Executed="RedrawCommand_Executed"/>
+        <CommandBinding Command="{x:Static local:MainWindow.Select}"   CanExecute="SelectCommand_CanExecute"   Executed="SelectCommand_Executed"/>
+        <CommandBinding Command="{x:Static local:MainWindow.UnSelect}" CanExecute="UnSelectCommand_CanExecute" Executed="UnSelectCommand_Executed"/>
+        <CommandBinding Command="{x:Static local:MainWindow.Version}"  CanExecute="VersionCommand_CanExecute"  Executed="VersionCommand_Executed"/>
+        <CommandBinding Command="{x:Static local:MainWindow.ZoomIn}"   CanExecute="ZoomInCommand_CanExecute"   Executed="ZoomInCommand_Executed"/>
+        <CommandBinding Command="{x:Static local:MainWindow.ZoomOut}"  CanExecute="ZoomOutCommand_CanExecute"  Executed="ZoomOutCommand_Executed"/>
+        <CommandBinding Command="{x:Static local:MainWindow.ViewSize}" CanExecute="ViewSizeCommand_CanExecute" Executed="ViewSizeCommand_Executed"/>
+        <CommandBinding Command="{x:Static local:MainWindow.ViewMode}" CanExecute="ViewModeCommand_CanExecute" Executed="ViewModeCommand_Executed"/>
+        <CommandBinding Command="{x:Static local:MainWindow.Redraw}"   CanExecute="RedrawCommand_CanExecute"   Executed="RedrawCommand_Executed"/>
     </Window.CommandBindings>
     
     <Window.Resources>
@@ -419,8 +421,12 @@
                         x:Name="ViewSizeComboBox"
                         IsReadOnly="True"
                         Margin="2">
-                        
-                        <r:RibbonGallery x:Name="ViewSizeGallery" SelectionChanged="ViewSize_Changed">
+
+                        <r:RibbonGallery x:Name="ViewSizeGallery"
+                            SelectedValuePath="Key"
+                            Command="{x:Static local:MainWindow.ViewSize}"
+                            CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=SelectedValue}">
+
                             <r:RibbonGalleryCategory x:Name="ViewSizeGalleryCategory" DisplayMemberPath="Value"/>
                         </r:RibbonGallery>
                     </r:RibbonComboBox>
@@ -428,8 +434,8 @@
                     <r:RibbonCheckBox Label="枠線のみを表示"
                         ToolTipTitle="サムネイルの内容を非表示にして枠線のみ表示"
                         x:Name="ViewModeCheckBox"
-                        Checked="ViewMode_Changed"
-                        Unchecked="ViewMode_Changed"
+                        Command="{x:Static local:MainWindow.ViewMode}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}"
                         Margin="0,3,0,0"/>
                 </r:RibbonGroup>
             </r:RibbonTab>
