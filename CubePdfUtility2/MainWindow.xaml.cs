@@ -19,10 +19,12 @@
 ///
 /* ------------------------------------------------------------------------- */
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -158,7 +160,6 @@ namespace CubePdfUtility
                 OpenFile(path, "");
             }
             catch (Exception err) { Debug.WriteLine(err.GetType().ToString()); }
-            finally { Refresh(); }
         }
 
         #endregion
@@ -301,11 +302,9 @@ namespace CubePdfUtility
                 dialog.Filter = Properties.Resources.PdfFilter;
                 dialog.CheckFileExists = true;
                 if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
-                _viewmodel.Insert(index, dialog.FileName);
-                _viewmodel.History[0].Text = obj as string;
+                InsertFile(index, dialog.FileName, "", obj as string);
             }
             catch (Exception err) { Debug.WriteLine(err); }
-            finally { Refresh(); }
         }
 
         #endregion
@@ -1084,16 +1083,34 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         private void OpenFile(string path, string password)
         {
-            try
-            {
-                _viewmodel.Open(path, password);
-            }
-            catch (CubePdf.Data.EncryptionException /* err */)
-            {
-                var dialog = new PasswordWindow(path);
-                dialog.Owner = this;
-                if (dialog.ShowDialog() == true) OpenFile(path, dialog.Password);
-            }
+            Cursor = Cursors.Wait;
+            var filename = System.IO.Path.GetFileName(path);
+            var message = String.Format(Properties.Resources.OpenFile, filename);
+            InfoStatusBarItem.Content = message;
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback((Object parameter) => {
+                try
+                {
+                    var reader = new CubePdf.Editing.DocumentReader(path, password);
+                    Dispatcher.BeginInvoke(new Action(() => {
+                        _viewmodel.Open(reader);
+                        Cursor = Cursors.Arrow;
+                        Refresh();
+                        reader.Dispose();
+                    }));
+                }
+                catch (CubePdf.Data.EncryptionException /* err */)
+                {
+                    Dispatcher.BeginInvoke(new Action(() => {
+                        var dialog = new PasswordWindow(path);
+                        dialog.Owner = this;
+                        if (dialog.ShowDialog() == true) OpenFile(path, dialog.Password);
+                        Cursor = Cursors.Arrow;
+                        Refresh();
+                    }));
+                }
+                catch (Exception err) { Debug.WriteLine(err); }
+            }), null);
         }
 
         /* ----------------------------------------------------------------- */
@@ -1123,6 +1140,52 @@ namespace CubePdfUtility
 
         /* ----------------------------------------------------------------- */
         ///
+        /// InsertFile
+        /// 
+        /// <summary>
+        /// index の位置に指定された PDF ファイルを挿入します。パスワードが
+        /// 設定されている場合は、パスワードを入力するためのダイアログを表示
+        /// してユーザに入力してもらいます。入力されたパスワードが間違って
+        /// いた場合は、正しいパスワードが入力されるか、またはキャンセル
+        /// ボタンが押下されるまでダイアログを表示し続けます。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void InsertFile(int index, string path, string password, string history)
+        {
+            Cursor = Cursors.Wait;
+            var filename = System.IO.Path.GetFileName(path);
+            var message = String.Format(Properties.Resources.InsertFile, filename);
+            InfoStatusBarItem.Content = message;
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback((Object parameter) => {
+                try
+                {
+                    var reader = new CubePdf.Editing.DocumentReader(path, password);
+                    Dispatcher.BeginInvoke(new Action(() => {
+                        _viewmodel.Insert(index, reader);
+                        _viewmodel.History[0].Text = history;
+                        Cursor = Cursors.Arrow;
+                        Refresh();
+                        reader.Dispose();
+                    }));
+                }
+                catch (CubePdf.Data.EncryptionException /* err */)
+                {
+                    Dispatcher.BeginInvoke(new Action(() => {
+                        var dialog = new PasswordWindow(path);
+                        dialog.Owner = this;
+                        if (dialog.ShowDialog() == true) InsertFile(index, path, dialog.Password, history);
+                        Cursor = Cursors.Arrow;
+                        Refresh();
+                    }));
+                }
+                catch (Exception err) { Debug.WriteLine(err); }
+            }), null);
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
         /// Refresh
         ///
         /// <summary>
@@ -1143,7 +1206,7 @@ namespace CubePdfUtility
                 var mstr = _viewmodel.IsModified ? "*" : "";
                 Title = String.Format("{0}{1}{2} - {3}", filename, mstr, rstr, ProductName);
 
-                PageCountStatusBarItem.Content = String.Format("{0} ページ", _viewmodel.PageCount);
+                InfoStatusBarItem.Content = String.Format("{0} ページ", _viewmodel.PageCount);
                 LockStatusBarItem.Visibility = restricted ? Visibility.Visible : Visibility.Collapsed;
                 Thumbnail.Items.Refresh();
                 Thumbnail.Focus();
@@ -1151,7 +1214,7 @@ namespace CubePdfUtility
             else
             {
                 Title = ProductName;
-                if (PageCountStatusBarItem != null) PageCountStatusBarItem.Content = string.Empty;
+                if (InfoStatusBarItem != null) InfoStatusBarItem.Content = string.Empty;
                 if (LockStatusBarItem != null) LockStatusBarItem.Visibility = Visibility.Collapsed;
             }
         }
