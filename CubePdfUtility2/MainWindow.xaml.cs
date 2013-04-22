@@ -1155,7 +1155,7 @@ namespace CubePdfUtility
                 var result = MessageBox.Show(Properties.Resources.IsOverwrite, ProductName,
                     MessageBoxButton.YesNoCancel, MessageBoxImage.Information);
                 if (result == MessageBoxResult.Cancel) return false;
-                if (result == MessageBoxResult.Yes) SaveCommand_Executed(this, null);
+                if (result == MessageBoxResult.Yes) _viewmodel.SaveOnClose();
             }
             _viewmodel.Close();
             return true;
