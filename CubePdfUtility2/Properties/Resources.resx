@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="InsertFile" xml:space="preserve">
+    <value>{0} を挿入しています...</value>
+  </data>
   <data name="IsOverwrite" xml:space="preserve">
     <value>PDFの内容が編集されています。上書き保存しますか？</value>
   </data>

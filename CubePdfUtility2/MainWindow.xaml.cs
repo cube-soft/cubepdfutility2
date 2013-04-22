@@ -302,11 +302,9 @@ namespace CubePdfUtility
                 dialog.Filter = Properties.Resources.PdfFilter;
                 dialog.CheckFileExists = true;
                 if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
-                _viewmodel.Insert(index, dialog.FileName);
-                _viewmodel.History[0].Text = obj as string;
+                InsertFile(index, dialog.FileName, "", obj as string);
             }
             catch (Exception err) { Debug.WriteLine(err); }
-            finally { Refresh(); }
         }
 
         #endregion
@@ -1138,6 +1136,52 @@ namespace CubePdfUtility
             }
             _viewmodel.Close();
             return true;
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// InsertFile
+        /// 
+        /// <summary>
+        /// index の位置に指定された PDF ファイルを挿入します。パスワードが
+        /// 設定されている場合は、パスワードを入力するためのダイアログを表示
+        /// してユーザに入力してもらいます。入力されたパスワードが間違って
+        /// いた場合は、正しいパスワードが入力されるか、またはキャンセル
+        /// ボタンが押下されるまでダイアログを表示し続けます。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void InsertFile(int index, string path, string password, string history)
+        {
+            Cursor = Cursors.Wait;
+            var filename = System.IO.Path.GetFileName(path);
+            var message = String.Format(Properties.Resources.InsertFile, filename);
+            InfoStatusBarItem.Content = message;
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback((Object parameter) => {
+                try
+                {
+                    var reader = new CubePdf.Editing.DocumentReader(path, password);
+                    Dispatcher.BeginInvoke(new Action(() => {
+                        _viewmodel.Insert(index, reader);
+                        _viewmodel.History[0].Text = history;
+                        Cursor = Cursors.Arrow;
+                        Refresh();
+                        reader.Dispose();
+                    }));
+                }
+                catch (CubePdf.Data.EncryptionException /* err */)
+                {
+                    Dispatcher.BeginInvoke(new Action(() => {
+                        var dialog = new PasswordWindow(path);
+                        dialog.Owner = this;
+                        if (dialog.ShowDialog() == true) InsertFile(index, path, dialog.Password, history);
+                        Cursor = Cursors.Arrow;
+                        Refresh();
+                    }));
+                }
+                catch (Exception err) { Debug.WriteLine(err); }
+            }), null);
         }
 
         /* ----------------------------------------------------------------- */
