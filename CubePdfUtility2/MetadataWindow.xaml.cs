@@ -55,13 +55,15 @@ namespace CubePdfUtility
         {
             _metadata = new CubePdf.Data.Metadata(viewmodel.Metadata);
             DataContext = _metadata;
-            var sizestr = CubePdf.Data.StringConverter.FormatByteSize(viewmodel.FileSize);
+
+            var info = new System.IO.FileInfo(viewmodel.FilePath);
+            var sizestr = CubePdf.Data.StringConverter.FormatByteSize(info.Length);
 
             // 読み取り専用の情報
             FileName.Text        = System.IO.Path.GetFileName(viewmodel.FilePath);
-            FileSize.Content     = String.Format("{0} ({1:N0} バイト)", sizestr, viewmodel.FileSize);
-            CreationTime.Content = viewmodel.CreationTime.ToString();
-            UpdateTime.Content   = viewmodel.UpdateTime.ToString();
+            FileSize.Content     = String.Format("{0} ({1:N0} バイト)", sizestr, info.Length);
+            CreationTime.Content = info.CreationTime.ToString();
+            UpdateTime.Content   = info.LastWriteTime.ToString();
 
             // Version.Minor は読み取り専用なので Binding ではなくコード側で対応
             PdfVersion.SelectedIndex = _metadata.Version.Minor;

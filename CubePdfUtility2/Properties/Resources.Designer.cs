@@ -61,6 +61,15 @@ namespace CubePdfUtility.Properties {
         }
         
         /// <summary>
+        ///   {0} を挿入しています... に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string InsertFile {
+            get {
+                return ResourceManager.GetString("InsertFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   PDFの内容が編集されています。上書き保存しますか？ に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string IsOverwrite {
@@ -70,7 +79,16 @@ namespace CubePdfUtility.Properties {
         }
         
         /// <summary>
-        ///   「{0}」はパスワードで保護されています。パスワードを入力して下さい。 に類似しているローカライズされた文字列を検索します。
+        ///   {0} を開いています... に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string OpenFile {
+            get {
+                return ResourceManager.GetString("OpenFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   {0} はパスワードで保護されています。パスワードを入力して下さい。 に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string PasswordPrompt {
             get {

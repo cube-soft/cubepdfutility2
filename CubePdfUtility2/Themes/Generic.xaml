@@ -7,7 +7,6 @@
 
     <Style x:Key="{ComponentResourceKey TypeInTargetAssembly={x:Type local:ImageView}, ResourceId=ImageView}"
         TargetType="{x:Type ListView}" BasedOn="{StaticResource {x:Type ListBox}}">
-        <Setter Property="ItemsSource" Value="{Binding}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate>
@@ -30,9 +29,12 @@
         <Setter Property="ContentTemplate">
             <Setter.Value>
                 <DataTemplate>
-                    <Border Background="White">
-                        <Image Source="{Binding Path=Image, Converter={StaticResource ImageConverter}}"/>
-                    </Border>
+                    <StackPanel Orientation="Vertical">
+                        <Border Background="White">
+                            <Image Source="{Binding Path=Image, Converter={StaticResource ImageConverter}}"/>
+                        </Border>
+                        <TextBlock Text="{Binding Path=Text}" HorizontalAlignment="Right" Foreground="White"/>
+                    </StackPanel>
                 </DataTemplate>
             </Setter.Value>
         </Setter>

@@ -1,6 +1,6 @@
 ﻿/* ------------------------------------------------------------------------- */
 ///
-/// PreviewWindow.xaml.cs
+/// VersionWindow.xaml.cs
 ///
 /// Copyright (c) 2013 CubeSoft, Inc. All rights reserved.
 ///
@@ -19,87 +19,108 @@
 ///
 /* ------------------------------------------------------------------------- */
 using System;
-using System.Diagnostics;
 using System.Windows;
-using System.Windows.Input;
 
 namespace CubePdfUtility
 {
     /* --------------------------------------------------------------------- */
     ///
-    /// PreviewWindow
+    /// VersionWindow
     /// 
     /// <summary>
-    /// PreviewWindow.xaml の相互作用ロジック
+    /// VersionWindow.xaml の相互作用ロジック
     /// </summary>
     /// 
     /* --------------------------------------------------------------------- */
-    public partial class PreviewWindow : Window
+    public partial class VersionWindow : Window
     {
+        #region Initialization and Termination
+
         /* ----------------------------------------------------------------- */
-        /// PreviewWindow (constructor)
+        ///
+        /// VersionWindow (constructor)
+        /// 
+        /// <summary>
+        /// 既定の値でオブジェクトを初期化します。
+        /// </summary>
+        ///
         /* ----------------------------------------------------------------- */
-        public PreviewWindow()
+        public VersionWindow()
         {
             InitializeComponent();
+            SetVersion(System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString());
         }
 
         /* ----------------------------------------------------------------- */
         ///
-        /// PreviewWindow (constructor)
-        ///
+        /// VersionWindow (constructor)
+        /// 
         /// <summary>
-        /// プレビュー画面を表示するための初期化を行います。
+        /// 指定されたバージョンの値を使用して、オブジェクトを初期化します。
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
-        public PreviewWindow(CubePdf.Wpf.IListViewModel viewmodel, int index)
-            : this()
+        public VersionWindow(string version)
         {
-            var page = viewmodel.ToPage(viewmodel.Items[index]);
-            Width  = page.ViewSize.Width;
-            Height = page.ViewSize.Height;
-
-            _image = viewmodel.PreviewImage(index, page.ViewSize);
-            MainViewer.DataContext = _image;
-
-            var filename = System.IO.Path.GetFileName(page.FilePath);
-            var pagenum  = index + 1;
-            Title = String.Format("{0}（{1}/{2} ページ）", filename, pagenum, viewmodel.PageCount);
+            InitializeComponent();
+            SetVersion(version);
         }
+
+        #endregion
+
+        #region Event handlers
 
         /* ----------------------------------------------------------------- */
         ///
-        /// OnClosed
-        ///
+        /// Button_Click
+        /// 
         /// <summary>
-        /// 画面を閉じる際に行う処理です。
+        /// OK ボタンがクリックされた時に実行されるイベントハンドラです。
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
-        protected override void OnClosed(EventArgs e)
-        {
-            base.OnClosed(e);
-            if (_image != null) _image.Dispose();
-            _image = null;
-        }
-
-        /* ----------------------------------------------------------------- */
-        ///
-        /// OnClick
-        ///
-        /// <summary>
-        /// プレビュー画面がクリックされた時に行う処理です。
-        /// </summary>
-        ///
-        /* ----------------------------------------------------------------- */
-        private void OnClick(object sender, RoutedEventArgs e)
+        private void Button_Click(object sender, EventArgs e)
         {
             Close();
         }
 
-        #region Variables
-        private System.Drawing.Image _image = null;
+        /* ----------------------------------------------------------------- */
+        ///
+        /// HyperLink_Click
+        /// 
+        /// <summary>
+        /// ハイパーリンクテキストが実行された時に実行されるイベントハンドラ
+        /// です。該当 URL へ移動します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void HyperLink_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                System.Diagnostics.Process.Start("http://www.cube-soft.jp/");
+            }
+            catch { }
+        }
+
+        #endregion
+
+        #region Other methods
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// SetVersion
+        /// 
+        /// <summary>
+        /// バージョン情報を設定します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void SetVersion(string version)
+        {
+            VersionLabel.Content = String.Format("Version {0}", version);
+        }
+
         #endregion
     }
 }

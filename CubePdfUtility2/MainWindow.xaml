@@ -27,8 +27,14 @@
         <CommandBinding Command="{x:Static cube:ListViewCommands.Metadata}"   CanExecute="MetadataCommand_CanExecute"   Executed="MetadataCommand_Executed"/>
         <CommandBinding Command="{x:Static cube:ListViewCommands.Encryption}" CanExecute="EncryptionCommand_CanExecute" Executed="EncryptionCommand_Executed"/>
 
-        <CommandBinding Command="{x:Static local:MainWindow.Select}"   CanExecute="SelectCommand_CanExecute"    Executed="SelectCommand_Executed"/>
-        <CommandBinding Command="{x:Static local:MainWindow.UnSelect}" CanExecute="UnSelectCommand_CanExecute"  Executed="UnSelectCommand_Executed"/>
+        <CommandBinding Command="{x:Static local:MainWindow.Select}"   CanExecute="SelectCommand_CanExecute"   Executed="SelectCommand_Executed"/>
+        <CommandBinding Command="{x:Static local:MainWindow.UnSelect}" CanExecute="UnSelectCommand_CanExecute" Executed="UnSelectCommand_Executed"/>
+        <CommandBinding Command="{x:Static local:MainWindow.Version}"  CanExecute="VersionCommand_CanExecute"  Executed="VersionCommand_Executed"/>
+        <CommandBinding Command="{x:Static local:MainWindow.ZoomIn}"   CanExecute="ZoomInCommand_CanExecute"   Executed="ZoomInCommand_Executed"/>
+        <CommandBinding Command="{x:Static local:MainWindow.ZoomOut}"  CanExecute="ZoomOutCommand_CanExecute"  Executed="ZoomOutCommand_Executed"/>
+        <CommandBinding Command="{x:Static local:MainWindow.ViewSize}" CanExecute="ViewSizeCommand_CanExecute" Executed="ViewSizeCommand_Executed"/>
+        <CommandBinding Command="{x:Static local:MainWindow.ViewMode}" CanExecute="ViewModeCommand_CanExecute" Executed="ViewModeCommand_Executed"/>
+        <CommandBinding Command="{x:Static local:MainWindow.Redraw}"   CanExecute="RedrawCommand_CanExecute"   Executed="RedrawCommand_Executed"/>
     </Window.CommandBindings>
     
     <Window.Resources>
@@ -107,67 +113,72 @@
 
         <r:Ribbon>
             <r:Ribbon.ApplicationMenu>
-<<<<<<< HEAD
-                <r:RibbonApplicationMenu SmallImageSource="Images\SmallIcons\Menu.png"
-                                         Loaded="RibbonApplicationMenu_Loaded">
-=======
                 <r:RibbonApplicationMenu
                     SmallImageSource="Images\SmallIcons\Menu.png"
                     Loaded="ApplicationMenu_Loaded">
 
->>>>>>> origin/develop
                     <r:RibbonApplicationMenuItem Header="開く"
+                        ToolTipTitle="開く"
                         ImageSource="Images\LargeIcons\Open.png"
                         Command="Open">
                     </r:RibbonApplicationMenuItem>
 
                     <r:RibbonApplicationMenuItem Header="上書き保存"
+                        ToolTipTitle="上書き保存"
                         ImageSource="Images\LargeIcons\Save.png"
                         Command="Save"/>
 
                     <r:RibbonApplicationMenuItem Header="名前を付けて保存"
+                        ToolTipTitle="名前を付けて保存"
                         ImageSource="Images\LargeIcons\SaveAs.png"
                         Command="SaveAs"/>
 
                     <r:RibbonSeparator />
 
                     <r:RibbonApplicationMenuItem Header="バージョン情報"
-                        ImageSource="Images\LargeIcons\Version.png"/>
+                        ToolTipTitle="バージョン情報"
+                        ImageSource="Images\LargeIcons\Version.png"
+                        Command="{x:Static local:MainWindow.Version}"/>
 
                     <r:RibbonSeparator />
 
                     <r:RibbonApplicationMenuItem Header="閉じる"
+                        ToolTipTitle="閉じる"
                         ImageSource="Images\LargeIcons\Close.png"
                         Command="Close"/>
 
                     <r:RibbonApplicationMenuItem Header="終了"
+                        ToolTipTitle="終了"
                         ImageSource="Images\LargeIcons\Exit.png"
                         Command="Close"
                         CommandParameter="Exit"/>
 
                     <r:RibbonApplicationMenu.AuxiliaryPaneContent>
-<r:RibbonGallery
-                            MinColumnCount="1"
+                        <r:RibbonGallery
+                            MaxColumnCount="1"
                             Command="Open"
                             CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=SelectedItem, Converter={StaticResource ControlToTagConverter}}">
-                            <r:RibbonGalleryCategory x:Name="RecentFiles" Header="最近開いたファイル"/>
+                            <r:RibbonGalleryCategory x:Name="RecentFilesGallery" Header="最近開いたファイル"/>
                         </r:RibbonGallery>
                     </r:RibbonApplicationMenu.AuxiliaryPaneContent>
-</r:RibbonApplicationMenu>
+                </r:RibbonApplicationMenu>
             </r:Ribbon.ApplicationMenu>
             
-            <r:RibbonTab Header="編集">
-                <r:RibbonGroup Header="クイックリンク">
+            <r:RibbonTab Header="編集" x:Name="EditTab">
+                <r:RibbonGroup Header="クイックリンク" x:Name="QuickLinkGroup">
                     <r:RibbonButton Label="開く"
+                        ToolTipTitle="開く"
+                        x:Name="OpenButton"
                         SmallImageSource="Images\SmallIcons\Open.png"
                         LargeImageSource="Images\LargeIcons\Open.png"
                         Command="Open"/>
 
                     <r:RibbonSplitButton Label="保存"
+                        ToolTipTitle="上書き保存"
                         x:Name="SaveButton"
-                        SmallImageSource="Images\SmallIcons\SaveAs.png"
-                        LargeImageSource="Images\LargeIcons\SaveAs.png"
-                        Command="SaveAs">
+                        SmallImageSource="Images\SmallIcons\Save.png"
+                        LargeImageSource="Images\LargeIcons\Save.png"
+                        Command="Save">
 
                         <r:RibbonMenuItem Header="上書き保存"
                             ImageSource="Images\SmallIcons\Save.png"
@@ -178,17 +189,60 @@
                             Command="SaveAs"/>
                     </r:RibbonSplitButton>
 
-                    <r:RibbonButton Label="元に戻す"
+                    <r:RibbonSplitButton Label="元に戻す"
+                        ToolTipTitle="直前の操作を取り消して元に戻す"
+                        x:Name="UndoButton"
                         SmallImageSource="Images\SmallIcons\Undo.png"
                         LargeImageSource="Images\LargeIcons\Undo.png"
-                        Command="Undo"/>
+                        Command="Undo">
 
-                    <r:RibbonButton Label="やり直し"
+                        <r:RibbonGallery
+                            MaxColumnCount="1"
+                            MaxHeight="300"
+                            Command="Undo"
+                            CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=SelectedItem}">
+
+                            <r:RibbonGalleryCategory Header="一度に元に戻す"
+                                x:Name="HistoryGallery"
+                                ItemsSource="{Binding ElementName=RibbonWindow, Path=ViewModel.History}">
+
+                                <r:RibbonGalleryCategory.ItemTemplate>
+                                    <DataTemplate>
+                                        <r:RibbonGalleryItem Content="{Binding Text}"/>
+                                    </DataTemplate>
+                                </r:RibbonGalleryCategory.ItemTemplate>
+                            </r:RibbonGalleryCategory>
+                        </r:RibbonGallery>
+                    </r:RibbonSplitButton>
+
+                    <r:RibbonSplitButton Label="やり直し"
+                        ToolTipTitle="直前に取り消した操作をもう一度実行する"
+                        x:Name="RedoButton"
                         SmallImageSource="Images\SmallIcons\Redo.png"
                         LargeImageSource="Images\LargeIcons\Redo.png"
-                        Command="Redo"/>
+                        Command="Redo">
+
+                        <r:RibbonGallery
+                            MaxColumnCount="1"
+                            MaxHeight="300"
+                            Command="Redo"
+                            CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=SelectedItem}">
+
+                            <r:RibbonGalleryCategory Header="一度にやり直し"
+                                x:Name="UndoHistoryGallery"
+                                ItemsSource="{Binding ElementName=RibbonWindow, Path=ViewModel.UndoHistory}">
+
+                                <r:RibbonGalleryCategory.ItemTemplate>
+                                    <DataTemplate>
+                                        <r:RibbonGalleryItem Content="{Binding Text}"/>
+                                    </DataTemplate>
+                                </r:RibbonGalleryCategory.ItemTemplate>
+                            </r:RibbonGalleryCategory>
+                        </r:RibbonGallery>
+                    </r:RibbonSplitButton>
 
                     <r:RibbonSplitButton Label="選択"
+                        ToolTipTitle="すべてのページを選択、または選択の解除"
                         x:Name="SelectButton"
                         SmallImageSource="Images\SmallIcons\Select.png"
                         LargeImageSource="Images\LargeIcons\Select.png"
@@ -209,8 +263,9 @@
                     </r:RibbonSplitButton>
                 </r:RibbonGroup>
 
-                <r:RibbonGroup Header="ページ操作">
+                <r:RibbonGroup Header="ページ操作" x:Name="PagingGroup">
                     <r:RibbonSplitButton Label="挿入"
+                        ToolTipTitle="選択位置に新しいPDFファイルを挿入"
                         x:Name="InsertButton"
                         SmallImageSource="Images\SmallIcons\Insert.png"
                         LargeImageSource="Images\LargeIcons\Insert.png"
@@ -218,21 +273,25 @@
                         CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedIndex}">
 
                         <r:RibbonMenuItem Header="選択位置に挿入"
+                            x:Name="InsertSelect"
                             ImageSource="Images\SmallIcons\Insert.png"
                             Command="{x:Static cube:ListViewCommands.Insert}"
                             CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedIndex}"/>
 
                         <r:RibbonMenuItem Header="先頭に挿入"
+                            x:Name="InsertHead"
                             ImageSource="Images\SmallIcons\Insert.png"
                             Command="{x:Static cube:ListViewCommands.Insert}"/>
 
                         <r:RibbonMenuItem Header="末尾に挿入"
+                            x:Name="InsertTail"
                             ImageSource="Images\SmallIcons\Insert.png"
                             Command="{x:Static cube:ListViewCommands.Insert}"
                             CommandParameter="{Binding ElementName=Thumbnail, Path=Items.Count}"/>
                     </r:RibbonSplitButton>
 
                     <r:RibbonSplitButton Label="抽出"
+                        ToolTipTitle="選択ページを単一ファイルとして抽出"
                         x:Name="ExtractButton"
                         SmallImageSource="Images\SmallIcons\Extract.png"
                         LargeImageSource="Images\LargeIcons\Extract.png"
@@ -259,6 +318,7 @@
                     </r:RibbonSplitButton>
 
                     <r:RibbonSplitButton Label="削除"
+                        ToolTipTitle="選択ページを削除"
                         x:Name="RemoveButton"
                         SmallImageSource="Images\SmallIcons\Delete.png"
                         LargeImageSource="Images\LargeIcons\Delete.png"
@@ -266,52 +326,64 @@
                         CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedItems}">
 
                         <r:RibbonMenuItem Header="選択ページを削除"
+                            x:Name="RemoveSelect"
                             ImageSource="Images\SmallIcons\Delete.png"
                             Command="{x:Static cube:ListViewCommands.Remove}"
                             CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedItems}"/>
 
                         <r:RibbonMenuItem Header="範囲を指定して削除"
+                            x:Name="RemoveRange"
                             ImageSource="Images\SmallIcons\Delete.png"
                             Command="{x:Static cube:ListViewCommands.Remove}"/>
                     </r:RibbonSplitButton>
                 </r:RibbonGroup>
                 
-                <r:RibbonGroup Header="順序">
+                <r:RibbonGroup Header="順序" x:Name="OrderGroup">
                     <r:RibbonButton Label="前へ"
+                        ToolTipTitle="選択ページを1ページ前に移動"
+                        x:Name="ForwardButton"
                         SmallImageSource="Images\SmallIcons\Back.png"
                         LargeImageSource="Images\LargeIcons\Back.png"
                         Command="{x:Static cube:ListViewCommands.Move}"
                         CommandParameter="-1"/>
 
                     <r:RibbonButton Label="後へ"
+                        ToolTipTitle="選択ページを1ページ後ろに移動"
+                        x:Name="BackButton"
                         SmallImageSource="Images\SmallIcons\Forward.png"
                         LargeImageSource="Images\LargeIcons\Forward.png"
                         Command="{x:Static cube:ListViewCommands.Move}"
                         CommandParameter="1"/>
                 </r:RibbonGroup>
                 
-                <r:RibbonGroup Header="回転">
+                <r:RibbonGroup Header="回転" x:Name="RotationGroup">
                     <r:RibbonButton Label="左90度"
+                        ToolTipTitle="選択ページを左回りに90度回転"
+                        x:Name="RotateLeftButton"
                         SmallImageSource="Images\SmallIcons\RotateLeft.png"
                         LargeImageSource="Images\LargeIcons\RotateLeft.png"
                         Command="{x:Static cube:ListViewCommands.Rotate}"
                         CommandParameter="-90"/>
 
                     <r:RibbonButton Label="右90度"
+                        ToolTipTitle="選択ページを右回りに90度回転"
+                        x:Name="RotateRightButton"
                         SmallImageSource="Images\SmallIcons\RotateRight.png"
                         LargeImageSource="Images\LargeIcons\RotateRight.png"
                         Command="{x:Static cube:ListViewCommands.Rotate}"
                         CommandParameter="90"/>
                 </r:RibbonGroup>
 
-                <r:RibbonGroup Header="プロパティ">
+                <r:RibbonGroup Header="プロパティ" x:Name="PropertiesGroup">
                     <r:RibbonButton Label="文書プロパティ"
+                        ToolTipTitle="PDFファイルの文書プロパティを編集"
                         MaxWidth="64"
                         SmallImageSource="Images\SmallIcons\Property.png"
                         LargeImageSource="Images\LargeIcons\Property.png"
                         Command="{x:Static cube:ListViewCommands.Metadata}"/>
 
                     <r:RibbonButton Label="セキュリティ"
+                        ToolTipTitle="PDFファイルのセキュリティ情報を編集"
                         MaxWidth="64"
                         SmallImageSource="Images\SmallIcons\Security.png"
                         LargeImageSource="Images\LargeIcons\Security.png"
@@ -319,39 +391,58 @@
                 </r:RibbonGroup>
             </r:RibbonTab>
             
-            <r:RibbonTab Header="表示">
-                <r:RibbonGroup Header="サムネイル">
+            <r:RibbonTab Header="表示" x:Name="ViewTab">
+                <r:RibbonGroup Header="更新" x:Name="RefreshGroup">
+                    <r:RibbonButton Label="再描画"
+                        ToolTipTitle="サムネイルの再描画"
+                        x:Name="RedrawButton"
+                        LargeImageSource="Images\LargeIcons\Refresh.png"
+                        SmallImageSource="Images\SmallIcons\Refresh.png"
+                        Command="{x:Static local:MainWindow.Redraw}"/>
+                </r:RibbonGroup>
+
+                <r:RibbonGroup Header="サムネイル設定" x:Name="ThumbnailViewGroup">
                     <r:RibbonButton Label="拡大"
-                        LargeImageSource="Images\LargeIcons\ZoomIn.png"/>
+                        ToolTipTitle="サムネイルのサイズを拡大"
+                        x:Name="ZommInButton"
+                        LargeImageSource="Images\LargeIcons\ZoomIn.png"
+                        SmallImageSource="Images\SmallIcons\ZoomIn.png"
+                        Command="{x:Static local:MainWindow.ZoomIn}"/>
 
                     <r:RibbonButton Label="縮小"
-                        LargeImageSource="Images\LargeIcons\ZoomOut.png"/>
+                        ToolTipTitle="サムネイルのサイズを縮小"
+                        x:Name="ZoomOutButton"
+                        LargeImageSource="Images\LargeIcons\ZoomOut.png"
+                        SmallImageSource="Images\SmallIcons\ZoomOut.png"
+                        Command="{x:Static local:MainWindow.ZoomOut}"/>
 
-                    <r:RibbonComboBox Label="サイズ" IsReadOnly="True" Margin="2">
-                        <r:RibbonGallery>
-                            <r:RibbonGalleryCategory>
-                                <r:RibbonGalleryItem Content="64px"/>
-                                <r:RibbonGalleryItem Content="128px"/>
-                                <r:RibbonGalleryItem Content="150px"/>
-                                <r:RibbonGalleryItem Content="256px"/>
-                                <r:RibbonGalleryItem Content="512px"/>
-                            </r:RibbonGalleryCategory>
+                    <r:RibbonComboBox Label="サイズ"
+                        ToolTipTitle="サムネイルのサイズを変更"
+                        x:Name="ViewSizeComboBox"
+                        IsReadOnly="True"
+                        Margin="2">
+
+                        <r:RibbonGallery x:Name="ViewSizeGallery"
+                            SelectedValuePath="Key"
+                            Command="{x:Static local:MainWindow.ViewSize}"
+                            CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=SelectedValue}">
+
+                            <r:RibbonGalleryCategory x:Name="ViewSizeGalleryCategory" DisplayMemberPath="Value"/>
                         </r:RibbonGallery>
                     </r:RibbonComboBox>
-                    <r:RibbonComboBox Label="モード" IsReadOnly="True" Margin="2">
-                        <r:RibbonGallery>
-                            <r:RibbonGalleryCategory>
-                                <r:RibbonGalleryItem Content="画質優先"/>
-                                <r:RibbonGalleryItem Content="省メモリー"/>
-                                <r:RibbonGalleryItem Content="枠線のみ"/>
-                            </r:RibbonGalleryCategory>
-                        </r:RibbonGallery>
-                    </r:RibbonComboBox>
+
+                    <r:RibbonCheckBox Label="枠線のみを表示"
+                        ToolTipTitle="サムネイルの内容を非表示にして枠線のみ表示"
+                        x:Name="ViewModeCheckBox"
+                        Command="{x:Static local:MainWindow.ViewMode}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}"
+                        Margin="0,3,0,0"/>
                 </r:RibbonGroup>
             </r:RibbonTab>
         </r:Ribbon>
 
         <ListView Grid.Row="1" x:Name="Thumbnail"
+            ItemsSource="{Binding ElementName=RibbonWindow, Path=ViewModel.Items}"
             ContextMenu="{DynamicResource EditMenu}"
             VirtualizingStackPanel.VirtualizationMode="Recycling"
             VirtualizingStackPanel.IsVirtualizing="True"
@@ -368,9 +459,9 @@
             </i:Interaction.Behaviors>
         </ListView>
 
-        <StatusBar Grid.Row="2" Height="23">
+        <StatusBar Grid.Row="2" x:Name="FooterStatusBar" Height="23">
             <Image x:Name="LockStatusBarItem" Source="Images\SmallIcons\Lock.png" Visibility="Collapsed"/>
-            <StatusBarItem Name="PageCountStatusBarItem" Content=""/>
+            <StatusBarItem Name="InfoStatusBarItem" Content=""/>
         </StatusBar>
     </Grid>
 </r:RibbonWindow>
