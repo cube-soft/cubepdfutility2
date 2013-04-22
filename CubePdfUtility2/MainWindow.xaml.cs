@@ -82,6 +82,21 @@ namespace CubePdfUtility
             ThumbnailImageView.ItemWidth = _viewmodel.ItemWidth;
             ViewSizeGalleryCategory.ItemsSource = _ViewSize;
             ViewSizeGallery.SelectedItem = size;
+
+
+            // Meiryoフォントへ
+            System.Drawing.Text.InstalledFontCollection fonts = new System.Drawing.Text.InstalledFontCollection();
+            System.Drawing.FontFamily[] ffArray = fonts.Families;
+
+            foreach (System.Drawing.FontFamily ff in ffArray)
+            {
+                if(ff.Name.Contains("Meiryo"))
+                {
+                    TextElement.FontFamilyProperty.OverrideMetadata(typeof(TextElement), new FrameworkPropertyMetadata(new FontFamily(ff.Name)));
+                    TextBlock.FontFamilyProperty.OverrideMetadata(typeof(TextBlock), new FrameworkPropertyMetadata(new FontFamily(ff.Name)));
+                    MainRibbon.FontFamily = new FontFamily(ff.Name);
+                }
+            }
         }
 
         #endregion

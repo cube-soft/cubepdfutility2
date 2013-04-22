@@ -40,7 +40,7 @@
     <Window.Resources>
         <cube:ControlToTagConverter x:Key="ControlToTagConverter"/>
 
-        <ContextMenu x:Key="EditMenu">
+        <ContextMenu x:Key="EditMenu" FontFamily="Meiryo">
             <MenuItem Header="プレビュー" Click="OnPreview"/>
 
             <Separator/>
@@ -111,7 +111,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <r:Ribbon>
+        <r:Ribbon x:Name="MainRibbon">
             <r:Ribbon.ApplicationMenu>
                 <r:RibbonApplicationMenu
                     SmallImageSource="Images\SmallIcons\Menu.png"
