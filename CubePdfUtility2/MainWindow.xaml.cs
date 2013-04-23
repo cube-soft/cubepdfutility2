@@ -78,6 +78,7 @@ namespace CubePdfUtility
             
             var size = _ViewSize[2];
             _viewmodel.ItemWidth = size.Key;
+            _viewmodel.RunCompleted += new EventHandler(ViewModel_RunCompleted);
             ThumbnailImageView.ItemWidth = _viewmodel.ItemWidth;
             ViewSizeGalleryCategory.ItemsSource = _ViewSize;
             ViewSizeGallery.SelectedItem = size;
@@ -225,12 +226,8 @@ namespace CubePdfUtility
 
         private void SaveCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            try
-            {
-                _viewmodel.Save();
-            }
+            try { _viewmodel.Save(); }
             catch (Exception err) { Debug.WriteLine(err); }
-            finally { Refresh(); }
         }
 
         #endregion
@@ -264,7 +261,6 @@ namespace CubePdfUtility
                 _viewmodel.Save(dialog.FileName);
             }
             catch (Exception err) { Debug.WriteLine(err); }
-            finally { Refresh(); }
         }
 
         #endregion
@@ -357,11 +353,7 @@ namespace CubePdfUtility
                 _viewmodel.History[0].Text = obj as string;
             }
             catch (Exception err) { Debug.WriteLine(err); }
-            finally
-            {
-                _viewmodel.EndCommand();
-                Refresh();
-            }
+            finally { _viewmodel.EndCommand(); }
         }
 
         #endregion
@@ -405,7 +397,6 @@ namespace CubePdfUtility
                 _viewmodel.Extract(items, dialog.FileName);
             }
             catch (Exception err) { Debug.WriteLine(err); }
-            finally { Refresh(); }
         }
 
         #endregion
@@ -446,7 +437,6 @@ namespace CubePdfUtility
                 _viewmodel.Split(items, dialog.SelectedPath);
             }
             catch (Exception err) { Debug.WriteLine(err); }
-            finally { Refresh(); }
         }
 
         #endregion
@@ -498,11 +488,7 @@ namespace CubePdfUtility
                 _viewmodel.History[0].Text = (delta < 0) ? ForwardButton.Label : BackButton.Label;
             }
             catch (Exception err) { Debug.WriteLine(err); }
-            finally
-            {
-                _viewmodel.EndCommand();
-                Refresh();
-            }
+            finally { _viewmodel.EndCommand(); }
         }
 
         #endregion
@@ -544,11 +530,7 @@ namespace CubePdfUtility
                 _viewmodel.History[0].Text = (degree < 0) ? RotateLeftButton.Label : RotateRightButton.Label;
             }
             catch (Exception err) { Debug.WriteLine(err); }
-            finally
-            {
-                _viewmodel.EndCommand();
-                Refresh();
-            }
+            finally { _viewmodel.EndCommand(); }
         }
 
         #endregion
@@ -584,7 +566,6 @@ namespace CubePdfUtility
                 }
             }
             catch (Exception err) { Debug.WriteLine(err); }
-            finally { Refresh(); }
         }
 
         #endregion
@@ -620,7 +601,6 @@ namespace CubePdfUtility
                 }
             }
             catch (Exception err) { Debug.WriteLine(err); }
-            finally { Refresh(); }
         }
 
         #endregion
@@ -907,12 +887,8 @@ namespace CubePdfUtility
 
         private void RedrawCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            try
-            {
-                _viewmodel.Reset();
-            }
+            try { _viewmodel.Reset(); }
             catch (Exception err) { Debug.WriteLine(err); }
-            finally { Refresh(); }
         }
 
         #endregion
@@ -968,6 +944,57 @@ namespace CubePdfUtility
             dialog.Owner = this;
             dialog.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
             dialog.ShowDialog();
+        }
+
+        #endregion
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// Help
+        ///
+        /// <summary>
+        /// ヘルプ（マニュアル）を表示します。
+        /// パラメータ (e.Parameter) は常に null です。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        #region Help
+
+        private void HelpCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            // TODO: 実装
+            e.CanExecute = false;
+        }
+
+        private void HelpCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            // TODO: 実装
+        }
+
+        #endregion
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// Web
+        ///
+        /// <summary>
+        /// Web ページを表示します。
+        /// パラメータ (e.Parameter) は表示する Web ページの URL です。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        #region Web
+
+        private void WebCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        private void WebCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var url = e.Parameter as string;
+            if (url == null) return;
+            Process.Start(url);
         }
 
         #endregion
@@ -1087,6 +1114,20 @@ namespace CubePdfUtility
             }
         }
 
+        /* ----------------------------------------------------------------- */
+        ///
+        /// ViewModel_RunCompleted
+        /// 
+        /// <summary>
+        /// ViewModel の各種処理が終了した際に実行されるイベントハンドラです。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void ViewModel_RunCompleted(object sender, EventArgs e)
+        {
+            Refresh();
+        }
+
         #endregion
 
         #region Other Methods
@@ -1117,8 +1158,6 @@ namespace CubePdfUtility
                     var reader = new CubePdf.Editing.DocumentReader(path, password);
                     Dispatcher.BeginInvoke(new Action(() => {
                         _viewmodel.Open(reader);
-                        Cursor = Cursors.Arrow;
-                        Refresh();
                         reader.Dispose();
                     }));
                 }
@@ -1128,8 +1167,6 @@ namespace CubePdfUtility
                         var dialog = new PasswordWindow(path);
                         dialog.Owner = this;
                         if (dialog.ShowDialog() == true) OpenFile(path, dialog.Password);
-                        Cursor = Cursors.Arrow;
-                        Refresh();
                     }));
                 }
                 catch (Exception err) { Debug.WriteLine(err); }
@@ -1188,8 +1225,6 @@ namespace CubePdfUtility
                     Dispatcher.BeginInvoke(new Action(() => {
                         _viewmodel.Insert(index, reader);
                         _viewmodel.History[0].Text = history;
-                        Cursor = Cursors.Arrow;
-                        Refresh();
                         reader.Dispose();
                     }));
                 }
@@ -1199,8 +1234,6 @@ namespace CubePdfUtility
                         var dialog = new PasswordWindow(path);
                         dialog.Owner = this;
                         if (dialog.ShowDialog() == true) InsertFile(index, path, dialog.Password, history);
-                        Cursor = Cursors.Arrow;
-                        Refresh();
                     }));
                 }
                 catch (Exception err) { Debug.WriteLine(err); }
@@ -1240,6 +1273,7 @@ namespace CubePdfUtility
                 if (InfoStatusBarItem != null) InfoStatusBarItem.Content = string.Empty;
                 if (LockStatusBarItem != null) LockStatusBarItem.Visibility = Visibility.Collapsed;
             }
+            Cursor = Cursors.Arrow;
         }
 
         #endregion
@@ -1264,12 +1298,14 @@ namespace CubePdfUtility
         #region ICommand variables
         public static readonly ICommand Select   = new RoutedCommand("Select",   typeof(MainWindow));
         public static readonly ICommand UnSelect = new RoutedCommand("UnSelect", typeof(MainWindow));
-        public static readonly ICommand Version  = new RoutedCommand("Version",  typeof(MainWindow));
         public static readonly ICommand ZoomIn   = new RoutedCommand("ZoomIn",   typeof(MainWindow));
         public static readonly ICommand ZoomOut  = new RoutedCommand("ZoomOut",  typeof(MainWindow));
         public static readonly ICommand ViewSize = new RoutedCommand("ViewSize", typeof(MainWindow));
         public static readonly ICommand ViewMode = new RoutedCommand("ViewMode", typeof(MainWindow));
         public static readonly ICommand Redraw   = new RoutedCommand("Redraw",   typeof(MainWindow));
+        public static readonly ICommand Version  = new RoutedCommand("Version",  typeof(MainWindow));
+        public static readonly ICommand Help     = new RoutedCommand("Help",     typeof(MainWindow));
+        public static readonly ICommand Web      = new RoutedCommand("Web",      typeof(MainWindow));
         #endregion
     }
 }
