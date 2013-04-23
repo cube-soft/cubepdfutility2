@@ -226,12 +226,8 @@ namespace CubePdfUtility
 
         private void SaveCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            try
-            {
-                _viewmodel.Save();
-            }
+            try { _viewmodel.Save(); }
             catch (Exception err) { Debug.WriteLine(err); }
-            finally { Refresh(); }
         }
 
         #endregion
@@ -265,7 +261,6 @@ namespace CubePdfUtility
                 _viewmodel.Save(dialog.FileName);
             }
             catch (Exception err) { Debug.WriteLine(err); }
-            finally { Refresh(); }
         }
 
         #endregion
@@ -358,11 +353,7 @@ namespace CubePdfUtility
                 _viewmodel.History[0].Text = obj as string;
             }
             catch (Exception err) { Debug.WriteLine(err); }
-            finally
-            {
-                _viewmodel.EndCommand();
-                Refresh();
-            }
+            finally { _viewmodel.EndCommand(); }
         }
 
         #endregion
@@ -406,7 +397,6 @@ namespace CubePdfUtility
                 _viewmodel.Extract(items, dialog.FileName);
             }
             catch (Exception err) { Debug.WriteLine(err); }
-            finally { Refresh(); }
         }
 
         #endregion
@@ -447,7 +437,6 @@ namespace CubePdfUtility
                 _viewmodel.Split(items, dialog.SelectedPath);
             }
             catch (Exception err) { Debug.WriteLine(err); }
-            finally { Refresh(); }
         }
 
         #endregion
@@ -499,11 +488,7 @@ namespace CubePdfUtility
                 _viewmodel.History[0].Text = (delta < 0) ? ForwardButton.Label : BackButton.Label;
             }
             catch (Exception err) { Debug.WriteLine(err); }
-            finally
-            {
-                _viewmodel.EndCommand();
-                Refresh();
-            }
+            finally { _viewmodel.EndCommand(); }
         }
 
         #endregion
@@ -545,11 +530,7 @@ namespace CubePdfUtility
                 _viewmodel.History[0].Text = (degree < 0) ? RotateLeftButton.Label : RotateRightButton.Label;
             }
             catch (Exception err) { Debug.WriteLine(err); }
-            finally
-            {
-                _viewmodel.EndCommand();
-                Refresh();
-            }
+            finally { _viewmodel.EndCommand(); }
         }
 
         #endregion
@@ -585,7 +566,6 @@ namespace CubePdfUtility
                 }
             }
             catch (Exception err) { Debug.WriteLine(err); }
-            finally { Refresh(); }
         }
 
         #endregion
@@ -621,7 +601,6 @@ namespace CubePdfUtility
                 }
             }
             catch (Exception err) { Debug.WriteLine(err); }
-            finally { Refresh(); }
         }
 
         #endregion
@@ -908,12 +887,8 @@ namespace CubePdfUtility
 
         private void RedrawCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            try
-            {
-                _viewmodel.Reset();
-            }
+            try { _viewmodel.Reset(); }
             catch (Exception err) { Debug.WriteLine(err); }
-            finally { Refresh(); }
         }
 
         #endregion
@@ -1183,8 +1158,6 @@ namespace CubePdfUtility
                     var reader = new CubePdf.Editing.DocumentReader(path, password);
                     Dispatcher.BeginInvoke(new Action(() => {
                         _viewmodel.Open(reader);
-                        Cursor = Cursors.Arrow;
-                        Refresh();
                         reader.Dispose();
                     }));
                 }
@@ -1194,8 +1167,6 @@ namespace CubePdfUtility
                         var dialog = new PasswordWindow(path);
                         dialog.Owner = this;
                         if (dialog.ShowDialog() == true) OpenFile(path, dialog.Password);
-                        Cursor = Cursors.Arrow;
-                        Refresh();
                     }));
                 }
                 catch (Exception err) { Debug.WriteLine(err); }
@@ -1254,8 +1225,6 @@ namespace CubePdfUtility
                     Dispatcher.BeginInvoke(new Action(() => {
                         _viewmodel.Insert(index, reader);
                         _viewmodel.History[0].Text = history;
-                        Cursor = Cursors.Arrow;
-                        Refresh();
                         reader.Dispose();
                     }));
                 }
@@ -1265,8 +1234,6 @@ namespace CubePdfUtility
                         var dialog = new PasswordWindow(path);
                         dialog.Owner = this;
                         if (dialog.ShowDialog() == true) InsertFile(index, path, dialog.Password, history);
-                        Cursor = Cursors.Arrow;
-                        Refresh();
                     }));
                 }
                 catch (Exception err) { Debug.WriteLine(err); }
@@ -1306,6 +1273,7 @@ namespace CubePdfUtility
                 if (InfoStatusBarItem != null) InfoStatusBarItem.Content = string.Empty;
                 if (LockStatusBarItem != null) LockStatusBarItem.Visibility = Visibility.Collapsed;
             }
+            Cursor = Cursors.Arrow;
         }
 
         #endregion
