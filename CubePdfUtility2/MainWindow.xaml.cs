@@ -78,6 +78,7 @@ namespace CubePdfUtility
             
             var size = _ViewSize[2];
             _viewmodel.ItemWidth = size.Key;
+            _viewmodel.RunCompleted += new EventHandler(ViewModel_RunCompleted);
             ThumbnailImageView.ItemWidth = _viewmodel.ItemWidth;
             ViewSizeGalleryCategory.ItemsSource = _ViewSize;
             ViewSizeGallery.SelectedItem = size;
@@ -1136,6 +1137,20 @@ namespace CubePdfUtility
                 gallery.Tag = recents[i];
                 RecentFilesGallery.Items.Add(gallery);
             }
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// ViewModel_RunCompleted
+        /// 
+        /// <summary>
+        /// ViewModel の各種処理が終了した際に実行されるイベントハンドラです。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void ViewModel_RunCompleted(object sender, EventArgs e)
+        {
+            Refresh();
         }
 
         #endregion
