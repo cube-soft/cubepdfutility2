@@ -19,7 +19,7 @@
 ///
 /* ------------------------------------------------------------------------- */
 using System;
-using System.Drawing;
+using System.Windows;
 using Microsoft.Win32;
 
 namespace CubePdfUtility
@@ -64,6 +64,35 @@ namespace CubePdfUtility
 
         /* ----------------------------------------------------------------- */
         ///
+        /// InstallDirectory
+        /// 
+        /// <summary>
+        /// アプリケーションをインストールしたディレクトリへのパスを取得
+        /// します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        public string InstallDirectory
+        {
+            get { return _path; }
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// Version
+        /// 
+        /// <summary>
+        /// アプリケーションのバージョンを取得します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        public string Version
+        {
+            get { return _version; }
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
         /// Position
         /// 
         /// <summary>
@@ -92,6 +121,15 @@ namespace CubePdfUtility
             set { _size = value; }
         }
 
+        /* ----------------------------------------------------------------- */
+        ///
+        /// IsMaximized
+        /// 
+        /// <summary>
+        /// メイン画面が最大化状態かどうかを取得、または設定します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
         public bool IsMaximized
         {
             get { return _maximize; }
@@ -153,11 +191,11 @@ namespace CubePdfUtility
 
                 var x = setting.Root.Find(_RegX);
                 var y = setting.Root.Find(_RegY);
-                if (x != null && y != null) _position = new Point(x.GetValue(_position.X), y.GetValue(_position.Y));
+                if (x != null && y != null) _position = new Point(x.GetValue((int)_position.X), y.GetValue((int)_position.Y));
 
                 var width  = setting.Root.Find(_RegWidth);
                 var height = setting.Root.Find(_RegHeight);
-                if (width != null && height != null) _size = new Size(width.GetValue(_size.Width), height.GetValue(_size.Height));
+                if (width != null && height != null) _size = new Size(width.GetValue((int)_size.Width), height.GetValue((int)_size.Height));
 
                 var maximize = setting.Root.Find(_RegMaximize);
                 if (maximize != null) _maximize = maximize.GetValue(_maximize);
@@ -188,10 +226,10 @@ namespace CubePdfUtility
                 if (root == null) return;
 
                 var setting = new CubePdf.Settings.Document();
-                setting.Root.Add(new CubePdf.Settings.Node(_RegX, _position.X));
-                setting.Root.Add(new CubePdf.Settings.Node(_RegY, _position.Y));
-                setting.Root.Add(new CubePdf.Settings.Node(_RegWidth, _size.Width));
-                setting.Root.Add(new CubePdf.Settings.Node(_RegHeight, _size.Height));
+                setting.Root.Add(new CubePdf.Settings.Node(_RegX, (int)_position.X));
+                setting.Root.Add(new CubePdf.Settings.Node(_RegY, (int)_position.Y));
+                setting.Root.Add(new CubePdf.Settings.Node(_RegWidth, (int)_size.Width));
+                setting.Root.Add(new CubePdf.Settings.Node(_RegHeight, (int)_size.Height));
                 setting.Root.Add(new CubePdf.Settings.Node(_RegMaximize, _maximize));
                 setting.Root.Add(new CubePdf.Settings.Node(_RegItemWidth, _itemwidth));
                 setting.Root.Add(new CubePdf.Settings.Node(_RegVisibility, (int)_visibility));
@@ -206,7 +244,7 @@ namespace CubePdfUtility
         #region Variables
         private string _path = string.Empty;
         private string _version = "1.0.0";
-        private Point _position = new Point(0, 0);
+        private Point _position = new Point(20, 20);
         private Size _size = new Size(800, 600);
         private bool _maximize = false;
         private CubePdf.Wpf.ListViewItemVisibility _visibility = CubePdf.Wpf.ListViewItemVisibility.Normal;

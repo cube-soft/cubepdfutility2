@@ -966,7 +966,7 @@ namespace CubePdfUtility
 
         private void VersionCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            var dialog = new VersionWindow();
+            var dialog = new VersionWindow(_setting.Version);
             dialog.Owner = this;
             dialog.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
             dialog.ShowDialog();
@@ -1170,16 +1170,15 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         private void LoadSetting(object sender, EventArgs e)
         {
-            _setting.Position = new System.Drawing.Point((int)Left, (int)Top);
             _setting.Load();
 
             if (_setting.IsMaximized) WindowState = WindowState.Maximized;
             else
             {
-                Left   = Math.Max(_setting.Position.X, 7); // NOTE: 何故か 0 だと画面からはみ出す
-                Top    = Math.Max(_setting.Position.Y, 0);
                 Width  = Math.Max(_setting.Size.Width, _MinSize);
                 Height = Math.Max(_setting.Size.Height, _MinSize);
+                Left   = Math.Max(Math.Min(_setting.Position.X, SystemParameters.WorkArea.Right - Width), 8);
+                Top    = Math.Max(Math.Min(_setting.Position.Y, SystemParameters.WorkArea.Bottom - Height), 0);
             }
 
             // NOTE: ItemWidth は、既に用意されている選択肢 (_ViewSize) のうち、
@@ -1208,8 +1207,8 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         private void SaveSetting(object sender, EventArgs e)
         {
-            _setting.Position = new System.Drawing.Point((int)Left, (int)Top);
-            _setting.Size = new System.Drawing.Size((int)Width, (int)Height);
+            _setting.Position = new Point(Left, Top);
+            _setting.Size = new Size((int)Width, (int)Height);
             _setting.IsMaximized = (WindowState == WindowState.Maximized);
             _setting.ItemWidth = _viewmodel.ItemWidth;
             _setting.ItemVisibility = _viewmodel.ItemVisibility;
