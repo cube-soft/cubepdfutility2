@@ -361,6 +361,7 @@ namespace CubePdfUtility
 
             try
             {
+                Cursor = Cursors.Wait;
                 _viewmodel.BeginCommand();
                 while (items.Count > 0)
                 {
@@ -536,6 +537,7 @@ namespace CubePdfUtility
         {
             try
             {
+                Cursor = Cursors.Wait;
                 var degree = int.Parse(e.Parameter as string);
                 var done = new System.Collections.ArrayList();
                 _viewmodel.BeginCommand();
@@ -577,6 +579,7 @@ namespace CubePdfUtility
         {
             try
             {
+                Cursor = Cursors.Wait;
                 var count = (e.Parameter != null) ? HistoryGallery.Items.IndexOf(e.Parameter) + 1 : 1;
                 for (var i = 0; i < count; ++i)
                 {
@@ -612,6 +615,7 @@ namespace CubePdfUtility
         {
             try
             {
+                Cursor = Cursors.Wait;
                 var count = (e.Parameter != null) ? UndoHistoryGallery.Items.IndexOf(e.Parameter) + 1 : 1;
                 for (var i = 0; i < count; ++i)
                 {
@@ -905,6 +909,12 @@ namespace CubePdfUtility
         {
             try { _viewmodel.Reset(); }
             catch (Exception err) { Debug.WriteLine(err); }
+            finally
+            {
+                Cursor = Cursors.Wait;
+                Thumbnail.Items.Refresh();
+                Cursor = Cursors.Arrow;
+            }
         }
 
         #endregion
@@ -1342,7 +1352,7 @@ namespace CubePdfUtility
 
                 InfoStatusBarItem.Content = String.Format("{0} ページ", _viewmodel.PageCount);
                 LockStatusBarItem.Visibility = restricted ? Visibility.Visible : Visibility.Collapsed;
-                Thumbnail.Items.Refresh();
+                //Thumbnail.Items.Refresh();
                 Thumbnail.Focus();
             }
             else
