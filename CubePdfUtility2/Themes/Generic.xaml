@@ -12,9 +12,10 @@
                 <ControlTemplate>
                     <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Visible" Background="{TemplateBinding Background}">
                         <WrapPanel Margin="3" IsItemsHost="True"
+                            Width="{Binding (FrameworkElement.ActualWidth), RelativeSource={RelativeSource AncestorType=ScrollContentPresenter}}"
                             ItemWidth="{Binding (ListView.View).ItemWidth, RelativeSource={RelativeSource AncestorType=ListView}}"
-                            MinWidth="{Binding ItemWidth, RelativeSource={RelativeSource Self}}"
-                            Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ScrollContentPresenter}}">
+                            MinWidth="{Binding (ListView.View).ItemWidth, RelativeSource={RelativeSource AncestorType=ListView}}"
+                            ItemHeight="{Binding (ListView.View).ItemHeight, RelativeSource={RelativeSource AncestorType=ListView}}">
                         </WrapPanel>
                     </ScrollViewer>
                 </ControlTemplate>
@@ -26,6 +27,8 @@
         TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
         <Setter Property="Margin"  Value="3"/>
         <Setter Property="Padding" Value="3"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="ContentTemplate">
             <Setter.Value>
                 <DataTemplate>

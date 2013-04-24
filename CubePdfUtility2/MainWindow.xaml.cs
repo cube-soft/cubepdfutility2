@@ -845,11 +845,7 @@ namespace CubePdfUtility
             try
             {
                 var width = (int)e.Parameter;
-                if (_viewmodel.ItemWidth != width)
-                {
-                    _viewmodel.ItemWidth = width;
-                    ThumbnailImageView.ItemWidth = _viewmodel.ItemWidth;
-                }
+                if (_viewmodel.ItemWidth != width) _viewmodel.ItemWidth = width;
             }
             catch (Exception err) { Debug.WriteLine(err); }
         }
@@ -1165,7 +1161,6 @@ namespace CubePdfUtility
         private void LoadSetting(object sender, EventArgs e)
         {
             _setting.Position = new System.Drawing.Point((int)Left, (int)Top);
-            Debug.WriteLine(_setting.Position.ToString());
             _setting.Load();
 
             if (_setting.IsMaximized) WindowState = WindowState.Maximized;
@@ -1187,6 +1182,8 @@ namespace CubePdfUtility
                 size = item;
             }
             ViewSizeGallery.SelectedItem = size;
+
+            _viewmodel.ItemVisibility = _setting.ItemVisibility;
             ViewModeCheckBox.IsChecked = (_setting.ItemVisibility == CubePdf.Wpf.ListViewItemVisibility.Minimum);
         }
 
