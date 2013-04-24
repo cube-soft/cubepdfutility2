@@ -41,6 +41,7 @@
     
     <Window.Resources>
         <cube:ControlToTagConverter x:Key="ControlToTagConverter"/>
+        <local:ItemHeightConverter x:Key="ItemHeightConverter"/>
 
         <ContextMenu x:Key="EditMenu">
             <MenuItem Header="プレビュー" Click="OnPreview"/>
@@ -475,7 +476,9 @@
             MouseDoubleClick="OnPreview">
 
             <ListView.View>
-                <local:ImageView x:Name="ThumbnailImageView" ItemWidth="150"/>
+                <local:ImageView x:Name="ThumbnailImageView"
+                    ItemWidth="{Binding ElementName=RibbonWindow, Path=ViewModel.ItemWidth}"
+                    ItemHeight="{Binding ElementName=RibbonWindow, Path=ViewModel.MaxItemHeight, Converter={StaticResource ItemHeightConverter}}"/>
             </ListView.View>
 
             <i:Interaction.Behaviors>
