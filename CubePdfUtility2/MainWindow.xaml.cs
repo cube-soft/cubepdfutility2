@@ -1177,8 +1177,8 @@ namespace CubePdfUtility
             {
                 Width  = Math.Max(_setting.Size.Width, _MinSize);
                 Height = Math.Max(_setting.Size.Height, _MinSize);
-                Left   = Math.Max(_setting.Position.X, 8);
-                Top    = Math.Max(_setting.Position.Y, 0);
+                Left   = Math.Max(Math.Min(_setting.Position.X, SystemParameters.WorkArea.Right - Width), 8);
+                Top    = Math.Max(Math.Min(_setting.Position.Y, SystemParameters.WorkArea.Bottom - Height), 0);
             }
 
             // NOTE: ItemWidth は、既に用意されている選択肢 (_ViewSize) のうち、
