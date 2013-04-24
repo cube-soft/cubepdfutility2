@@ -70,18 +70,38 @@ namespace CubePdfUtility
         }
 
         /* ----------------------------------------------------------------- */
+        ///
         /// MainWindow (constructor)
+        ///
+        /// <summary>
+        /// 既定の値でオブジェクトを初期化します。
+        /// </summary>
+        ///
         /* ----------------------------------------------------------------- */
         public MainWindow()
         {
             InitializeComponent();
-            
-            var size = _ViewSize[2];
-            _viewmodel.ItemWidth = size.Key;
+            SourceInitialized += new EventHandler(LoadSetting);
             _viewmodel.RunCompleted += new EventHandler(ViewModel_RunCompleted);
-            ThumbnailImageView.ItemWidth = _viewmodel.ItemWidth;
-            ViewSizeGalleryCategory.ItemsSource = _ViewSize;
-            ViewSizeGallery.SelectedItem = size;
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// MainWindow (constructor)
+        ///
+        /// <summary>
+        /// 引数に指定されたパスを利用して、既定の値でオブジェクトを初期化
+        /// します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        public MainWindow(string path)
+            : this()
+        {
+            Loaded += (sender, e) => {
+                try { OpenFile(path, ""); }
+                catch (Exception err) { Debug.WriteLine(err); }
+            };
         }
 
         #endregion
@@ -1016,6 +1036,7 @@ namespace CubePdfUtility
         {
             var result = CloseFile();
             e.Cancel = !result;
+            if (!e.Cancel) SaveSetting(this, e);
             base.OnClosing(e);
         }
 
@@ -1126,6 +1147,66 @@ namespace CubePdfUtility
         private void ViewModel_RunCompleted(object sender, EventArgs e)
         {
             Refresh();
+        }
+
+        #endregion
+
+        #region Methods for UserSetting
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// LoadSetting
+        /// 
+        /// <summary>
+        /// ユーザ設定をメイン画面に適用します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void LoadSetting(object sender, EventArgs e)
+        {
+            _setting.Position = new System.Drawing.Point((int)Left, (int)Top);
+            Debug.WriteLine(_setting.Position.ToString());
+            _setting.Load();
+
+            if (_setting.IsMaximized) WindowState = WindowState.Maximized;
+            else
+            {
+                Left   = Math.Max(_setting.Position.X, 7); // NOTE: 何故か 0 だと画面からはみ出す
+                Top    = Math.Max(_setting.Position.Y, 0);
+                Width  = Math.Max(_setting.Size.Width, _MinSize);
+                Height = Math.Max(_setting.Size.Height, _MinSize);
+            }
+
+            // NOTE: ItemWidth は、既に用意されている選択肢 (_ViewSize) のうち、
+            // ユーザ設定に保存されている値を超えない最大値を使用する。
+            ViewSizeGalleryCategory.ItemsSource = _ViewSize;
+            var size = _ViewSize[0];
+            foreach (var item in _ViewSize)
+            {
+                if (item.Key > _setting.ItemWidth) break;
+                size = item;
+            }
+            ViewSizeGallery.SelectedItem = size;
+            ViewModeCheckBox.IsChecked = (_setting.ItemVisibility == CubePdf.Wpf.ListViewItemVisibility.Minimum);
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// SaveSetting
+        /// 
+        /// <summary>
+        /// メイン画面の現在の状態をユーザ設定に保存します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void SaveSetting(object sender, EventArgs e)
+        {
+            _setting.Position = new System.Drawing.Point((int)Left, (int)Top);
+            _setting.Size = new System.Drawing.Size((int)Width, (int)Height);
+            _setting.IsMaximized = (WindowState == WindowState.Maximized);
+            _setting.ItemWidth = _viewmodel.ItemWidth;
+            _setting.ItemVisibility = _viewmodel.ItemVisibility;
+            _setting.Save();
         }
 
         #endregion
@@ -1279,11 +1360,13 @@ namespace CubePdfUtility
         #endregion
 
         #region Variables
+        private UserSetting _setting = new UserSetting();
         private CubePdf.Wpf.IListViewModel _viewmodel = new CubePdf.Wpf.ListViewModel();
         #endregion
 
         #region Static variables
         private static readonly IList<KeyValuePair<int, string>> _ViewSize;
+        private static readonly int _MinSize = 400;
         #endregion
 
         /* ----------------------------------------------------------------- */

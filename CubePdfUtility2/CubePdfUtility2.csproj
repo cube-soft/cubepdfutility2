@@ -76,6 +76,7 @@
     <Compile Include="EncryptionWindow.xaml.cs">
       <DependentUpon>EncryptionWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserSetting.cs" />
     <Compile Include="VersionWindow.xaml.cs">
       <DependentUpon>VersionWindow.xaml</DependentUpon>
     </Compile>
@@ -164,6 +165,10 @@
     <ProjectReference Include="..\..\CubePdfLib\CubePdf.Editing\CubePdf.Editing.csproj">
       <Project>{6E397197-250C-404A-9FE9-BA8397C518C1}</Project>
       <Name>CubePdf.Editing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\CubePdfLib\CubePdf.Settings\CubePdf.Settings.csproj">
+      <Project>{0E3F9DF4-DAC5-4C36-B82A-5C8AA45A4E2D}</Project>
+      <Name>CubePdf.Settings</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\CubePdfLib\CubePdf.Wpf\CubePdf.Wpf.csproj">
       <Project>{3AE6F4EA-CD53-48D0-92D4-D2A48ED54D87}</Project>
