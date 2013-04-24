@@ -966,7 +966,7 @@ namespace CubePdfUtility
 
         private void VersionCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            var dialog = new VersionWindow();
+            var dialog = new VersionWindow(_setting.Version);
             dialog.Owner = this;
             dialog.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
             dialog.ShowDialog();
