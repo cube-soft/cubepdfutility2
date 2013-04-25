@@ -475,6 +475,11 @@
             Background="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}"
             MouseDoubleClick="OnPreview">
 
+            <ListView.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#FFFF3200"/>
+                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#FFFF3200"/>
+            </ListView.Resources>
+
             <ListView.View>
                 <local:ImageView x:Name="ThumbnailImageView"
                     ItemWidth="{Binding ElementName=RibbonWindow, Path=ViewModel.ItemWidth}"
