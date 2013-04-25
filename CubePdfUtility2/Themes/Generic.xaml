@@ -10,7 +10,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate>
-                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Visible" Background="{TemplateBinding Background}">
+                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" Background="{TemplateBinding Background}">
                         <WrapPanel Margin="3" IsItemsHost="True"
                             Width="{Binding (FrameworkElement.ActualWidth), RelativeSource={RelativeSource AncestorType=ScrollContentPresenter}}"
                             ItemWidth="{Binding (ListView.View).ItemWidth, RelativeSource={RelativeSource AncestorType=ListView}}"
@@ -41,5 +41,10 @@
                 </DataTemplate>
             </Setter.Value>
         </Setter>
+
+        <Style.Resources>
+            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#FFFF3200"/>
+            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#FFFF3200"/>
+        </Style.Resources>
     </Style>
 </ResourceDictionary>
