@@ -70,6 +70,8 @@ namespace CubePdfUtility
             DataContext = _crypt;
             if (_crypt.OwnerPassword.Length > 0) OwnerPasswordBox.Password = _crypt.OwnerPassword;
             if (_crypt.UserPassword.Length > 0) UserPasswordBox.Password = _crypt.UserPassword;
+
+            ReplaceFont();
         }
 
         #endregion
@@ -164,6 +166,33 @@ namespace CubePdfUtility
         {
             if (String.IsNullOrEmpty(password.Password)) return false;
             return password.Password == confirm.Password;
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// ReplaceFont
+        ///
+        /// <summary>
+        /// コンストラクタ実行時に、画面のフォントを差し替えます。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void ReplaceFont()
+        {
+            System.Drawing.Text.InstalledFontCollection fonts = new System.Drawing.Text.InstalledFontCollection();
+            System.Drawing.FontFamily[] ffArray = fonts.Families;
+
+            foreach (System.Drawing.FontFamily ff in ffArray)
+            {
+                if (ff.Name.Contains("Meiryo"))
+                {
+                    OwnerPasswordBox.FontFamily = new System.Windows.Media.FontFamily(ff.Name);
+                    ConfirmOwnerPasswordBox.FontFamily = new System.Windows.Media.FontFamily(ff.Name);
+                    UserPasswordBox.FontFamily = new System.Windows.Media.FontFamily(ff.Name);
+                    ConfirmUserPasswordBox.FontFamily = new System.Windows.Media.FontFamily(ff.Name);
+                    break;
+                }
+            }
         }
 
         #endregion

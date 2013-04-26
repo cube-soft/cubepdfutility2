@@ -83,20 +83,7 @@ namespace CubePdfUtility
             ViewSizeGalleryCategory.ItemsSource = _ViewSize;
             ViewSizeGallery.SelectedItem = size;
 
-
-            // Meiryoフォントへ
-            System.Drawing.Text.InstalledFontCollection fonts = new System.Drawing.Text.InstalledFontCollection();
-            System.Drawing.FontFamily[] ffArray = fonts.Families;
-
-            foreach (System.Drawing.FontFamily ff in ffArray)
-            {
-                if(ff.Name.Contains("Meiryo"))
-                {
-                    TextElement.FontFamilyProperty.OverrideMetadata(typeof(TextElement), new FrameworkPropertyMetadata(new FontFamily(ff.Name)));
-                    TextBlock.FontFamilyProperty.OverrideMetadata(typeof(TextBlock), new FrameworkPropertyMetadata(new FontFamily(ff.Name)));
-                    MainRibbon.FontFamily = new FontFamily(ff.Name);
-                }
-            }
+            ReplaceFont();
         }
 
         #endregion
@@ -1255,6 +1242,34 @@ namespace CubePdfUtility
                 Title = ProductName;
                 if (InfoStatusBarItem != null) InfoStatusBarItem.Content = string.Empty;
                 if (LockStatusBarItem != null) LockStatusBarItem.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// ReplaceFont
+        ///
+        /// <summary>
+        /// コンストラクタ実行時に、画面のフォントを差し替えます。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void ReplaceFont()
+        {
+            System.Drawing.Text.InstalledFontCollection fonts = new System.Drawing.Text.InstalledFontCollection();
+            System.Drawing.FontFamily[] ffArray = fonts.Families;
+
+            foreach (System.Drawing.FontFamily ff in ffArray)
+            {
+                if (ff.Name.Contains("Meiryo"))
+                {
+                    TextElement.FontFamilyProperty.OverrideMetadata(typeof(TextElement), new FrameworkPropertyMetadata(new FontFamily(ff.Name)));
+                    TextBlock.FontFamilyProperty.OverrideMetadata(typeof(TextBlock), new FrameworkPropertyMetadata(new FontFamily(ff.Name)));
+                    MainRibbon.FontFamily = new FontFamily(ff.Name);
+                    Thumbnail.ContextMenu.FontFamily = new FontFamily(ff.Name);
+                    FooterStatusBar.FontFamily = new FontFamily(ff.Name);
+                    break;
+                }
             }
         }
 

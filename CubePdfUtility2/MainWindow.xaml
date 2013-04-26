@@ -40,7 +40,7 @@
     <Window.Resources>
         <cube:ControlToTagConverter x:Key="ControlToTagConverter"/>
 
-        <ContextMenu x:Key="EditMenu" FontFamily="Meiryo">
+        <ContextMenu x:Key="EditMenu">
             <MenuItem Header="プレビュー" Click="OnPreview"/>
 
             <Separator/>
@@ -103,7 +103,7 @@
                 Command="{x:Static cube:ListViewCommands.Encryption}"/>
         </ContextMenu>
     </Window.Resources>
-
+    
     <Grid x:Name="LayoutRoot">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -112,6 +112,12 @@
         </Grid.RowDefinitions>
 
         <r:Ribbon x:Name="MainRibbon">
+            <r:Ribbon.TitleTemplate>
+                <DataTemplate>
+                    <TextBlock FontFamily="{Binding ElementName=TextBlock}" Text="{Binding ElementName=RibbonWindow, Path=Title}"/>
+                </DataTemplate>
+            </r:Ribbon.TitleTemplate>
+            
             <r:Ribbon.ApplicationMenu>
                 <r:RibbonApplicationMenu
                     SmallImageSource="Images\SmallIcons\Menu.png"

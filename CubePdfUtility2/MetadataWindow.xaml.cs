@@ -67,6 +67,9 @@ namespace CubePdfUtility
 
             // Version.Minor は読み取り専用なので Binding ではなくコード側で対応
             PdfVersion.SelectedIndex = _metadata.Version.Minor;
+
+            ReplaceFont();
+
         }
 
         #endregion
@@ -125,6 +128,36 @@ namespace CubePdfUtility
 
         #endregion
 
+        #endregion
+
+        # region Other Methods
+        /* ----------------------------------------------------------------- */
+        ///
+        /// ReplaceFont
+        ///
+        /// <summary>
+        /// コンストラクタ実行時に、画面のフォントを差し替えます。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void ReplaceFont()
+        {
+            System.Drawing.Text.InstalledFontCollection fonts = new System.Drawing.Text.InstalledFontCollection();
+            System.Drawing.FontFamily[] ffArray = fonts.Families;
+
+            foreach (System.Drawing.FontFamily ff in ffArray)
+            {
+                if (ff.Name.Contains("Meiryo"))
+                {
+                    TitleTextBox.FontFamily = new System.Windows.Media.FontFamily(ff.Name);
+                    AuthorTextBox.FontFamily = new System.Windows.Media.FontFamily(ff.Name);
+                    SubTitleTextBox.FontFamily = new System.Windows.Media.FontFamily(ff.Name);
+                    KeyWordTextBox.FontFamily = new System.Windows.Media.FontFamily(ff.Name);
+                    ApplicationTextBox.FontFamily = new System.Windows.Media.FontFamily(ff.Name);
+                    break;
+                }
+            }
+        }
         #endregion
 
         #region Variables
