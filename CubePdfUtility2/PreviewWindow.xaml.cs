@@ -60,7 +60,7 @@ namespace CubePdfUtility
             Width  = page.ViewSize.Width;
             Height = page.ViewSize.Height;
 
-            _image = viewmodel.PreviewImage(index, page.ViewSize);
+            _image = viewmodel.GetImage(index, page.ViewSize);
             MainViewer.DataContext = _image;
 
             var filename = System.IO.Path.GetFileName(page.FilePath);

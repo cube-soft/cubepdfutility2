@@ -29,16 +29,19 @@
 
         <CommandBinding Command="{x:Static local:MainWindow.Select}"   CanExecute="SelectCommand_CanExecute"   Executed="SelectCommand_Executed"/>
         <CommandBinding Command="{x:Static local:MainWindow.UnSelect}" CanExecute="UnSelectCommand_CanExecute" Executed="UnSelectCommand_Executed"/>
-        <CommandBinding Command="{x:Static local:MainWindow.Version}"  CanExecute="VersionCommand_CanExecute"  Executed="VersionCommand_Executed"/>
         <CommandBinding Command="{x:Static local:MainWindow.ZoomIn}"   CanExecute="ZoomInCommand_CanExecute"   Executed="ZoomInCommand_Executed"/>
         <CommandBinding Command="{x:Static local:MainWindow.ZoomOut}"  CanExecute="ZoomOutCommand_CanExecute"  Executed="ZoomOutCommand_Executed"/>
         <CommandBinding Command="{x:Static local:MainWindow.ViewSize}" CanExecute="ViewSizeCommand_CanExecute" Executed="ViewSizeCommand_Executed"/>
         <CommandBinding Command="{x:Static local:MainWindow.ViewMode}" CanExecute="ViewModeCommand_CanExecute" Executed="ViewModeCommand_Executed"/>
         <CommandBinding Command="{x:Static local:MainWindow.Redraw}"   CanExecute="RedrawCommand_CanExecute"   Executed="RedrawCommand_Executed"/>
+        <CommandBinding Command="{x:Static local:MainWindow.Version}"  CanExecute="VersionCommand_CanExecute"  Executed="VersionCommand_Executed"/>
+        <CommandBinding Command="{x:Static local:MainWindow.Help}"     CanExecute="HelpCommand_CanExecute"     Executed="HelpCommand_Executed"/>
+        <CommandBinding Command="{x:Static local:MainWindow.Web}"      CanExecute="WebCommand_CanExecute"      Executed="WebCommand_Executed"/>
     </Window.CommandBindings>
     
     <Window.Resources>
         <cube:ControlToTagConverter x:Key="ControlToTagConverter"/>
+        <local:ItemHeightConverter x:Key="ItemHeightConverter"/>
 
         <ContextMenu x:Key="EditMenu">
             <MenuItem Header="プレビュー" Click="OnPreview"/>
@@ -439,6 +442,28 @@
                         Margin="0,3,0,0"/>
                 </r:RibbonGroup>
             </r:RibbonTab>
+
+            <r:RibbonTab Header="ヘルプ" x:Name="HelpTab">
+                <r:RibbonGroup Header="情報" x:Name="InfoGroup">
+                    <r:RibbonButton Label="マニュアル" x:Name="ManualButton"
+                        SmallImageSource="Images\SmallIcons\Help.png"
+                        LargeImageSource="Images\LargeIcons\Help.png"
+                        Command="{x:Static local:MainWindow.Help}"/>
+
+                    <r:RibbonButton Label="バージョン" x:Name="VersionButton"
+                        SmallImageSource="Images\SmallIcons\Version.png"
+                        LargeImageSource="Images\LargeIcons\Version.png"
+                        Command="{x:Static local:MainWindow.Version}"/>
+                </r:RibbonGroup>
+
+                <r:RibbonGroup Header="外部サイト" x:Name="WebGroup">
+                    <r:RibbonButton Label="ホームページ" x:Name="MyWebButton"
+                        SmallImageSource="Images\SmallIcons\Web.png"
+                        LargeImageSource="Images\LargeIcons\Web.png"
+                        Command="{x:Static local:MainWindow.Web}"
+                        CommandParameter="http://www.cube-soft.jp/"/>
+                </r:RibbonGroup>
+            </r:RibbonTab>
         </r:Ribbon>
 
         <ListView Grid.Row="1" x:Name="Thumbnail"
@@ -450,8 +475,11 @@
             Background="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}"
             MouseDoubleClick="OnPreview">
 
+
             <ListView.View>
-                <local:ImageView x:Name="ThumbnailImageView" ItemWidth="150"/>
+                <local:ImageView x:Name="ThumbnailImageView"
+                    ItemWidth="{Binding ElementName=RibbonWindow, Path=ViewModel.ItemWidth}"
+                    ItemHeight="{Binding ElementName=RibbonWindow, Path=ViewModel.MaxItemHeight, Converter={StaticResource ItemHeightConverter}}"/>
             </ListView.View>
 
             <i:Interaction.Behaviors>

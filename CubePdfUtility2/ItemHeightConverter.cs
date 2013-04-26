@@ -1,6 +1,6 @@
 ﻿/* ------------------------------------------------------------------------- */
 ///
-/// ImageView.cs
+/// ItemHeightConverter.cs
 ///
 /// Copyright (c) 2013 CubeSoft, Inc. All rights reserved.
 ///
@@ -19,71 +19,63 @@
 ///
 /* ------------------------------------------------------------------------- */
 using System;
-using System.Windows;
-using System.Windows.Controls;
+using System.Windows.Data;
+using System.Globalization;
 
 namespace CubePdfUtility
 {
     /* --------------------------------------------------------------------- */
     ///
-    /// ImageView
+    /// ItemHeightConverter
     /// 
     /// <summary>
-    /// ListView の表示スタイルについて定義されたクラスです。
+    /// サムネイルの高さの値を調節するためのコンバータクラスです。
     /// </summary>
     ///
     /* --------------------------------------------------------------------- */
-    public class ImageView : ViewBase
+    public class ItemHeightConverter : IValueConverter
     {
         /* ----------------------------------------------------------------- */
         ///
-        /// ItemWidth
+        /// Convert
         /// 
         /// <summary>
-        /// 表示される各項目の幅を取得、または設定します。
+        /// ListViewModel から渡された値をもとに、サムネイルの高さを調節
+        /// します。
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
-        public double ItemWidth
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            get { return (double)GetValue(ItemWidthProperty); }
-            set { SetValue(ItemWidthProperty, value); }
+            try
+            {
+                var height = (int)value;
+                return height + _TextHeight;
+            }
+            catch (Exception /* err */) { return default(int); }
         }
 
         /* ----------------------------------------------------------------- */
         ///
-        /// ItemHeight
+        /// ConvertBack
         /// 
         /// <summary>
-        /// 表示される各項目の幅を取得、または設定します。
+        /// 調節した高さを元の値に戻します。
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
-        public double ItemHeight
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            get { return (double)GetValue(ItemHeightProperty); }
-            set { SetValue(ItemHeightProperty, value); }
-        }
-        
-        /* ----------------------------------------------------------------- */
-        /// DefaultStyleKey
-        /* ----------------------------------------------------------------- */
-        protected override object DefaultStyleKey
-        {
-            get { return new ComponentResourceKey(GetType(), "ImageView"); }
+            try
+            {
+                var height = (int)value;
+                return height - _TextHeight;
+            }
+            catch (Exception /* err */) { return default(int); }
         }
 
-        /* ----------------------------------------------------------------- */
-        /// ItemContainerDefaultStyleKey
-        /* ----------------------------------------------------------------- */
-        protected override object ItemContainerDefaultStyleKey
-        {
-            get { return new ComponentResourceKey(GetType(), "ImageViewItem"); }
-        }
-
-        #region Dependency Properties
-        public static readonly DependencyProperty ItemWidthProperty = WrapPanel.ItemWidthProperty.AddOwner(typeof(ImageView));
-        public static readonly DependencyProperty ItemHeightProperty = WrapPanel.ItemHeightProperty.AddOwner(typeof(ImageView));
+        #region Static variables
+        private static readonly int _TextHeight = 15;
         #endregion
     }
 }
