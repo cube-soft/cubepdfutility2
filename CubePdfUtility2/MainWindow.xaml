@@ -46,6 +46,7 @@
         <SolidColorBrush x:Key="MainBorderBrush" Color="#FF000000"/>
         <SolidColorBrush x:Key="MainForegroundBrush" Color="#FFFFFFFF"/>
         <ImageBrush x:Key="MainBackgroundBrush" ImageSource="Images\Background.png" TileMode="Tile" ViewportUnits="Absolute" Viewport="0,0,4,4"/>
+        <SolidColorBrush x:Key="MainMouseOverBackgroundBrush" Opacity="0.1" Color="#FFFFB700"/>
         <SolidColorBrush x:Key="RibbonSeparatorColor" Color="#FF7F7F7F"/>
 
         <LinearGradientBrush x:Key="MenuButtonBrush" EndPoint="0.1,1" StartPoint="0.1,0">
@@ -128,6 +129,7 @@
         <r:Ribbon x:Name="MainRibbon"
             Foreground="{StaticResource MainForegroundBrush}"
             Background="{StaticResource MainBackgroundBrush}"
+            MouseOverBackground="{StaticResource MainMouseOverBackgroundBrush}"
             BorderBrush="{StaticResource MainBorderBrush}">
 
             <r:Ribbon.TitleTemplate>
