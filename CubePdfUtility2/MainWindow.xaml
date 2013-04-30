@@ -43,6 +43,17 @@
         <cube:ControlToTagConverter x:Key="ControlToTagConverter"/>
         <local:ItemHeightConverter x:Key="ItemHeightConverter"/>
 
+        <SolidColorBrush x:Key="MainBorderBrush" Color="#FF000000"/>
+        <SolidColorBrush x:Key="MainForegroundBrush" Color="#FFFFFFFF"/>
+        <ImageBrush x:Key="MainBackgroundBrush" ImageSource="Images\Background.png" TileMode="Tile" ViewportUnits="Absolute" Viewport="0,0,4,4"/>
+        <SolidColorBrush x:Key="RibbonSeparatorColor" Color="#FF7F7F7F"/>
+
+        <LinearGradientBrush x:Key="MenuButtonBrush" EndPoint="0.1,1" StartPoint="0.1,0">
+            <GradientStop Color="#FF000000" Offset="1"/>
+            <GradientStop Color="#FF303030"/>
+            <GradientStop Color="#FF404040" Offset="1"/>
+        </LinearGradientBrush>
+
         <ContextMenu x:Key="EditMenu">
             <MenuItem Header="プレビュー" Click="OnPreview"/>
 
@@ -114,7 +125,11 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <r:Ribbon x:Name="MainRibbon">
+        <r:Ribbon x:Name="MainRibbon"
+            Foreground="{StaticResource MainForegroundBrush}"
+            Background="{StaticResource MainBackgroundBrush}"
+            BorderBrush="{StaticResource MainBorderBrush}">
+
             <r:Ribbon.TitleTemplate>
                 <DataTemplate>
                     <TextBlock FontFamily="{Binding ElementName=TextBlock}" Text="{Binding ElementName=RibbonWindow, Path=Title}"/>
@@ -123,6 +138,8 @@
             
             <r:Ribbon.ApplicationMenu>
                 <r:RibbonApplicationMenu
+                    Background="{StaticResource MenuButtonBrush}"
+                    BorderBrush="{StaticResource MainBorderBrush}"
                     SmallImageSource="Images\SmallIcons\Menu.png"
                     Loaded="ApplicationMenu_Loaded">
 
@@ -174,7 +191,7 @@
             </r:Ribbon.ApplicationMenu>
             
             <r:RibbonTab Header="編集" x:Name="EditTab">
-                <r:RibbonGroup Header="クイックリンク" x:Name="QuickLinkGroup">
+                <r:RibbonGroup Header="ファイル" x:Name="FileGroup">
                     <r:RibbonButton Label="開く"
                         ToolTipTitle="開く"
                         x:Name="OpenButton"
@@ -198,6 +215,35 @@
                             Command="SaveAs"/>
                     </r:RibbonSplitButton>
 
+                    <r:RibbonSplitButton Label="抽出"
+                        ToolTipTitle="選択ページを単一ファイルとして抽出"
+                        x:Name="ExtractButton"
+                        SmallImageSource="Images\SmallIcons\Extract.png"
+                        LargeImageSource="Images\LargeIcons\Extract.png"
+                        Command="{x:Static cube:ListViewCommands.Extract}"
+                        CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedItems}">
+
+                        <r:RibbonMenuItem Header="選択ページを単一ファイルとして抽出"
+                            ImageSource="Images\SmallIcons\Extract.png"
+                            Command="{x:Static cube:ListViewCommands.Extract}"
+                            CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedItems}"/>
+
+                        <r:RibbonMenuItem Header="選択ページを個別のファイルとして抽出"
+                            ImageSource="Images\SmallIcons\Extract.png"
+                            Command="{x:Static cube:ListViewCommands.Split}"
+                            CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedItems}"/>
+
+                        <r:RibbonMenuItem Header="全てのページを単一ファイルとして抽出"
+                            ImageSource="Images\SmallIcons\Extract.png"
+                            Command="{x:Static cube:ListViewCommands.Extract}"/>
+
+                        <r:RibbonMenuItem Header="全てのページを個別のファイルとして抽出"
+                            ImageSource="Images\SmallIcons\Extract.png"
+                            Command="{x:Static cube:ListViewCommands.Split}"/>
+                    </r:RibbonSplitButton>
+                </r:RibbonGroup>
+
+                <r:RibbonGroup Header="やり直し" x:Name="UndoGroup">
                     <r:RibbonSplitButton Label="元に戻す"
                         ToolTipTitle="直前の操作を取り消して元に戻す"
                         x:Name="UndoButton"
@@ -249,7 +295,9 @@
                             </r:RibbonGalleryCategory>
                         </r:RibbonGallery>
                     </r:RibbonSplitButton>
+                </r:RibbonGroup>
 
+                <r:RibbonGroup Header="選択" x:Name="SelectGroup">
                     <r:RibbonSplitButton Label="選択"
                         ToolTipTitle="すべてのページを選択、または選択の解除"
                         x:Name="SelectButton"
@@ -297,33 +345,6 @@
                             ImageSource="Images\SmallIcons\Insert.png"
                             Command="{x:Static cube:ListViewCommands.Insert}"
                             CommandParameter="{Binding ElementName=Thumbnail, Path=Items.Count}"/>
-                    </r:RibbonSplitButton>
-
-                    <r:RibbonSplitButton Label="抽出"
-                        ToolTipTitle="選択ページを単一ファイルとして抽出"
-                        x:Name="ExtractButton"
-                        SmallImageSource="Images\SmallIcons\Extract.png"
-                        LargeImageSource="Images\LargeIcons\Extract.png"
-                        Command="{x:Static cube:ListViewCommands.Extract}"
-                        CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedItems}">
-
-                        <r:RibbonMenuItem Header="選択ページを単一ファイルとして抽出"
-                            ImageSource="Images\SmallIcons\Extract.png"
-                            Command="{x:Static cube:ListViewCommands.Extract}"
-                            CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedItems}"/>
-
-                        <r:RibbonMenuItem Header="選択ページを個別のファイルとして抽出"
-                            ImageSource="Images\SmallIcons\Extract.png"
-                            Command="{x:Static cube:ListViewCommands.Split}"
-                            CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedItems}"/>
-
-                        <r:RibbonMenuItem Header="全てのページを単一ファイルとして抽出"
-                            ImageSource="Images\SmallIcons\Extract.png"
-                            Command="{x:Static cube:ListViewCommands.Extract}"/>
-
-                        <r:RibbonMenuItem Header="全てのページを個別のファイルとして抽出"
-                            ImageSource="Images\SmallIcons\Extract.png"
-                            Command="{x:Static cube:ListViewCommands.Split}"/>
                     </r:RibbonSplitButton>
 
                     <r:RibbonSplitButton Label="削除"
