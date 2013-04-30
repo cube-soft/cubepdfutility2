@@ -106,7 +106,7 @@
                 Command="{x:Static cube:ListViewCommands.Encryption}"/>
         </ContextMenu>
     </Window.Resources>
-
+    
     <Grid x:Name="LayoutRoot">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -114,7 +114,13 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <r:Ribbon>
+        <r:Ribbon x:Name="MainRibbon">
+            <r:Ribbon.TitleTemplate>
+                <DataTemplate>
+                    <TextBlock FontFamily="{Binding ElementName=TextBlock}" Text="{Binding ElementName=RibbonWindow, Path=Title}"/>
+                </DataTemplate>
+            </r:Ribbon.TitleTemplate>
+            
             <r:Ribbon.ApplicationMenu>
                 <r:RibbonApplicationMenu
                     SmallImageSource="Images\SmallIcons\Menu.png"
@@ -419,7 +425,7 @@
                         SmallImageSource="Images\SmallIcons\ZoomOut.png"
                         Command="{x:Static local:MainWindow.ZoomOut}"/>
 
-                    <r:RibbonComboBox Label="サイズ" 
+                    <r:RibbonComboBox Label="サイズ"
                         ToolTipTitle="サムネイルのサイズを変更"
                         x:Name="ViewSizeComboBox"
                         IsReadOnly="True"

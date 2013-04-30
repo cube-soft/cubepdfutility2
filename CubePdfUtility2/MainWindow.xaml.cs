@@ -81,6 +81,7 @@ namespace CubePdfUtility
         public MainWindow()
         {
             InitializeComponent();
+            ReplaceFont();
             SourceInitialized += new EventHandler(LoadSetting);
             _viewmodel.RunCompleted += new EventHandler(ViewModel_RunCompleted);
         }
@@ -1361,6 +1362,32 @@ namespace CubePdfUtility
                 if (LockStatusBarItem != null) LockStatusBarItem.Visibility = Visibility.Collapsed;
             }
             Cursor = Cursors.Arrow;
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// ReplaceFont
+        ///
+        /// <summary>
+        /// コンストラクタ実行時に、画面のフォントを差し替えます。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void ReplaceFont()
+        {
+            var fonts = new System.Drawing.Text.InstalledFontCollection();
+            foreach (var ff in fonts.Families)
+            {
+                if (ff.Name.Contains("Meiryo"))
+                {
+                    TextElement.FontFamilyProperty.OverrideMetadata(typeof(TextElement), new FrameworkPropertyMetadata(new FontFamily(ff.Name)));
+                    TextBlock.FontFamilyProperty.OverrideMetadata(typeof(TextBlock), new FrameworkPropertyMetadata(new FontFamily(ff.Name)));
+                    MainRibbon.FontFamily = new FontFamily(ff.Name);
+                    Thumbnail.ContextMenu.FontFamily = new FontFamily(ff.Name);
+                    FooterStatusBar.FontFamily = new FontFamily(ff.Name);
+                    break;
+                }
+            }
         }
 
         #endregion

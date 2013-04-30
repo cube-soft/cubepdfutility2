@@ -62,6 +62,8 @@ namespace CubePdfUtility
             : this()
         {
             PageCount = viewmodel.PageCount;
+
+            ReplaceFont();
         }
 
         #endregion
@@ -148,6 +150,30 @@ namespace CubePdfUtility
 
         #endregion
 
+        #endregion
+
+        # region Other Methods
+        /* ----------------------------------------------------------------- */
+        ///
+        /// ReplaceFont
+        ///
+        /// <summary>
+        /// コンストラクタ実行時に、画面のフォントを差し替えます。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void ReplaceFont()
+        {
+            var fonts = new System.Drawing.Text.InstalledFontCollection();
+            foreach (var ff in fonts.Families)
+            {
+                if (ff.Name.Contains("Meiryo"))
+                {
+                    PageRangeTextBox.FontFamily = new System.Windows.Media.FontFamily(ff.Name);
+                    break;
+                }
+            }
+        }
         #endregion
 
         #region Variables
