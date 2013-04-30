@@ -100,7 +100,7 @@ namespace CubePdfUtility
             : this()
         {
             Loaded += (sender, e) => {
-                try { OpenFile(path, ""); }
+                try { if (!String.IsNullOrEmpty(path))  OpenFile(path, ""); }
                 catch (Exception err) { Debug.WriteLine(err); }
             };
         }
