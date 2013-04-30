@@ -44,10 +44,13 @@
         <local:ItemHeightConverter x:Key="ItemHeightConverter"/>
 
         <SolidColorBrush x:Key="MainBorderBrush" Color="#FF000000"/>
-        <SolidColorBrush x:Key="MainForegroundBrush" Color="#FFFFFFFF"/>
-        <ImageBrush x:Key="MainBackgroundBrush" ImageSource="Images\Background.png" TileMode="Tile" ViewportUnits="Absolute" Viewport="0,0,4,4"/>
-        <SolidColorBrush x:Key="MainMouseOverBackgroundBrush" Opacity="0.1" Color="#FFFFB700"/>
-        <SolidColorBrush x:Key="RibbonSeparatorColor" Color="#FF7F7F7F"/>
+        <SolidColorBrush x:Key="MainBackgroundBrush" Color="#FF666666"/>
+        <SolidColorBrush x:Key="MainForegroundBrush" Color="#FF000000"/>
+        
+        <ImageBrush x:Key="TabBackgroundBrush" ImageSource="Images\Background.png" TileMode="Tile" ViewportUnits="Absolute" Viewport="0,0,4,4"/>
+        <SolidColorBrush x:Key="TabForegroundBrush" Color="#FFFFFFFF"/>
+        <SolidColorBrush x:Key="TabBorderBrush" Color="#FF000000"/>
+        <SolidColorBrush x:Key="TabMouseOverBackgroundBrush" Opacity="0.1" Color="#FFFFB700"/>
 
         <LinearGradientBrush x:Key="MenuButtonBrush" EndPoint="0.1,1" StartPoint="0.1,0">
             <GradientStop Color="#FF000000" Offset="1"/>
@@ -55,12 +58,28 @@
             <GradientStop Color="#FF404040" Offset="1"/>
         </LinearGradientBrush>
 
+        <SolidColorBrush x:Key="MenuItemForegroundBrush" Color="#FF000000"/>
+
         <Style x:Key="{x:Type r:RibbonTab}" TargetType="{x:Type r:RibbonTab}">
-            <Setter Property="Background" Value="{StaticResource MainBackgroundBrush}"/>
+            <Setter Property="Background" Value="{StaticResource TabBackgroundBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource TabForegroundBrush}"/>
         </Style>
 
         <Style x:Key="{x:Type r:RibbonTabHeader}"  TargetType="{x:Type r:RibbonTabHeader}">
-            <Setter Property="CheckedBackground" Value="{StaticResource MainBackgroundBrush}"/>
+            <Setter Property="CheckedBackground" Value="{StaticResource TabBackgroundBrush}"/>
+            <Style.Triggers>
+                <Trigger Property="IsRibbonTabSelected" Value="True">
+                    <Setter Property="Foreground" Value="#FFB3B3B3"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="{x:Type r:RibbonMenuItem}" TargetType="{x:Type r:RibbonMenuItem}">
+            <Setter Property="Foreground" Value="{StaticResource MenuItemForegroundBrush}"/>
+        </Style>
+
+        <Style x:Key="{x:Type r:RibbonGalleryCategory}" TargetType="{x:Type r:RibbonGalleryCategory}">
+            <Setter Property="Foreground" Value="{StaticResource MenuItemForegroundBrush}"/>
         </Style>
 
         <ContextMenu x:Key="EditMenu">
@@ -111,12 +130,15 @@
 
             <Separator/>
 
-            <MenuItem Header="左90度に回転"
+            <MenuItem Header="左90度回転"
                 Command="{x:Static cube:ListViewCommands.Rotate}"
                 CommandParameter="-90"/>
-            <MenuItem Header="右90度に回転"
+            <MenuItem Header="右90度回転"
                 Command="{x:Static cube:ListViewCommands.Rotate}"
                 CommandParameter="90"/>
+            <MenuItem Header="180度回転"
+                Command="{x:Static cube:ListViewCommands.Rotate}"
+                CommandParameter="180"/>
 
             <Separator/>
 
@@ -135,10 +157,10 @@
         </Grid.RowDefinitions>
 
         <r:Ribbon x:Name="MainRibbon"
-            Background="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}"
+            Background="{StaticResource MainBackgroundBrush}"
             Foreground="{StaticResource MainForegroundBrush}"
-            MouseOverBackground="{StaticResource MainMouseOverBackgroundBrush}"
-            BorderBrush="{StaticResource MainBorderBrush}">
+            BorderBrush="{StaticResource MainBorderBrush}"
+            MouseOverBackground="{StaticResource TabMouseOverBackgroundBrush}">
 
             <r:Ribbon.TitleTemplate>
                 <DataTemplate>
@@ -149,7 +171,10 @@
             <r:Ribbon.ApplicationMenu>
                 <r:RibbonApplicationMenu
                     Background="{StaticResource MenuButtonBrush}"
-                    BorderBrush="{StaticResource MainBorderBrush}"
+                    BorderBrush="{StaticResource TabBorderBrush}"
+                    Foreground="{StaticResource TabForegroundBrush}"
+                    FocusedBackground="{StaticResource TabBackgroundBrush}"
+                    FocusedBorderBrush="{StaticResource TabBorderBrush}"
                     SmallImageSource="Images\SmallIcons\Menu.png"
                     Loaded="ApplicationMenu_Loaded">
 
@@ -509,7 +534,7 @@
             VirtualizingStackPanel.VirtualizationMode="Recycling"
             VirtualizingStackPanel.IsVirtualizing="True"
             SelectionMode="Extended"
-            Background="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}"
+            Background="{StaticResource MainBackgroundBrush}"
             MouseDoubleClick="OnPreview">
 
 
@@ -525,9 +550,9 @@
         </ListView>
 
         <StatusBar Grid.Row="2" x:Name="FooterStatusBar" Height="23"
-            Foreground="{StaticResource MainForegroundBrush}"
-            Background="{StaticResource MainBackgroundBrush}"
-            BorderBrush="{StaticResource MainBorderBrush}">
+            Foreground="{StaticResource TabForegroundBrush}"
+            Background="{StaticResource TabBackgroundBrush}"
+            BorderBrush="{StaticResource TabBorderBrush}">
             <Image x:Name="LockStatusBarItem" Source="Images\SmallIcons\Lock.png" Visibility="Collapsed"/>
             <StatusBarItem Name="InfoStatusBarItem" Content=""/>
         </StatusBar>
