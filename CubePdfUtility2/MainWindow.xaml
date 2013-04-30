@@ -55,6 +55,14 @@
             <GradientStop Color="#FF404040" Offset="1"/>
         </LinearGradientBrush>
 
+        <Style x:Key="{x:Type r:RibbonTab}" TargetType="{x:Type r:RibbonTab}">
+            <Setter Property="Background" Value="{StaticResource MainBackgroundBrush}"/>
+        </Style>
+
+        <Style x:Key="{x:Type r:RibbonTabHeader}"  TargetType="{x:Type r:RibbonTabHeader}">
+            <Setter Property="CheckedBackground" Value="{StaticResource MainBackgroundBrush}"/>
+        </Style>
+
         <ContextMenu x:Key="EditMenu">
             <MenuItem Header="プレビュー" Click="OnPreview"/>
 
@@ -127,8 +135,8 @@
         </Grid.RowDefinitions>
 
         <r:Ribbon x:Name="MainRibbon"
+            Background="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}"
             Foreground="{StaticResource MainForegroundBrush}"
-            Background="{StaticResource MainBackgroundBrush}"
             MouseOverBackground="{StaticResource MainMouseOverBackgroundBrush}"
             BorderBrush="{StaticResource MainBorderBrush}">
 
