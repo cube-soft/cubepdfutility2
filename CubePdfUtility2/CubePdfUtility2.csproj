@@ -252,6 +252,15 @@
     <Resource Include="Images\SmallIcons\Help.png" />
     <Resource Include="Images\SmallIcons\Web.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\LogoDark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Background.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\SmallIcons\Exit.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy $(TargetPath) $(SolutionDir)Release\$(PlatformName)\
