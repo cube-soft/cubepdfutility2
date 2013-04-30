@@ -514,7 +514,10 @@
             </i:Interaction.Behaviors>
         </ListView>
 
-        <StatusBar Grid.Row="2" x:Name="FooterStatusBar" Height="23">
+        <StatusBar Grid.Row="2" x:Name="FooterStatusBar" Height="23"
+            Foreground="{StaticResource MainForegroundBrush}"
+            Background="{StaticResource MainBackgroundBrush}"
+            BorderBrush="{StaticResource MainBorderBrush}">
             <Image x:Name="LockStatusBarItem" Source="Images\SmallIcons\Lock.png" Visibility="Collapsed"/>
             <StatusBarItem Name="InfoStatusBarItem" Content=""/>
         </StatusBar>
