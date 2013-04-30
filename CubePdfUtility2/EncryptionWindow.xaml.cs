@@ -179,10 +179,8 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         private void ReplaceFont()
         {
-            System.Drawing.Text.InstalledFontCollection fonts = new System.Drawing.Text.InstalledFontCollection();
-            System.Drawing.FontFamily[] ffArray = fonts.Families;
-
-            foreach (System.Drawing.FontFamily ff in ffArray)
+            var fonts = new System.Drawing.Text.InstalledFontCollection();
+            foreach (var ff in fonts.Families)
             {
                 if (ff.Name.Contains("Meiryo"))
                 {
