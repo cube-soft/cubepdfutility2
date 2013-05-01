@@ -52,6 +52,10 @@ namespace CubePdfUtility
             InitializeComponent();
             LoadIcon();
             ReplaceFont();
+            SourceInitialized += (sender, e) => {
+                if (Top < 0 || Top > SystemParameters.WorkArea.Bottom - Height) Top = 0;
+                if (Left < 0 || Left > SystemParameters.WorkArea.Right - Width) Left = 0;
+            };
         }
 
         /* ----------------------------------------------------------------- */
