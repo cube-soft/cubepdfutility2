@@ -61,12 +61,12 @@
         <SolidColorBrush x:Key="MenuItemBackgroundBrush" Color="#FFFFFFFF"/>
         <SolidColorBrush x:Key="MenuItemForegroundBrush" Color="#FF000000"/>
 
-        <Style x:Key="{x:Type r:RibbonTab}" TargetType="{x:Type r:RibbonTab}">
+        <Style TargetType="{x:Type r:RibbonTab}">
             <Setter Property="Background" Value="{StaticResource TabBackgroundBrush}"/>
             <Setter Property="Foreground" Value="{StaticResource TabForegroundBrush}"/>
         </Style>
 
-        <Style x:Key="{x:Type r:RibbonTabHeader}"  TargetType="{x:Type r:RibbonTabHeader}">
+        <Style TargetType="{x:Type r:RibbonTabHeader}">
             <Setter Property="FontWeight" Value="Bold" />
             <Setter Property="CheckedBackground" Value="{StaticResource TabBackgroundBrush}"/>
             <Style.Triggers>
@@ -76,22 +76,22 @@
             </Style.Triggers>
         </Style>
 
-        <Style x:Key="{x:Type r:RibbonMenuItem}" TargetType="{x:Type r:RibbonMenuItem}">
+        <Style TargetType="{x:Type r:RibbonMenuItem}">
             <Setter Property="Background" Value="{StaticResource MenuItemBackgroundBrush}"/>
             <Setter Property="Foreground" Value="{StaticResource MenuItemForegroundBrush}"/>
         </Style>
 
-        <Style x:Key="{x:Type r:RibbonGalleryCategory}" TargetType="{x:Type r:RibbonGalleryCategory}">
+        <Style TargetType="{x:Type r:RibbonGalleryCategory}">
             <Setter Property="Background" Value="{StaticResource MenuItemBackgroundBrush}"/>
             <Setter Property="Foreground" Value="{StaticResource MenuItemForegroundBrush}"/>
         </Style>
 
-        <Style x:Key="{x:Type r:RibbonToolTip}" TargetType="{x:Type r:RibbonToolTip}">
+        <Style TargetType="{x:Type r:RibbonToolTip}">
             <Setter Property="Background" Value="{StaticResource MenuItemBackgroundBrush}"/>
             <Setter Property="Foreground" Value="{StaticResource MenuItemForegroundBrush}"/>
         </Style>
 
-        <Style x:Key="{x:Type r:RibbonContextMenu}" TargetType="{x:Type r:RibbonContextMenu}" >
+        <Style TargetType="{x:Type r:RibbonContextMenu}" >
             <Setter Property="Visibility" Value="Collapsed"/>
         </Style>
 
@@ -366,12 +366,12 @@
                         <r:RibbonSplitButton.Style>
                             <Style TargetType="r:RibbonSplitButton">
                                 <Style.Triggers>
-                                    <Trigger Property="r:RibbonSplitButton.IsEnabled" Value="True">
+                                    <Trigger Property="IsEnabled" Value="True">
                                         <Setter Property="SmallImageSource" Value="Images\SmallIcons\Save.png"/>
                                         <Setter Property="LargeImageSource" Value="Images\LargeIcons\Save.png"/>
                                     </Trigger>
 
-                                    <Trigger Property="r:RibbonSplitButton.IsEnabled" Value="False">
+                                    <Trigger Property="IsEnabled" Value="False">
                                         <Setter Property="SmallImageSource" Value="Images\SmallIcons\SaveDisable.png"/>
                                         <Setter Property="LargeImageSource" Value="Images\LargeIcons\SaveDisable.png"/>
                                     </Trigger>
