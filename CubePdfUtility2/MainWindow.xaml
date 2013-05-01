@@ -43,6 +43,58 @@
         <cube:ControlToTagConverter x:Key="ControlToTagConverter"/>
         <local:ItemHeightConverter x:Key="ItemHeightConverter"/>
 
+        <SolidColorBrush x:Key="MainBorderBrush" Color="#FF000000"/>
+        <SolidColorBrush x:Key="MainBackgroundBrush" Color="#FF666666"/>
+        <SolidColorBrush x:Key="MainForegroundBrush" Color="#FF000000"/>
+        
+        <ImageBrush x:Key="TabBackgroundBrush" ImageSource="Images\Background.png" TileMode="Tile" ViewportUnits="Absolute" Viewport="0,0,4,4"/>
+        <SolidColorBrush x:Key="TabForegroundBrush" Color="#FFBEBEBE"/>
+        <SolidColorBrush x:Key="TabBorderBrush" Color="#FF000000"/>
+        <SolidColorBrush x:Key="TabMouseOverBackgroundBrush" Opacity="0.1" Color="#FFFFB700"/>
+
+        <LinearGradientBrush x:Key="MenuButtonBrush" EndPoint="0.1,1" StartPoint="0.1,0">
+            <GradientStop Color="#FF000000" Offset="1"/>
+            <GradientStop Color="#FF303030"/>
+            <GradientStop Color="#FF404040" Offset="1"/>
+        </LinearGradientBrush>
+
+        <SolidColorBrush x:Key="MenuItemBackgroundBrush" Color="#FFFFFFFF"/>
+        <SolidColorBrush x:Key="MenuItemForegroundBrush" Color="#FF000000"/>
+
+        <Style TargetType="{x:Type r:RibbonTab}">
+            <Setter Property="Background" Value="{StaticResource TabBackgroundBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource TabForegroundBrush}"/>
+        </Style>
+
+        <Style TargetType="{x:Type r:RibbonTabHeader}">
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="CheckedBackground" Value="{StaticResource TabBackgroundBrush}"/>
+            <Style.Triggers>
+                <Trigger Property="IsRibbonTabSelected" Value="True">
+                    <Setter Property="Foreground" Value="#FFFFFFFF"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="{x:Type r:RibbonMenuItem}">
+            <Setter Property="Background" Value="{StaticResource MenuItemBackgroundBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource MenuItemForegroundBrush}"/>
+        </Style>
+
+        <Style TargetType="{x:Type r:RibbonGalleryCategory}">
+            <Setter Property="Background" Value="{StaticResource MenuItemBackgroundBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource MenuItemForegroundBrush}"/>
+        </Style>
+
+        <Style TargetType="{x:Type r:RibbonToolTip}">
+            <Setter Property="Background" Value="{StaticResource MenuItemBackgroundBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource MenuItemForegroundBrush}"/>
+        </Style>
+
+        <Style TargetType="{x:Type r:RibbonContextMenu}" >
+            <Setter Property="Visibility" Value="Collapsed"/>
+        </Style>
+
         <ContextMenu x:Key="EditMenu">
             <MenuItem Header="プレビュー" Click="OnPreview"/>
 
@@ -91,12 +143,15 @@
 
             <Separator/>
 
-            <MenuItem Header="左90度に回転"
+            <MenuItem Header="左90度回転"
                 Command="{x:Static cube:ListViewCommands.Rotate}"
                 CommandParameter="-90"/>
-            <MenuItem Header="右90度に回転"
+            <MenuItem Header="右90度回転"
                 Command="{x:Static cube:ListViewCommands.Rotate}"
                 CommandParameter="90"/>
+            <MenuItem Header="180度回転"
+                Command="{x:Static cube:ListViewCommands.Rotate}"
+                CommandParameter="180"/>
 
             <Separator/>
 
@@ -114,7 +169,12 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <r:Ribbon x:Name="MainRibbon">
+        <r:Ribbon x:Name="MainRibbon"
+            Background="{StaticResource MainBackgroundBrush}"
+            Foreground="{StaticResource MainForegroundBrush}"
+            BorderBrush="{StaticResource MainBorderBrush}"
+            MouseOverBackground="{StaticResource TabMouseOverBackgroundBrush}">
+
             <r:Ribbon.TitleTemplate>
                 <DataTemplate>
                     <TextBlock FontFamily="{Binding ElementName=TextBlock}" Text="{Binding ElementName=RibbonWindow, Path=Title}"/>
@@ -123,87 +183,354 @@
             
             <r:Ribbon.ApplicationMenu>
                 <r:RibbonApplicationMenu
-                    SmallImageSource="Images\SmallIcons\Menu.png"
+                    Background="{StaticResource MenuButtonBrush}"
+                    BorderBrush="{StaticResource TabBorderBrush}"
+                    Foreground="{StaticResource TabForegroundBrush}"
+                    FocusedBackground="{StaticResource TabBackgroundBrush}"
+                    FocusedBorderBrush="{StaticResource TabBorderBrush}"
+                    SmallImageSource="Images\Menu.png"
                     Loaded="ApplicationMenu_Loaded">
 
                     <r:RibbonApplicationMenuItem Header="開く"
                         ToolTipTitle="開く"
-                        ImageSource="Images\LargeIcons\Open.png"
                         Command="Open">
+
+                        <r:RibbonApplicationMenuItem.Style>
+                            <Style TargetType="r:RibbonApplicationMenuItem">
+                                <Style.Triggers>
+                                    <Trigger Property="r:RibbonApplicationMenuItem.IsEnabled" Value="True">
+                                        <Setter Property="ImageSource" Value="Images\LargeIcons\Open.png"/>
+                                    </Trigger>
+
+                                    <Trigger Property="r:RibbonApplicationMenuItem.IsEnabled" Value="False">
+                                        <Setter Property="ImageSource" Value="Images\LargeIcons\OpenDisable.png"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </r:RibbonApplicationMenuItem.Style>
                     </r:RibbonApplicationMenuItem>
 
                     <r:RibbonApplicationMenuItem Header="上書き保存"
                         ToolTipTitle="上書き保存"
-                        ImageSource="Images\LargeIcons\Save.png"
-                        Command="Save"/>
+                        Command="Save">
+
+                        <r:RibbonApplicationMenuItem.Style>
+                            <Style TargetType="r:RibbonApplicationMenuItem">
+                                <Style.Triggers>
+                                    <Trigger Property="r:RibbonApplicationMenuItem.IsEnabled" Value="True">
+                                        <Setter Property="ImageSource" Value="Images\LargeIcons\Save.png"/>
+                                    </Trigger>
+
+                                    <Trigger Property="r:RibbonApplicationMenuItem.IsEnabled" Value="False">
+                                        <Setter Property="ImageSource" Value="Images\LargeIcons\SaveDisable.png"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </r:RibbonApplicationMenuItem.Style>
+                    </r:RibbonApplicationMenuItem>
 
                     <r:RibbonApplicationMenuItem Header="名前を付けて保存"
                         ToolTipTitle="名前を付けて保存"
-                        ImageSource="Images\LargeIcons\SaveAs.png"
-                        Command="SaveAs"/>
+                        Command="SaveAs">
+
+                        <r:RibbonApplicationMenuItem.Style>
+                            <Style TargetType="r:RibbonApplicationMenuItem">
+                                <Style.Triggers>
+                                    <Trigger Property="r:RibbonApplicationMenuItem.IsEnabled" Value="True">
+                                        <Setter Property="ImageSource" Value="Images\LargeIcons\SaveAs.png"/>
+                                    </Trigger>
+
+                                    <Trigger Property="r:RibbonApplicationMenuItem.IsEnabled" Value="False">
+                                        <Setter Property="ImageSource" Value="Images\LargeIcons\SaveAsDisable.png"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </r:RibbonApplicationMenuItem.Style>
+                    </r:RibbonApplicationMenuItem>
 
                     <r:RibbonSeparator />
 
                     <r:RibbonApplicationMenuItem Header="バージョン情報"
                         ToolTipTitle="バージョン情報"
                         ImageSource="Images\LargeIcons\Version.png"
-                        Command="{x:Static local:MainWindow.Version}"/>
+                        Command="{x:Static local:MainWindow.Version}">
+
+                        <r:RibbonApplicationMenuItem.Style>
+                            <Style TargetType="r:RibbonApplicationMenuItem">
+                                <Style.Triggers>
+                                    <Trigger Property="r:RibbonApplicationMenuItem.IsEnabled" Value="True">
+                                        <Setter Property="ImageSource" Value="Images\LargeIcons\Version.png"/>
+                                    </Trigger>
+
+                                    <Trigger Property="r:RibbonApplicationMenuItem.IsEnabled" Value="False">
+                                        <Setter Property="ImageSource" Value="Images\LargeIcons\VersionDisable.png"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </r:RibbonApplicationMenuItem.Style>
+                    </r:RibbonApplicationMenuItem>
 
                     <r:RibbonSeparator />
 
                     <r:RibbonApplicationMenuItem Header="閉じる"
                         ToolTipTitle="閉じる"
-                        ImageSource="Images\LargeIcons\Close.png"
-                        Command="Close"/>
+                        Command="Close">
+
+                        <r:RibbonApplicationMenuItem.Style>
+                            <Style TargetType="r:RibbonApplicationMenuItem">
+                                <Style.Triggers>
+                                    <Trigger Property="r:RibbonApplicationMenuItem.IsEnabled" Value="True">
+                                        <Setter Property="ImageSource" Value="Images\LargeIcons\Close.png"/>
+                                    </Trigger>
+
+                                    <Trigger Property="r:RibbonApplicationMenuItem.IsEnabled" Value="False">
+                                        <Setter Property="ImageSource" Value="Images\LargeIcons\CloseDisable.png"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </r:RibbonApplicationMenuItem.Style>
+                    </r:RibbonApplicationMenuItem>
 
                     <r:RibbonApplicationMenuItem Header="終了"
                         ToolTipTitle="終了"
-                        ImageSource="Images\LargeIcons\Exit.png"
                         Command="Close"
-                        CommandParameter="Exit"/>
+                        CommandParameter="Exit">
+
+                        <r:RibbonApplicationMenuItem.Style>
+                            <Style TargetType="r:RibbonApplicationMenuItem">
+                                <Style.Triggers>
+                                    <Trigger Property="r:RibbonApplicationMenuItem.IsEnabled" Value="True">
+                                        <Setter Property="ImageSource" Value="Images\LargeIcons\Exit.png"/>
+                                    </Trigger>
+
+                                    <Trigger Property="r:RibbonApplicationMenuItem.IsEnabled" Value="False">
+                                        <Setter Property="ImageSource" Value="Images\LargeIcons\ExitDisable.png"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </r:RibbonApplicationMenuItem.Style>
+                    </r:RibbonApplicationMenuItem>
 
                     <r:RibbonApplicationMenu.AuxiliaryPaneContent>
-                        <r:RibbonGallery
-                            MaxColumnCount="1"
-                            Command="Open"
-                            CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=SelectedItem, Converter={StaticResource ControlToTagConverter}}">
-                            <r:RibbonGalleryCategory x:Name="RecentFilesGallery" Header="最近開いたファイル"/>
-                        </r:RibbonGallery>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Text="最近開いたファイル" Margin="5,3,0,3"/>
+                            <Separator Grid.Row="1" Margin="0" Padding="0"/>
+                            <r:RibbonGallery
+                                Grid.Row="2"
+                                MaxColumnCount="1"
+                                Command="Open"
+                                CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=SelectedItem, Converter={StaticResource ControlToTagConverter}}">
+                                <r:RibbonGalleryCategory x:Name="RecentFilesGallery"/>
+                            </r:RibbonGallery>
+                        </Grid>
                     </r:RibbonApplicationMenu.AuxiliaryPaneContent>
                 </r:RibbonApplicationMenu>
             </r:Ribbon.ApplicationMenu>
             
             <r:RibbonTab Header="編集" x:Name="EditTab">
-                <r:RibbonGroup Header="クイックリンク" x:Name="QuickLinkGroup">
+                <r:RibbonGroup Header="ファイル" x:Name="FileGroup">
                     <r:RibbonButton Label="開く"
                         ToolTipTitle="開く"
                         x:Name="OpenButton"
-                        SmallImageSource="Images\SmallIcons\Open.png"
-                        LargeImageSource="Images\LargeIcons\Open.png"
-                        Command="Open"/>
+                        Command="Open">
+
+                        <r:RibbonButton.Style>
+                            <Style TargetType="r:RibbonButton">
+                                <Style.Triggers>
+                                    <Trigger Property="r:RibbonButton.IsEnabled" Value="True">
+                                        <Setter Property="SmallImageSource" Value="Images\SmallIcons\Open.png"/>
+                                        <Setter Property="LargeImageSource" Value="Images\LargeIcons\Open.png"/>
+                                    </Trigger>
+
+                                    <Trigger Property="r:RibbonButton.IsEnabled" Value="False">
+                                        <Setter Property="SmallImageSource" Value="Images\SmallIcons\OpenDisable.png"/>
+                                        <Setter Property="LargeImageSource" Value="Images\LargeIcons\OpenDisable.png"/>
+                                        <Setter Property="Opacity" Value="1.0"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </r:RibbonButton.Style>
+                    </r:RibbonButton>
 
                     <r:RibbonSplitButton Label="保存"
                         ToolTipTitle="上書き保存"
                         x:Name="SaveButton"
-                        SmallImageSource="Images\SmallIcons\Save.png"
-                        LargeImageSource="Images\LargeIcons\Save.png"
                         Command="Save">
 
-                        <r:RibbonMenuItem Header="上書き保存"
-                            ImageSource="Images\SmallIcons\Save.png"
-                            Command="Save"/>
+                        <r:RibbonSplitButton.Style>
+                            <Style TargetType="r:RibbonSplitButton">
+                                <Style.Triggers>
+                                    <Trigger Property="IsEnabled" Value="True">
+                                        <Setter Property="SmallImageSource" Value="Images\SmallIcons\Save.png"/>
+                                        <Setter Property="LargeImageSource" Value="Images\LargeIcons\Save.png"/>
+                                    </Trigger>
 
-                        <r:RibbonMenuItem Header="名前を付けて保存"
-                            ImageSource="Images\SmallIcons\SaveAs.png"
-                            Command="SaveAs"/>
+                                    <Trigger Property="IsEnabled" Value="False">
+                                        <Setter Property="SmallImageSource" Value="Images\SmallIcons\SaveDisable.png"/>
+                                        <Setter Property="LargeImageSource" Value="Images\LargeIcons\SaveDisable.png"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </r:RibbonSplitButton.Style>
+
+                        <r:RibbonMenuItem Header="上書き保存" Command="Save">
+                            <r:RibbonMenuItem.Style>
+                                <Style TargetType="r:RibbonMenuItem">
+                                    <Style.Triggers>
+                                        <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="True">
+                                            <Setter Property="ImageSource" Value="Images\SmallIcons\Save.png"/>
+                                        </Trigger>
+
+                                        <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="False">
+                                            <Setter Property="ImageSource" Value="Images\SmallIcons\SaveDisable.png"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </r:RibbonMenuItem.Style>
+                        </r:RibbonMenuItem>
+
+                        <r:RibbonMenuItem Header="名前を付けて保存" Command="SaveAs">
+                            <r:RibbonMenuItem.Style>
+                                <Style TargetType="r:RibbonMenuItem">
+                                    <Style.Triggers>
+                                        <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="True">
+                                            <Setter Property="ImageSource" Value="Images\SmallIcons\SaveAs.png"/>
+                                        </Trigger>
+
+                                        <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="False">
+                                            <Setter Property="ImageSource" Value="Images\SmallIcons\SaveAsDisable.png"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </r:RibbonMenuItem.Style>
+                        </r:RibbonMenuItem>
                     </r:RibbonSplitButton>
 
+                    <r:RibbonSplitButton Label="抽出"
+                        ToolTipTitle="選択ページを単一ファイルとして抽出"
+                        x:Name="ExtractButton"
+                        Command="{x:Static cube:ListViewCommands.Extract}"
+                        CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedItems}">
+
+                        <r:RibbonSplitButton.Style>
+                            <Style TargetType="r:RibbonSplitButton">
+                                <Style.Triggers>
+                                    <Trigger Property="r:RibbonSplitButton.IsEnabled" Value="True">
+                                        <Setter Property="SmallImageSource" Value="Images\SmallIcons\Extract.png"/>
+                                        <Setter Property="LargeImageSource" Value="Images\LargeIcons\Extract.png"/>
+                                    </Trigger>
+
+                                    <Trigger Property="r:RibbonSplitButton.IsEnabled" Value="False">
+                                        <Setter Property="SmallImageSource" Value="Images\SmallIcons\ExtractDisable.png"/>
+                                        <Setter Property="LargeImageSource" Value="Images\LargeIcons\ExtractDisable.png"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </r:RibbonSplitButton.Style>
+
+                        <r:RibbonMenuItem Header="選択ページを単一ファイルとして抽出"
+                            Command="{x:Static cube:ListViewCommands.Extract}"
+                            CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedItems}">
+
+                            <r:RibbonMenuItem.Style>
+                                <Style TargetType="r:RibbonMenuItem">
+                                    <Style.Triggers>
+                                        <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="True">
+                                            <Setter Property="ImageSource" Value="Images\SmallIcons\Extract.png"/>
+                                        </Trigger>
+
+                                        <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="False">
+                                            <Setter Property="ImageSource" Value="Images\SmallIcons\ExtractDisable.png"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </r:RibbonMenuItem.Style>
+                        </r:RibbonMenuItem>
+
+                        <r:RibbonMenuItem Header="選択ページを個別のファイルとして抽出"
+                            Command="{x:Static cube:ListViewCommands.Split}"
+                            CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedItems}">
+
+                            <r:RibbonMenuItem.Style>
+                                <Style TargetType="r:RibbonMenuItem">
+                                    <Style.Triggers>
+                                        <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="True">
+                                            <Setter Property="ImageSource" Value="Images\SmallIcons\Extract.png"/>
+                                        </Trigger>
+
+                                        <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="False">
+                                            <Setter Property="ImageSource" Value="Images\SmallIcons\ExtractDisable.png"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </r:RibbonMenuItem.Style>
+                        </r:RibbonMenuItem>
+
+                        <r:RibbonMenuItem Header="全てのページを単一ファイルとして抽出"
+                            Command="{x:Static cube:ListViewCommands.Extract}">
+
+                            <r:RibbonMenuItem.Style>
+                                <Style TargetType="r:RibbonMenuItem">
+                                    <Style.Triggers>
+                                        <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="True">
+                                            <Setter Property="ImageSource" Value="Images\SmallIcons\Extract.png"/>
+                                        </Trigger>
+
+                                        <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="False">
+                                            <Setter Property="ImageSource" Value="Images\SmallIcons\ExtractDisable.png"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </r:RibbonMenuItem.Style>
+                        </r:RibbonMenuItem>
+
+                        <r:RibbonMenuItem Header="全てのページを個別のファイルとして抽出"
+                            Command="{x:Static cube:ListViewCommands.Split}">
+
+                            <r:RibbonMenuItem.Style>
+                                <Style TargetType="r:RibbonMenuItem">
+                                    <Style.Triggers>
+                                        <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="True">
+                                            <Setter Property="ImageSource" Value="Images\SmallIcons\Extract.png"/>
+                                        </Trigger>
+
+                                        <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="False">
+                                            <Setter Property="ImageSource" Value="Images\SmallIcons\ExtractDisable.png"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </r:RibbonMenuItem.Style>
+                        </r:RibbonMenuItem>
+                    </r:RibbonSplitButton>
+                </r:RibbonGroup>
+
+                <r:RibbonGroup Header="やり直し" x:Name="UndoGroup">
                     <r:RibbonSplitButton Label="元に戻す"
                         ToolTipTitle="直前の操作を取り消して元に戻す"
                         x:Name="UndoButton"
-                        SmallImageSource="Images\SmallIcons\Undo.png"
-                        LargeImageSource="Images\LargeIcons\Undo.png"
                         Command="Undo">
+
+                        <r:RibbonSplitButton.Style>
+                            <Style TargetType="r:RibbonSplitButton">
+                                <Style.Triggers>
+                                    <Trigger Property="r:RibbonSplitButton.IsEnabled" Value="True">
+                                        <Setter Property="SmallImageSource" Value="Images\SmallIcons\Undo.png"/>
+                                        <Setter Property="LargeImageSource" Value="Images\LargeIcons\Undo.png"/>
+                                    </Trigger>
+
+                                    <Trigger Property="r:RibbonSplitButton.IsEnabled" Value="False">
+                                        <Setter Property="SmallImageSource" Value="Images\SmallIcons\UndoDisable.png"/>
+                                        <Setter Property="LargeImageSource" Value="Images\LargeIcons\UndoDisable.png"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </r:RibbonSplitButton.Style>
 
                         <r:RibbonGallery
                             MaxColumnCount="1"
@@ -227,9 +554,23 @@
                     <r:RibbonSplitButton Label="やり直し"
                         ToolTipTitle="直前に取り消した操作をもう一度実行する"
                         x:Name="RedoButton"
-                        SmallImageSource="Images\SmallIcons\Redo.png"
-                        LargeImageSource="Images\LargeIcons\Redo.png"
                         Command="Redo">
+
+                        <r:RibbonSplitButton.Style>
+                            <Style TargetType="r:RibbonSplitButton">
+                                <Style.Triggers>
+                                    <Trigger Property="r:RibbonSplitButton.IsEnabled" Value="True">
+                                        <Setter Property="SmallImageSource" Value="Images\SmallIcons\Redo.png"/>
+                                        <Setter Property="LargeImageSource" Value="Images\LargeIcons\Redo.png"/>
+                                    </Trigger>
+
+                                    <Trigger Property="r:RibbonSplitButton.IsEnabled" Value="False">
+                                        <Setter Property="SmallImageSource" Value="Images\SmallIcons\RedoDisable.png"/>
+                                        <Setter Property="LargeImageSource" Value="Images\LargeIcons\RedoDisable.png"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </r:RibbonSplitButton.Style>
 
                         <r:RibbonGallery
                             MaxColumnCount="1"
@@ -249,26 +590,80 @@
                             </r:RibbonGalleryCategory>
                         </r:RibbonGallery>
                     </r:RibbonSplitButton>
+                </r:RibbonGroup>
 
+                <r:RibbonGroup Header="選択" x:Name="SelectGroup">
                     <r:RibbonSplitButton Label="選択"
                         ToolTipTitle="すべてのページを選択、または選択の解除"
                         x:Name="SelectButton"
-                        SmallImageSource="Images\SmallIcons\Select.png"
-                        LargeImageSource="Images\LargeIcons\Select.png"
                         Command="{x:Static local:MainWindow.Select}">
 
-                        <r:RibbonMenuItem Header="すべて選択"
-                            ImageSource="Images\SmallIcons\Select.png"
-                            Command="SelectAll"/>
+                        <r:RibbonSplitButton.Style>
+                            <Style TargetType="r:RibbonSplitButton">
+                                <Style.Triggers>
+                                    <Trigger Property="r:RibbonSplitButton.IsEnabled" Value="True">
+                                        <Setter Property="SmallImageSource" Value="Images\SmallIcons\Select.png"/>
+                                        <Setter Property="LargeImageSource" Value="Images\LargeIcons\Select.png"/>
+                                    </Trigger>
+
+                                    <Trigger Property="r:RibbonSplitButton.IsEnabled" Value="False">
+                                        <Setter Property="SmallImageSource" Value="Images\SmallIcons\SelectDisable.png"/>
+                                        <Setter Property="LargeImageSource" Value="Images\LargeIcons\SelectDisable.png"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </r:RibbonSplitButton.Style>
+
+                        <r:RibbonMenuItem Header="すべて選択" Command="SelectAll">
+                            <r:RibbonMenuItem.Style>
+                                <Style TargetType="r:RibbonMenuItem">
+                                    <Style.Triggers>
+                                        <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="True">
+                                            <Setter Property="ImageSource" Value="Images\SmallIcons\Select.png"/>
+                                        </Trigger>
+
+                                        <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="False">
+                                            <Setter Property="ImageSource" Value="Images\SmallIcons\SelectDisable.png"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </r:RibbonMenuItem.Style>
+                        </r:RibbonMenuItem>
 
                         <r:RibbonMenuItem Header="選択の切り替え"
-                            ImageSource="Images\SmallIcons\Select.png"
                             Command="{x:Static local:MainWindow.Select}"
-                            CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedItems}"/>
+                            CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedItems}">
 
-                        <r:RibbonMenuItem Header="選択の解除"
-                            ImageSource="Images\SmallIcons\Select.png"
-                            Command="{x:Static local:MainWindow.UnSelect}"/>
+                            <r:RibbonMenuItem.Style>
+                                <Style TargetType="r:RibbonMenuItem">
+                                    <Style.Triggers>
+                                        <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="True">
+                                            <Setter Property="ImageSource" Value="Images\SmallIcons\Select.png"/>
+                                        </Trigger>
+
+                                        <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="False">
+                                            <Setter Property="ImageSource" Value="Images\SmallIcons\SelectDisable.png"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </r:RibbonMenuItem.Style>
+                        </r:RibbonMenuItem>
+
+                        <r:RibbonMenuItem Header="選択の解除" Command="{x:Static local:MainWindow.UnSelect}">
+                            <r:RibbonMenuItem.Style>
+                                <Style TargetType="r:RibbonMenuItem">
+                                    <Style.Triggers>
+                                        <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="True">
+                                            <Setter Property="ImageSource" Value="Images\SmallIcons\Select.png"/>
+                                        </Trigger>
+
+                                        <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="False">
+                                            <Setter Property="ImageSource" Value="Images\SmallIcons\SelectDisable.png"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </r:RibbonMenuItem.Style>
+                        </r:RibbonMenuItem>
                     </r:RibbonSplitButton>
                 </r:RibbonGroup>
 
@@ -276,74 +671,147 @@
                     <r:RibbonSplitButton Label="挿入"
                         ToolTipTitle="選択位置に新しいPDFファイルを挿入"
                         x:Name="InsertButton"
-                        SmallImageSource="Images\SmallIcons\Insert.png"
-                        LargeImageSource="Images\LargeIcons\Insert.png"
                         Command="{x:Static cube:ListViewCommands.Insert}"
                         CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedIndex}">
 
+                        <r:RibbonSplitButton.Style>
+                            <Style TargetType="r:RibbonSplitButton">
+                                <Style.Triggers>
+                                    <Trigger Property="r:RibbonSplitButton.IsEnabled" Value="True">
+                                        <Setter Property="SmallImageSource" Value="Images\SmallIcons\Insert.png"/>
+                                        <Setter Property="LargeImageSource" Value="Images\LargeIcons\Insert.png"/>
+                                    </Trigger>
+
+                                    <Trigger Property="r:RibbonSplitButton.IsEnabled" Value="False">
+                                        <Setter Property="SmallImageSource" Value="Images\SmallIcons\InsertDisable.png"/>
+                                        <Setter Property="LargeImageSource" Value="Images\LargeIcons\InsertDisable.png"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </r:RibbonSplitButton.Style>
+
                         <r:RibbonMenuItem Header="選択位置に挿入"
                             x:Name="InsertSelect"
-                            ImageSource="Images\SmallIcons\Insert.png"
                             Command="{x:Static cube:ListViewCommands.Insert}"
-                            CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedIndex}"/>
+                            CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedIndex}">
+
+                            <r:RibbonMenuItem.Style>
+                                <Style TargetType="r:RibbonMenuItem">
+                                    <Style.Triggers>
+                                        <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="True">
+                                            <Setter Property="ImageSource" Value="Images\SmallIcons\Insert.png"/>
+                                        </Trigger>
+
+                                        <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="False">
+                                            <Setter Property="ImageSource" Value="Images\SmallIcons\InsertDisable.png"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </r:RibbonMenuItem.Style>
+                        </r:RibbonMenuItem>
 
                         <r:RibbonMenuItem Header="先頭に挿入"
                             x:Name="InsertHead"
-                            ImageSource="Images\SmallIcons\Insert.png"
-                            Command="{x:Static cube:ListViewCommands.Insert}"/>
+                            Command="{x:Static cube:ListViewCommands.Insert}">
+
+
+                            <r:RibbonMenuItem.Style>
+                                <Style TargetType="r:RibbonMenuItem">
+                                    <Style.Triggers>
+                                        <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="True">
+                                            <Setter Property="ImageSource" Value="Images\SmallIcons\Insert.png"/>
+                                        </Trigger>
+
+                                        <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="False">
+                                            <Setter Property="ImageSource" Value="Images\SmallIcons\InsertDisable.png"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </r:RibbonMenuItem.Style>
+                        </r:RibbonMenuItem>
 
                         <r:RibbonMenuItem Header="末尾に挿入"
                             x:Name="InsertTail"
-                            ImageSource="Images\SmallIcons\Insert.png"
                             Command="{x:Static cube:ListViewCommands.Insert}"
-                            CommandParameter="{Binding ElementName=Thumbnail, Path=Items.Count}"/>
-                    </r:RibbonSplitButton>
+                            CommandParameter="{Binding ElementName=Thumbnail, Path=Items.Count}">
 
-                    <r:RibbonSplitButton Label="抽出"
-                        ToolTipTitle="選択ページを単一ファイルとして抽出"
-                        x:Name="ExtractButton"
-                        SmallImageSource="Images\SmallIcons\Extract.png"
-                        LargeImageSource="Images\LargeIcons\Extract.png"
-                        Command="{x:Static cube:ListViewCommands.Extract}"
-                        CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedItems}">
 
-                        <r:RibbonMenuItem Header="選択ページを単一ファイルとして抽出"
-                            ImageSource="Images\SmallIcons\Extract.png"
-                            Command="{x:Static cube:ListViewCommands.Extract}"
-                            CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedItems}"/>
+                            <r:RibbonMenuItem.Style>
+                                <Style TargetType="r:RibbonMenuItem">
+                                    <Style.Triggers>
+                                        <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="True">
+                                            <Setter Property="ImageSource" Value="Images\SmallIcons\Insert.png"/>
+                                        </Trigger>
 
-                        <r:RibbonMenuItem Header="選択ページを個別のファイルとして抽出"
-                            ImageSource="Images\SmallIcons\Extract.png"
-                            Command="{x:Static cube:ListViewCommands.Split}"
-                            CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedItems}"/>
-
-                        <r:RibbonMenuItem Header="全てのページを単一ファイルとして抽出"
-                            ImageSource="Images\SmallIcons\Extract.png"
-                            Command="{x:Static cube:ListViewCommands.Extract}"/>
-
-                        <r:RibbonMenuItem Header="全てのページを個別のファイルとして抽出"
-                            ImageSource="Images\SmallIcons\Extract.png"
-                            Command="{x:Static cube:ListViewCommands.Split}"/>
+                                        <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="False">
+                                            <Setter Property="ImageSource" Value="Images\SmallIcons\InsertDisable.png"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </r:RibbonMenuItem.Style>
+                        </r:RibbonMenuItem>
                     </r:RibbonSplitButton>
 
                     <r:RibbonSplitButton Label="削除"
                         ToolTipTitle="選択ページを削除"
                         x:Name="RemoveButton"
-                        SmallImageSource="Images\SmallIcons\Delete.png"
-                        LargeImageSource="Images\LargeIcons\Delete.png"
                         Command="{x:Static cube:ListViewCommands.Remove}"
                         CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedItems}">
 
+                        <r:RibbonSplitButton.Style>
+                            <Style TargetType="r:RibbonSplitButton">
+                                <Style.Triggers>
+                                    <Trigger Property="r:RibbonSplitButton.IsEnabled" Value="True">
+                                        <Setter Property="SmallImageSource" Value="Images\SmallIcons\Delete.png"/>
+                                        <Setter Property="LargeImageSource" Value="Images\LargeIcons\Delete.png"/>
+                                    </Trigger>
+
+                                    <Trigger Property="r:RibbonSplitButton.IsEnabled" Value="False">
+                                        <Setter Property="SmallImageSource" Value="Images\SmallIcons\DeleteDisable.png"/>
+                                        <Setter Property="LargeImageSource" Value="Images\LargeIcons\DeleteDisable.png"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </r:RibbonSplitButton.Style>
+
                         <r:RibbonMenuItem Header="選択ページを削除"
                             x:Name="RemoveSelect"
-                            ImageSource="Images\SmallIcons\Delete.png"
                             Command="{x:Static cube:ListViewCommands.Remove}"
-                            CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedItems}"/>
+                            CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedItems}">
+
+                            <r:RibbonMenuItem.Style>
+                                <Style TargetType="r:RibbonMenuItem">
+                                    <Style.Triggers>
+                                        <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="True">
+                                            <Setter Property="ImageSource" Value="Images\SmallIcons\Delete.png"/>
+                                        </Trigger>
+
+                                        <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="False">
+                                            <Setter Property="ImageSource" Value="Images\SmallIcons\DeleteDisable.png"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </r:RibbonMenuItem.Style>
+                        </r:RibbonMenuItem>
 
                         <r:RibbonMenuItem Header="範囲を指定して削除"
                             x:Name="RemoveRange"
-                            ImageSource="Images\SmallIcons\Delete.png"
-                            Command="{x:Static cube:ListViewCommands.Remove}"/>
+                            Command="{x:Static cube:ListViewCommands.Remove}">
+
+                            <r:RibbonMenuItem.Style>
+                                <Style TargetType="r:RibbonMenuItem">
+                                    <Style.Triggers>
+                                        <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="True">
+                                            <Setter Property="ImageSource" Value="Images\SmallIcons\Delete.png"/>
+                                        </Trigger>
+
+                                        <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="False">
+                                            <Setter Property="ImageSource" Value="Images\SmallIcons\DeleteDisable.png"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </r:RibbonMenuItem.Style>
+                        </r:RibbonMenuItem>
                     </r:RibbonSplitButton>
                 </r:RibbonGroup>
                 
@@ -351,52 +819,142 @@
                     <r:RibbonButton Label="前へ"
                         ToolTipTitle="選択ページを1ページ前に移動"
                         x:Name="ForwardButton"
-                        SmallImageSource="Images\SmallIcons\Back.png"
-                        LargeImageSource="Images\LargeIcons\Back.png"
                         Command="{x:Static cube:ListViewCommands.Move}"
-                        CommandParameter="-1"/>
+                        CommandParameter="-1">
+
+                        <r:RibbonButton.Style>
+                            <Style TargetType="r:RibbonButton">
+                                <Style.Triggers>
+                                    <Trigger Property="r:RibbonButton.IsEnabled" Value="True">
+                                        <Setter Property="SmallImageSource" Value="Images\SmallIcons\Back.png"/>
+                                        <Setter Property="LargeImageSource" Value="Images\LargeIcons\Back.png"/>
+                                    </Trigger>
+
+                                    <Trigger Property="r:RibbonButton.IsEnabled" Value="False">
+                                        <Setter Property="SmallImageSource" Value="Images\SmallIcons\BackDisable.png"/>
+                                        <Setter Property="LargeImageSource" Value="Images\LargeIcons\BackDisable.png"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </r:RibbonButton.Style>
+                    </r:RibbonButton>
 
                     <r:RibbonButton Label="後へ"
                         ToolTipTitle="選択ページを1ページ後ろに移動"
                         x:Name="BackButton"
-                        SmallImageSource="Images\SmallIcons\Forward.png"
-                        LargeImageSource="Images\LargeIcons\Forward.png"
                         Command="{x:Static cube:ListViewCommands.Move}"
-                        CommandParameter="1"/>
+                        CommandParameter="1">
+
+                        <r:RibbonButton.Style>
+                            <Style TargetType="r:RibbonButton">
+                                <Style.Triggers>
+                                    <Trigger Property="r:RibbonButton.IsEnabled" Value="True">
+                                        <Setter Property="SmallImageSource" Value="Images\SmallIcons\Forward.png"/>
+                                        <Setter Property="LargeImageSource" Value="Images\LargeIcons\Forward.png"/>
+                                    </Trigger>
+
+                                    <Trigger Property="r:RibbonButton.IsEnabled" Value="False">
+                                        <Setter Property="SmallImageSource" Value="Images\SmallIcons\ForwardDisable.png"/>
+                                        <Setter Property="LargeImageSource" Value="Images\LargeIcons\ForwardDisable.png"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </r:RibbonButton.Style>
+                    </r:RibbonButton>
                 </r:RibbonGroup>
                 
                 <r:RibbonGroup Header="回転" x:Name="RotationGroup">
                     <r:RibbonButton Label="左90度"
                         ToolTipTitle="選択ページを左回りに90度回転"
                         x:Name="RotateLeftButton"
-                        SmallImageSource="Images\SmallIcons\RotateLeft.png"
-                        LargeImageSource="Images\LargeIcons\RotateLeft.png"
                         Command="{x:Static cube:ListViewCommands.Rotate}"
-                        CommandParameter="-90"/>
+                        CommandParameter="-90">
+
+                        <r:RibbonButton.Style>
+                            <Style TargetType="r:RibbonButton">
+                                <Style.Triggers>
+                                    <Trigger Property="r:RibbonButton.IsEnabled" Value="True">
+                                        <Setter Property="SmallImageSource" Value="Images\SmallIcons\RotateLeft.png"/>
+                                        <Setter Property="LargeImageSource" Value="Images\LargeIcons\RotateLeft.png"/>
+                                    </Trigger>
+
+                                    <Trigger Property="r:RibbonButton.IsEnabled" Value="False">
+                                        <Setter Property="SmallImageSource" Value="Images\SmallIcons\RotateLeftDisable.png"/>
+                                        <Setter Property="LargeImageSource" Value="Images\LargeIcons\RotateLeftDisable.png"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </r:RibbonButton.Style>
+                    </r:RibbonButton>
 
                     <r:RibbonButton Label="右90度"
                         ToolTipTitle="選択ページを右回りに90度回転"
                         x:Name="RotateRightButton"
-                        SmallImageSource="Images\SmallIcons\RotateRight.png"
-                        LargeImageSource="Images\LargeIcons\RotateRight.png"
                         Command="{x:Static cube:ListViewCommands.Rotate}"
-                        CommandParameter="90"/>
+                        CommandParameter="90">
+
+                        <r:RibbonButton.Style>
+                            <Style TargetType="r:RibbonButton">
+                                <Style.Triggers>
+                                    <Trigger Property="r:RibbonButton.IsEnabled" Value="True">
+                                        <Setter Property="SmallImageSource" Value="Images\SmallIcons\RotateRight.png"/>
+                                        <Setter Property="LargeImageSource" Value="Images\LargeIcons\RotateRight.png"/>
+                                    </Trigger>
+
+                                    <Trigger Property="r:RibbonButton.IsEnabled" Value="False">
+                                        <Setter Property="SmallImageSource" Value="Images\SmallIcons\RotateRightDisable.png"/>
+                                        <Setter Property="LargeImageSource" Value="Images\LargeIcons\RotateRightDisable.png"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </r:RibbonButton.Style>
+                    </r:RibbonButton>
                 </r:RibbonGroup>
 
                 <r:RibbonGroup Header="プロパティ" x:Name="PropertiesGroup">
                     <r:RibbonButton Label="文書プロパティ"
                         ToolTipTitle="PDFファイルの文書プロパティを編集"
                         MaxWidth="64"
-                        SmallImageSource="Images\SmallIcons\Property.png"
-                        LargeImageSource="Images\LargeIcons\Property.png"
-                        Command="{x:Static cube:ListViewCommands.Metadata}"/>
+                        Command="{x:Static cube:ListViewCommands.Metadata}">
+
+                        <r:RibbonButton.Style>
+                            <Style TargetType="r:RibbonButton">
+                                <Style.Triggers>
+                                    <Trigger Property="r:RibbonButton.IsEnabled" Value="True">
+                                        <Setter Property="SmallImageSource" Value="Images\SmallIcons\Property.png"/>
+                                        <Setter Property="LargeImageSource" Value="Images\LargeIcons\Property.png"/>
+                                    </Trigger>
+
+                                    <Trigger Property="r:RibbonButton.IsEnabled" Value="False">
+                                        <Setter Property="SmallImageSource" Value="Images\SmallIcons\PropertyDisable.png"/>
+                                        <Setter Property="LargeImageSource" Value="Images\LargeIcons\PropertyDisable.png"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </r:RibbonButton.Style>
+                    </r:RibbonButton>
 
                     <r:RibbonButton Label="セキュリティ"
                         ToolTipTitle="PDFファイルのセキュリティ情報を編集"
                         MaxWidth="64"
-                        SmallImageSource="Images\SmallIcons\Security.png"
-                        LargeImageSource="Images\LargeIcons\Security.png"
-                        Command="{x:Static cube:ListViewCommands.Encryption}"/>
+                        Command="{x:Static cube:ListViewCommands.Encryption}">
+
+                        <r:RibbonButton.Style>
+                            <Style TargetType="r:RibbonButton">
+                                <Style.Triggers>
+                                    <Trigger Property="r:RibbonButton.IsEnabled" Value="True">
+                                        <Setter Property="SmallImageSource" Value="Images\SmallIcons\Security.png"/>
+                                        <Setter Property="LargeImageSource" Value="Images\LargeIcons\Security.png"/>
+                                    </Trigger>
+
+                                    <Trigger Property="r:RibbonButton.IsEnabled" Value="False">
+                                        <Setter Property="SmallImageSource" Value="Images\SmallIcons\SecurityDisable.png"/>
+                                        <Setter Property="LargeImageSource" Value="Images\LargeIcons\SecurityDisable.png"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </r:RibbonButton.Style>
+                    </r:RibbonButton>
                 </r:RibbonGroup>
             </r:RibbonTab>
             
@@ -405,29 +963,75 @@
                     <r:RibbonButton Label="再描画"
                         ToolTipTitle="サムネイルの再描画"
                         x:Name="RedrawButton"
-                        LargeImageSource="Images\LargeIcons\Refresh.png"
-                        SmallImageSource="Images\SmallIcons\Refresh.png"
-                        Command="{x:Static local:MainWindow.Redraw}"/>
+                        Command="{x:Static local:MainWindow.Redraw}">
+
+                        <r:RibbonButton.Style>
+                            <Style TargetType="r:RibbonButton">
+                                <Style.Triggers>
+                                    <Trigger Property="r:RibbonButton.IsEnabled" Value="True">
+                                        <Setter Property="SmallImageSource" Value="Images\SmallIcons\Refresh.png"/>
+                                        <Setter Property="LargeImageSource" Value="Images\LargeIcons\Refresh.png"/>
+                                    </Trigger>
+
+                                    <Trigger Property="r:RibbonButton.IsEnabled" Value="False">
+                                        <Setter Property="SmallImageSource" Value="Images\SmallIcons\RefreshDisable.png"/>
+                                        <Setter Property="LargeImageSource" Value="Images\LargeIcons\RefreshDisable.png"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </r:RibbonButton.Style>
+                    </r:RibbonButton>
                 </r:RibbonGroup>
 
                 <r:RibbonGroup Header="サムネイル設定" x:Name="ThumbnailViewGroup">
                     <r:RibbonButton Label="拡大"
                         ToolTipTitle="サムネイルのサイズを拡大"
                         x:Name="ZommInButton"
-                        LargeImageSource="Images\LargeIcons\ZoomIn.png"
-                        SmallImageSource="Images\SmallIcons\ZoomIn.png"
-                        Command="{x:Static local:MainWindow.ZoomIn}"/>
+                        Command="{x:Static local:MainWindow.ZoomIn}">
+
+                        <r:RibbonButton.Style>
+                            <Style TargetType="r:RibbonButton">
+                                <Style.Triggers>
+                                    <Trigger Property="r:RibbonButton.IsEnabled" Value="True">
+                                        <Setter Property="SmallImageSource" Value="Images\SmallIcons\ZoomIn.png"/>
+                                        <Setter Property="LargeImageSource" Value="Images\LargeIcons\ZoomIn.png"/>
+                                    </Trigger>
+
+                                    <Trigger Property="r:RibbonButton.IsEnabled" Value="False">
+                                        <Setter Property="SmallImageSource" Value="Images\SmallIcons\ZoomInDisable.png"/>
+                                        <Setter Property="LargeImageSource" Value="Images\LargeIcons\ZoomInDisable.png"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </r:RibbonButton.Style>
+                    </r:RibbonButton>
 
                     <r:RibbonButton Label="縮小"
                         ToolTipTitle="サムネイルのサイズを縮小"
                         x:Name="ZoomOutButton"
-                        LargeImageSource="Images\LargeIcons\ZoomOut.png"
-                        SmallImageSource="Images\SmallIcons\ZoomOut.png"
-                        Command="{x:Static local:MainWindow.ZoomOut}"/>
+                        Command="{x:Static local:MainWindow.ZoomOut}">
 
-                    <r:RibbonComboBox Label="サイズ"
+                        <r:RibbonButton.Style>
+                            <Style TargetType="r:RibbonButton">
+                                <Style.Triggers>
+                                    <Trigger Property="r:RibbonButton.IsEnabled" Value="True">
+                                        <Setter Property="SmallImageSource" Value="Images\SmallIcons\ZoomOut.png"/>
+                                        <Setter Property="LargeImageSource" Value="Images\LargeIcons\ZoomOut.png"/>
+                                    </Trigger>
+
+                                    <Trigger Property="r:RibbonButton.IsEnabled" Value="False">
+                                        <Setter Property="SmallImageSource" Value="Images\SmallIcons\ZoomOutDisable.png"/>
+                                        <Setter Property="LargeImageSource" Value="Images\LargeIcons\ZoomOutDisable.png"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </r:RibbonButton.Style>
+                    </r:RibbonButton>
+
+                    <r:RibbonComboBox
                         ToolTipTitle="サムネイルのサイズを変更"
                         x:Name="ViewSizeComboBox"
+                        Foreground="{StaticResource MenuItemForegroundBrush}"
                         IsReadOnly="True"
                         Margin="2">
 
@@ -451,23 +1055,71 @@
 
             <r:RibbonTab Header="ヘルプ" x:Name="HelpTab">
                 <r:RibbonGroup Header="情報" x:Name="InfoGroup">
-                    <r:RibbonButton Label="マニュアル" x:Name="ManualButton"
-                        SmallImageSource="Images\SmallIcons\Help.png"
-                        LargeImageSource="Images\LargeIcons\Help.png"
-                        Command="{x:Static local:MainWindow.Help}"/>
+                    <r:RibbonButton Label="マニュアル"
+                        x:Name="ManualButton"
+                        Command="{x:Static local:MainWindow.Help}">
 
-                    <r:RibbonButton Label="バージョン" x:Name="VersionButton"
-                        SmallImageSource="Images\SmallIcons\Version.png"
-                        LargeImageSource="Images\LargeIcons\Version.png"
-                        Command="{x:Static local:MainWindow.Version}"/>
+                        <r:RibbonButton.Style>
+                            <Style TargetType="r:RibbonButton">
+                                <Style.Triggers>
+                                    <Trigger Property="r:RibbonButton.IsEnabled" Value="True">
+                                        <Setter Property="SmallImageSource" Value="Images\SmallIcons\Help.png"/>
+                                        <Setter Property="LargeImageSource" Value="Images\LargeIcons\Help.png"/>
+                                    </Trigger>
+
+                                    <Trigger Property="r:RibbonButton.IsEnabled" Value="False">
+                                        <Setter Property="SmallImageSource" Value="Images\SmallIcons\HelpDisable.png"/>
+                                        <Setter Property="LargeImageSource" Value="Images\LargeIcons\HelpDisable.png"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </r:RibbonButton.Style>
+                    </r:RibbonButton>
+
+                    <r:RibbonButton Label="バージョン"
+                        x:Name="VersionButton"
+                        Command="{x:Static local:MainWindow.Version}">
+
+                        <r:RibbonButton.Style>
+                            <Style TargetType="r:RibbonButton">
+                                <Style.Triggers>
+                                    <Trigger Property="r:RibbonButton.IsEnabled" Value="True">
+                                        <Setter Property="SmallImageSource" Value="Images\SmallIcons\Version.png"/>
+                                        <Setter Property="LargeImageSource" Value="Images\LargeIcons\Version.png"/>
+                                    </Trigger>
+
+                                    <Trigger Property="r:RibbonButton.IsEnabled" Value="False">
+                                        <Setter Property="SmallImageSource" Value="Images\SmallIcons\VersionDisable.png"/>
+                                        <Setter Property="LargeImageSource" Value="Images\LargeIcons\VersionDisable.png"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </r:RibbonButton.Style>
+                    </r:RibbonButton>
                 </r:RibbonGroup>
 
                 <r:RibbonGroup Header="外部サイト" x:Name="WebGroup">
-                    <r:RibbonButton Label="ホームページ" x:Name="MyWebButton"
-                        SmallImageSource="Images\SmallIcons\Web.png"
-                        LargeImageSource="Images\LargeIcons\Web.png"
+                    <r:RibbonButton Label="Web"
+                        x:Name="MyWebButton"
                         Command="{x:Static local:MainWindow.Web}"
-                        CommandParameter="http://www.cube-soft.jp/"/>
+                        CommandParameter="http://www.cube-soft.jp/">
+
+                        <r:RibbonButton.Style>
+                            <Style TargetType="r:RibbonButton">
+                                <Style.Triggers>
+                                    <Trigger Property="r:RibbonButton.IsEnabled" Value="True">
+                                        <Setter Property="SmallImageSource" Value="Images\SmallIcons\Web.png"/>
+                                        <Setter Property="LargeImageSource" Value="Images\LargeIcons\Web.png"/>
+                                    </Trigger>
+
+                                    <Trigger Property="r:RibbonButton.IsEnabled" Value="False">
+                                        <Setter Property="SmallImageSource" Value="Images\SmallIcons\WebDisable.png"/>
+                                        <Setter Property="LargeImageSource" Value="Images\LargeIcons\WebDisable.png"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </r:RibbonButton.Style>
+                    </r:RibbonButton>
                 </r:RibbonGroup>
             </r:RibbonTab>
         </r:Ribbon>
@@ -478,7 +1130,7 @@
             VirtualizingStackPanel.VirtualizationMode="Recycling"
             VirtualizingStackPanel.IsVirtualizing="True"
             SelectionMode="Extended"
-            Background="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}"
+            Background="{StaticResource MainBackgroundBrush}"
             MouseDoubleClick="OnPreview">
 
 
@@ -493,8 +1145,11 @@
             </i:Interaction.Behaviors>
         </ListView>
 
-        <StatusBar Grid.Row="2" x:Name="FooterStatusBar" Height="23">
-            <Image x:Name="LockStatusBarItem" Source="Images\SmallIcons\Lock.png" Visibility="Collapsed"/>
+        <StatusBar Grid.Row="2" x:Name="FooterStatusBar" Height="23"
+            Foreground="{StaticResource TabForegroundBrush}"
+            Background="{StaticResource TabBackgroundBrush}"
+            BorderBrush="{StaticResource TabBorderBrush}">
+            <Image x:Name="LockStatusBarItem" Source="Images\Lock.png" Visibility="Collapsed"/>
             <StatusBarItem Name="InfoStatusBarItem" Content=""/>
         </StatusBar>
     </Grid>
