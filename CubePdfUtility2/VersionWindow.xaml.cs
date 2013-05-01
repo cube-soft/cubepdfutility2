@@ -41,21 +41,6 @@ namespace CubePdfUtility
         /// VersionWindow (constructor)
         /// 
         /// <summary>
-        /// 既定の値でオブジェクトを初期化します。
-        /// </summary>
-        ///
-        /* ----------------------------------------------------------------- */
-        public VersionWindow()
-        {
-            InitializeComponent();
-            SetVersion(System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString());
-        }
-
-        /* ----------------------------------------------------------------- */
-        ///
-        /// VersionWindow (constructor)
-        /// 
-        /// <summary>
         /// 指定されたバージョンの値を使用して、オブジェクトを初期化します。
         /// </summary>
         ///
@@ -64,7 +49,23 @@ namespace CubePdfUtility
         {
             InitializeComponent();
             SetVersion(version);
+            SourceInitialized += (sender, e) => {
+                if (Top < 0 || Top > SystemParameters.WorkArea.Bottom - Height) Top = 0;
+                if (Left < 0 || Left > SystemParameters.WorkArea.Right - Width) Left = 0;
+            };
         }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// VersionWindow (constructor)
+        /// 
+        /// <summary>
+        /// 既定の値でオブジェクトを初期化します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        public VersionWindow()
+            : this(System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()) { }
 
         #endregion
 

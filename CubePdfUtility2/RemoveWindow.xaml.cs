@@ -47,6 +47,10 @@ namespace CubePdfUtility
         {
             InitializeComponent();
             PageCount = 0;
+            SourceInitialized += (sender, e) => {
+                if (Top < 0 || Top > SystemParameters.WorkArea.Bottom - Height) Top = 0;
+                if (Left < 0 || Left > SystemParameters.WorkArea.Right - Width) Left = 0;
+            };
         }
 
         /* ----------------------------------------------------------------- */
@@ -62,6 +66,8 @@ namespace CubePdfUtility
             : this()
         {
             PageCount = viewmodel.PageCount;
+
+            ReplaceFont();
         }
 
         #endregion
@@ -148,6 +154,30 @@ namespace CubePdfUtility
 
         #endregion
 
+        #endregion
+
+        # region Other Methods
+        /* ----------------------------------------------------------------- */
+        ///
+        /// ReplaceFont
+        ///
+        /// <summary>
+        /// コンストラクタ実行時に、画面のフォントを差し替えます。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void ReplaceFont()
+        {
+            var fonts = new System.Drawing.Text.InstalledFontCollection();
+            foreach (var ff in fonts.Families)
+            {
+                if (ff.Name.Contains("Meiryo"))
+                {
+                    PageRangeTextBox.FontFamily = new System.Windows.Media.FontFamily(ff.Name);
+                    break;
+                }
+            }
+        }
         #endregion
 
         #region Variables

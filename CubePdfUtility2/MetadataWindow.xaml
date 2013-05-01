@@ -8,7 +8,7 @@
         <CommandBinding Command="Save"   CanExecute="SaveCommand_CanExecute"   Executed="SaveCommand_Executed"/>
         <CommandBinding Command="Close"  CanExecute="CloseCommand_CanExecute"  Executed="CloseCommand_Executed"/>
     </Window.CommandBindings>
-
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -37,16 +37,16 @@
                 <TextBlock x:Name="FileName" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Text="Dummy.pdf" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"/>
 
                 <Label Content="タイトル：" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" />
-                <TextBox Grid.Row="1" Grid.Column="1" Margin="5" VerticalAlignment="Center" Text="{Binding Title}"/>
+                <TextBox Grid.Row="1" Grid.Column="1" Margin="5" VerticalAlignment="Center" Text="{Binding Title}" x:Name="TitleTextBox"/>
 
                 <Label Content="作成者：" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" />
-                <TextBox Grid.Row="2" Grid.Column="1" Margin="5" VerticalAlignment="Center" Text="{Binding Author}"/>
+                <TextBox Grid.Row="2" Grid.Column="1" Margin="5" VerticalAlignment="Center" Text="{Binding Author}" x:Name="AuthorTextBox"/>
 
                 <Label Content="サブタイトル：" Grid.Row="3" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" />
-                <TextBox Grid.Row="3" Grid.Column="1" Margin="5" VerticalAlignment="Center" Text="{Binding Subtitle}"/>
+                <TextBox Grid.Row="3" Grid.Column="1" Margin="5" VerticalAlignment="Center" Text="{Binding Subtitle}" x:Name="SubTitleTextBox"/>
 
                 <Label Grid.Row="4" Grid.Column="0" Content="キーワード：" HorizontalAlignment="Right" VerticalAlignment="Center" />
-                <TextBox Grid.Row="4" Grid.Column="1" Margin="5" VerticalAlignment="Center" Text="{Binding Keywords}"/>
+                <TextBox Grid.Row="4" Grid.Column="1" Margin="5" VerticalAlignment="Center" Text="{Binding Keywords}" x:Name="KeyWordTextBox"/>
             </Grid>
         </GroupBox>
 
@@ -79,7 +79,7 @@
                 </ComboBox>
 
                 <Label Content="アプリケーション：" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" />
-                <TextBox Grid.Row="1" Grid.Column="1" Margin="5" VerticalAlignment="Center" Text="{Binding Creator}"/>
+                <TextBox Grid.Row="1" Grid.Column="1" Margin="5" VerticalAlignment="Center" Text="{Binding Creator}" x:Name="ApplicationTextBox"/>
 
                 <Label Content="PDF変換：" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" />
                 <TextBlock Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Text="{Binding Producer}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"/>

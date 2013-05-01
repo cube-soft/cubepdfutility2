@@ -16,6 +16,7 @@
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
+    <ExpressionBlendVersion>3.0.1938.0</ExpressionBlendVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -41,6 +42,7 @@
     <ApplicationIcon>app.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationFramework.Classic" />
     <Reference Include="RibbonControlsLibrary, Version=3.5.41019.1, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>.\RibbonControlsLibrary.dll</HintPath>
@@ -203,7 +205,6 @@
     <Resource Include="Images\SmallIcons\Extract.png" />
     <Resource Include="Images\SmallIcons\Forward.png" />
     <Resource Include="Images\SmallIcons\Insert.png" />
-    <Resource Include="Images\SmallIcons\Menu.png" />
     <Resource Include="Images\SmallIcons\Open.png" />
     <Resource Include="Images\SmallIcons\Property.png" />
     <Resource Include="Images\SmallIcons\RotateLeft.png" />
@@ -224,9 +225,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\SmallIcons\Redo.png" />
-  </ItemGroup>
-  <ItemGroup>
-<Resource Include="Images\SmallIcons\Lock.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Logo.png" />
@@ -252,12 +250,83 @@
     <Resource Include="Images\SmallIcons\Help.png" />
     <Resource Include="Images\SmallIcons\Web.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\LogoDark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Background.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\SmallIcons\Exit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Lock.png" />
+    <Resource Include="Images\Menu.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\LogoDarkDisable.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\LargeIcons\BackDisable.png" />
+    <Resource Include="Images\LargeIcons\CloseDisable.png" />
+    <Resource Include="Images\LargeIcons\DeleteDisable.png" />
+    <Resource Include="Images\LargeIcons\ExitDisable.png" />
+    <Resource Include="Images\LargeIcons\ExtractDisable.png" />
+    <Resource Include="Images\LargeIcons\FontDisable.png" />
+    <Resource Include="Images\LargeIcons\ForwardDisable.png" />
+    <Resource Include="Images\LargeIcons\HelpDisable.png" />
+    <Resource Include="Images\LargeIcons\InsertDisable.png" />
+    <Resource Include="Images\LargeIcons\OpenDisable.png" />
+    <Resource Include="Images\LargeIcons\PropertyDisable.png" />
+    <Resource Include="Images\LargeIcons\RedoDisable.png" />
+    <Resource Include="Images\LargeIcons\RefreshDisable.png" />
+    <Resource Include="Images\LargeIcons\RotateLeftDisable.png" />
+    <Resource Include="Images\LargeIcons\RotateRightDisable.png" />
+    <Resource Include="Images\LargeIcons\SaveAsDisable.png" />
+    <Resource Include="Images\LargeIcons\SaveDisable.png" />
+    <Resource Include="Images\LargeIcons\SecurityDisable.png" />
+    <Resource Include="Images\LargeIcons\SelectDisable.png" />
+    <Resource Include="Images\LargeIcons\UndoDisable.png" />
+    <Resource Include="Images\LargeIcons\VersionDisable.png" />
+    <Resource Include="Images\LargeIcons\WebDisable.png" />
+    <Resource Include="Images\LargeIcons\ZoomInDisable.png" />
+    <Resource Include="Images\LargeIcons\ZoomOutDisable.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\LargeIcons\Font.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\SmallIcons\BackDisable.png" />
+    <Resource Include="Images\SmallIcons\CloseDisable.png" />
+    <Resource Include="Images\SmallIcons\DeleteDisable.png" />
+    <Resource Include="Images\SmallIcons\ExitDisable.png" />
+    <Resource Include="Images\SmallIcons\ExtractDisable.png" />
+    <Resource Include="Images\SmallIcons\FontDisable.png" />
+    <Resource Include="Images\SmallIcons\ForwardDisable.png" />
+    <Resource Include="Images\SmallIcons\HelpDisable.png" />
+    <Resource Include="Images\SmallIcons\InsertDisable.png" />
+    <Resource Include="Images\SmallIcons\OpenDisable.png" />
+    <Resource Include="Images\SmallIcons\PropertyDisable.png" />
+    <Resource Include="Images\SmallIcons\RedoDisable.png" />
+    <Resource Include="Images\SmallIcons\RefreshDisable.png" />
+    <Resource Include="Images\SmallIcons\RotateLeftDisable.png" />
+    <Resource Include="Images\SmallIcons\RotateRightDisable.png" />
+    <Resource Include="Images\SmallIcons\SaveAsDisable.png" />
+    <Resource Include="Images\SmallIcons\SaveDisable.png" />
+    <Resource Include="Images\SmallIcons\SecurityDisable.png" />
+    <Resource Include="Images\SmallIcons\SelectDisable.png" />
+    <Resource Include="Images\SmallIcons\UndoDisable.png" />
+    <Resource Include="Images\SmallIcons\VersionDisable.png" />
+    <Resource Include="Images\SmallIcons\WebDisable.png" />
+    <Resource Include="Images\SmallIcons\ZoomInDisable.png" />
+    <Resource Include="Images\SmallIcons\ZoomOutDisable.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy $(TargetPath) $(SolutionDir)Release\$(PlatformName)\
 copy $(TargetPath).config $(SolutionDir)Release\$(PlatformName)\
 copy $(TargetDir)*.dll $(SolutionDir)Release\$(PlatformName)\</PostBuildEvent>
-</PropertyGroup>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
