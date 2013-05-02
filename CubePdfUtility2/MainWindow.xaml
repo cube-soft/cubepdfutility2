@@ -43,6 +43,7 @@
         <cube:ControlToTagConverter x:Key="ControlToTagConverter"/>
         <local:ItemHeightConverter x:Key="ItemHeightConverter"/>
 
+        <Color x:Key="{x:Static SystemColors.GrayTextColorKey}">#FF595959</Color>
         <SolidColorBrush x:Key="MainBorderBrush" Color="#FF000000"/>
         <SolidColorBrush x:Key="MainBackgroundBrush" Color="#FF666666"/>
         <SolidColorBrush x:Key="MainForegroundBrush" Color="#FF000000"/>
@@ -61,9 +62,23 @@
         <SolidColorBrush x:Key="MenuItemBackgroundBrush" Color="#FFFFFFFF"/>
         <SolidColorBrush x:Key="MenuItemForegroundBrush" Color="#FF000000"/>
 
+        <Style TargetType="{x:Type r:Ribbon}">
+            <Setter Property="Background" Value="{StaticResource MainBackgroundBrush}" />
+            <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource MainBorderBrush}" />
+            <Setter Property="CheckedBackground" Value="{StaticResource TabBackgroundBrush}" />
+            <Setter Property="CheckedBorderBrush" Value="{StaticResource TabBorderBrush}" />
+            <Setter Property="MouseOverBackground" Value="{StaticResource TabMouseOverBackgroundBrush}" />
+        </Style>
+
         <Style TargetType="{x:Type r:RibbonTab}">
             <Setter Property="Background" Value="{StaticResource TabBackgroundBrush}"/>
             <Setter Property="Foreground" Value="{StaticResource TabForegroundBrush}"/>
+        </Style>
+
+        <Style TargetType="{x:Type r:RibbonGroup}">
+            <Setter Property="Foreground" Value="{StaticResource TabForegroundBrush}" />
+            <Setter Property="MouseOverBackground" Value="{StaticResource TabBackgroundBrush}" />
         </Style>
 
         <Style TargetType="{x:Type r:RibbonTabHeader}">
@@ -76,19 +91,26 @@
             </Style.Triggers>
         </Style>
 
-        <Style TargetType="{x:Type r:RibbonMenuItem}">
-            <Setter Property="Background" Value="{StaticResource MenuItemBackgroundBrush}"/>
-            <Setter Property="Foreground" Value="{StaticResource MenuItemForegroundBrush}"/>
+        <Style TargetType="{x:Type r:RibbonCheckBox}">
+            <Setter Property="CheckedBackground" Value="Transparent" />
+            <Setter Property="CheckedBorderBrush" Value="{x:Static SystemColors.ControlDarkBrush}" />
         </Style>
 
-        <Style TargetType="{x:Type r:RibbonGalleryCategory}">
-            <Setter Property="Background" Value="{StaticResource MenuItemBackgroundBrush}"/>
-            <Setter Property="Foreground" Value="{StaticResource MenuItemForegroundBrush}"/>
+        <Style TargetType="{x:Type r:RibbonApplicationMenu}">
+            <Setter Property="Background" Value="{StaticResource MenuButtonBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource TabBorderBrush}" />
+            <Setter Property="Foreground" Value="{StaticResource TabForegroundBrush}" />
+            <Setter Property="FocusedBackground" Value="{StaticResource TabBackgroundBrush}" />
+            <Setter Property="FocusedBorderBrush" Value="{StaticResource TabBorderBrush}" />
         </Style>
 
-        <Style TargetType="{x:Type r:RibbonToolTip}">
-            <Setter Property="Background" Value="{StaticResource MenuItemBackgroundBrush}"/>
-            <Setter Property="Foreground" Value="{StaticResource MenuItemForegroundBrush}"/>
+        <Style TargetType="{x:Type r:RibbonGallery}">
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+
+        <Style TargetType="{x:Type r:RibbonGalleryItem}">
+            <Setter Property="CheckedBorderBrush" Value="{Binding RelativeSource={RelativeSource Self}, Path=MouseOverBorderBrush}" />
+            <Setter Property="CheckedBackground" Value="#7FFFD178" />
         </Style>
 
         <Style TargetType="{x:Type r:RibbonContextMenu}" >
@@ -169,12 +191,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <r:Ribbon x:Name="MainRibbon"
-            Background="{StaticResource MainBackgroundBrush}"
-            Foreground="{StaticResource MainForegroundBrush}"
-            BorderBrush="{StaticResource MainBorderBrush}"
-            MouseOverBackground="{StaticResource TabMouseOverBackgroundBrush}">
-
+        <r:Ribbon x:Name="MainRibbon">
             <r:Ribbon.TitleTemplate>
                 <DataTemplate>
                     <TextBlock FontFamily="{Binding ElementName=TextBlock}" Text="{Binding ElementName=RibbonWindow, Path=Title}"/>
@@ -183,11 +200,6 @@
             
             <r:Ribbon.ApplicationMenu>
                 <r:RibbonApplicationMenu
-                    Background="{StaticResource MenuButtonBrush}"
-                    BorderBrush="{StaticResource TabBorderBrush}"
-                    Foreground="{StaticResource TabForegroundBrush}"
-                    FocusedBackground="{StaticResource TabBackgroundBrush}"
-                    FocusedBorderBrush="{StaticResource TabBorderBrush}"
                     SmallImageSource="Images\Menu.png"
                     Loaded="ApplicationMenu_Loaded">
 
@@ -315,25 +327,29 @@
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
 
-                            <TextBlock Text="最近開いたファイル" Margin="5,3,0,3"/>
-                            <Separator Grid.Row="1" Margin="0" Padding="0"/>
+                            <Label Content="最近開いたファイル"
+                                Foreground="{StaticResource TabForegroundBrush}"
+                                BorderBrush="{StaticResource TabBorderBrush}"
+                                BorderThickness="0,0,0,1"
+                                Padding="5,3,0,3"/>
+
                             <r:RibbonGallery
-                                Grid.Row="2"
+                                Margin="0,1,0,1"
+                                Grid.Row="1"
                                 MaxColumnCount="1"
                                 Command="Open"
                                 CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=SelectedItem, Converter={StaticResource ControlToTagConverter}}">
-                                <r:RibbonGalleryCategory x:Name="RecentFilesGallery"/>
+                                <r:RibbonGalleryCategory x:Name="RecentFilesGallery" />
                             </r:RibbonGallery>
                         </Grid>
                     </r:RibbonApplicationMenu.AuxiliaryPaneContent>
                 </r:RibbonApplicationMenu>
             </r:Ribbon.ApplicationMenu>
             
-            <r:RibbonTab Header="編集" x:Name="EditTab">
+            <r:RibbonTab Header="編 集" x:Name="EditTab">
                 <r:RibbonGroup Header="ファイル" x:Name="FileGroup">
                     <r:RibbonButton Label="開く"
                         ToolTipTitle="開く"
@@ -958,7 +974,7 @@
                 </r:RibbonGroup>
             </r:RibbonTab>
             
-            <r:RibbonTab Header="表示" x:Name="ViewTab">
+            <r:RibbonTab Header="表 示" x:Name="ViewTab">
                 <r:RibbonGroup Header="更新" x:Name="RefreshGroup">
                     <r:RibbonButton Label="再描画"
                         ToolTipTitle="サムネイルの再描画"
@@ -1031,7 +1047,6 @@
                     <r:RibbonComboBox
                         ToolTipTitle="サムネイルのサイズを変更"
                         x:Name="ViewSizeComboBox"
-                        Foreground="{StaticResource MenuItemForegroundBrush}"
                         IsReadOnly="True"
                         Margin="2">
 
