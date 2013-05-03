@@ -45,8 +45,8 @@
 
         <Color x:Key="{x:Static SystemColors.GrayTextColorKey}">#FF595959</Color>
         <SolidColorBrush x:Key="MainBorderBrush" Color="#FF000000"/>
-        <SolidColorBrush x:Key="MainBackgroundBrush" Color="#FF666666"/>
-        <SolidColorBrush x:Key="MainForegroundBrush" Color="#FF000000"/>
+        <SolidColorBrush x:Key="MainBackgroundBrush" Color="#FF555555"/>
+        <SolidColorBrush x:Key="MainForegroundBrush" Color="#FFB3B3B3"/>
         
         <ImageBrush x:Key="TabBackgroundBrush" ImageSource="Images\Background.png" TileMode="Tile" ViewportUnits="Absolute" Viewport="0,0,4,4"/>
         <SolidColorBrush x:Key="TabForegroundBrush" Color="#FFBEBEBE"/>
@@ -1077,7 +1077,8 @@
                 <r:RibbonGroup Header="情報" x:Name="InfoGroup">
                     <r:RibbonButton Label="マニュアル"
                         x:Name="ManualButton"
-                        Command="{x:Static local:MainWindow.Help}">
+                        Command="{x:Static local:MainWindow.Help}"
+                        Visibility="Collapsed">
 
                         <r:RibbonButton.Style>
                             <Style TargetType="r:RibbonButton">

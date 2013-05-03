@@ -43,8 +43,8 @@
         </Setter>
 
         <Style.Resources>
-            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#FFFF3200"/>
-            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#FFFF3200"/>
+            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#FFC1272D"/>
+            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#FFC1272D"/>
         </Style.Resources>
     </Style>
 </ResourceDictionary>
