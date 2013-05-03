@@ -1390,6 +1390,26 @@ namespace CubePdfUtility
             }
         }
 
+        /* ----------------------------------------------------------------- */
+        ///
+        /// ChangeLogoVisibility
+        ///
+        /// <summary>
+        /// メイン画面の幅によって、ロゴを表示するかどうかを切り替えます。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void ChangeLogoVisibility(object sender, EventArgs e)
+        {
+            // NOTE: これらの値は、該当タブの項目を増やす（減らす）際に調整する必要がある。
+            var edit_tab_width = 910;
+            var view_tab_width = 420;
+            var help_tab_width = 320;
+
+            var limit = EditTab.IsSelected ? edit_tab_width : (ViewTab.IsSelected ? view_tab_width : help_tab_width);
+            LogoImage.Visibility = (Width < limit) ? Visibility.Collapsed : Visibility.Visible;
+        }
+
         #endregion
 
         #region Variables

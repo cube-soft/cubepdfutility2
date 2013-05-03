@@ -191,7 +191,12 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <r:Ribbon x:Name="MainRibbon">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <r:Ribbon x:Name="MainRibbon" Grid.ColumnSpan="2" SelectionChanged="ChangeLogoVisibility" SizeChanged="ChangeLogoVisibility">
             <r:Ribbon.TitleTemplate>
                 <DataTemplate>
                     <TextBlock FontFamily="{Binding ElementName=TextBlock}" Text="{Binding ElementName=RibbonWindow, Path=Title}"/>
@@ -1139,7 +1144,9 @@
             </r:RibbonTab>
         </r:Ribbon>
 
-        <ListView Grid.Row="1" x:Name="Thumbnail"
+        <Image x:Name="LogoImage" Grid.Column="1" Source="Images\LogoDark.png" />
+
+        <ListView Grid.Row="1" Grid.ColumnSpan="2" x:Name="Thumbnail"
             ItemsSource="{Binding ElementName=RibbonWindow, Path=ViewModel.Items}"
             ContextMenu="{DynamicResource EditMenu}"
             VirtualizingStackPanel.VirtualizationMode="Recycling"
@@ -1160,7 +1167,7 @@
             </i:Interaction.Behaviors>
         </ListView>
 
-        <StatusBar Grid.Row="2" x:Name="FooterStatusBar" Height="23"
+        <StatusBar Grid.Row="2" Grid.ColumnSpan="2" x:Name="FooterStatusBar" Height="23"
             Foreground="{StaticResource TabForegroundBrush}"
             Background="{StaticResource TabBackgroundBrush}"
             BorderBrush="{StaticResource TabBorderBrush}">
