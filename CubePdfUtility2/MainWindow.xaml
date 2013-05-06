@@ -37,10 +37,12 @@
         <CommandBinding Command="{x:Static local:MainWindow.Version}"  CanExecute="VersionCommand_CanExecute"  Executed="VersionCommand_Executed"/>
         <CommandBinding Command="{x:Static local:MainWindow.Help}"     CanExecute="HelpCommand_CanExecute"     Executed="HelpCommand_Executed"/>
         <CommandBinding Command="{x:Static local:MainWindow.Web}"      CanExecute="WebCommand_CanExecute"      Executed="WebCommand_Executed"/>
+        <CommandBinding Command="{x:Static local:MainWindow.Password}" CanExecute="PasswordCommand_CanExecute" Executed="PasswordCommand_Executed" />
     </Window.CommandBindings>
     
     <Window.Resources>
         <cube:ControlToTagConverter x:Key="ControlToTagConverter"/>
+        <cube:IsEnabledToVisibilityConverter x:Key="IsEnabledToVisibilityConverter" />
         <local:ItemHeightConverter x:Key="ItemHeightConverter"/>
 
         <Color x:Key="{x:Static SystemColors.GrayTextColorKey}">#FF595959</Color>
@@ -118,7 +120,17 @@
         </Style>
 
         <ContextMenu x:Key="EditMenu">
-            <MenuItem Header="プレビュー" Click="OnPreview"/>
+            <MenuItem Header="パスワードを入力してセキュリティを解除"
+                x:Name="PasswordMenuItem"
+                FontWeight="Bold"
+                Visibility="{Binding RelativeSource={RelativeSource Self}, Path=IsEnabled, Converter={StaticResource IsEnabledToVisibilityConverter}}"
+                Command="{x:Static local:MainWindow.Password}">
+                <MenuItem.Icon>
+                    <Image Source="Images\Lock.png" />
+                </MenuItem.Icon>
+            </MenuItem>
+
+            <MenuItem Header="プレビュー" Click="OnPreview" />
 
             <Separator/>
 
