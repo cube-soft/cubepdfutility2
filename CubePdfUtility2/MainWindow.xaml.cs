@@ -1026,6 +1026,35 @@ namespace CubePdfUtility
 
         #endregion
 
+        /* ----------------------------------------------------------------- */
+        ///
+        /// Password
+        ///
+        /// <summary>
+        /// 暗号化を解除するためのパスワードダイアログを表示します。
+        /// パラメータ (e.Parameter) は常に null です。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        #region Password
+
+        private void PasswordCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = _viewmodel.EncryptionStatus == CubePdf.Data.EncryptionStatus.RestrictedAccess;
+        }
+
+        private void PasswordCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var path = _viewmodel.FilePath;
+            if (String.IsNullOrEmpty(path)) return;
+
+            var dialog = new PasswordWindow(path);
+            dialog.Owner = this;
+            if (dialog.ShowDialog() == true && CloseFile()) OpenFile(path, dialog.Password);
+        }
+
+        #endregion
+
         #endregion
 
         #region Event handlers
@@ -1255,6 +1284,7 @@ namespace CubePdfUtility
                         var dialog = new PasswordWindow(path);
                         dialog.Owner = this;
                         if (dialog.ShowDialog() == true) OpenFile(path, dialog.Password);
+                        else Refresh();
                     }));
                 }
                 catch (Exception err) { Debug.WriteLine(err); }
@@ -1442,6 +1472,7 @@ namespace CubePdfUtility
         public static readonly ICommand Version  = new RoutedCommand("Version",  typeof(MainWindow));
         public static readonly ICommand Help     = new RoutedCommand("Help",     typeof(MainWindow));
         public static readonly ICommand Web      = new RoutedCommand("Web",      typeof(MainWindow));
+        public static readonly ICommand Password = new RoutedCommand("Password", typeof(MainWindow));
         #endregion
     }
 }
