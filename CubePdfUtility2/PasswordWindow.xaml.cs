@@ -51,7 +51,6 @@ namespace CubePdfUtility
         {
             InitializeComponent();
             LoadIcon();
-            ReplaceFont();
             SourceInitialized += (sender, e) => {
                 if (Top < 0 || Top > SystemParameters.WorkArea.Bottom - Height) Top = 0;
                 if (Left < 0 || Left > SystemParameters.WorkArea.Right - Width) Left = 0;
@@ -68,9 +67,10 @@ namespace CubePdfUtility
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
-        public PasswordWindow(string path)
+        public PasswordWindow(string path, string font)
             : this()
         {
+            ReplaceFont(font);
             MessageLabel.Text = String.Format(Properties.Resources.PasswordPrompt, System.IO.Path.GetFileName(path));
         }
 
@@ -157,12 +157,14 @@ namespace CubePdfUtility
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
-        private void ReplaceFont()
+        private void ReplaceFont(string font)
         {
+            if (string.IsNullOrEmpty(font)) return;
+
             var fonts = new System.Drawing.Text.InstalledFontCollection();
             foreach (var ff in fonts.Families)
             {
-                if (ff.Name.Contains("Meiryo"))
+                if (ff.Name == font)
                 {
                     PasswordTextBox.FontFamily = new System.Windows.Media.FontFamily(ff.Name);
                     break;

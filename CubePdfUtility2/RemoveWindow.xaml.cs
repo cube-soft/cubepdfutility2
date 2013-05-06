@@ -62,12 +62,11 @@ namespace CubePdfUtility
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
-        public RemoveWindow(CubePdf.Wpf.IListViewModel viewmodel)
+        public RemoveWindow(CubePdf.Wpf.IListViewModel viewmodel, string font)
             : this()
         {
             PageCount = viewmodel.PageCount;
-
-            ReplaceFont();
+            ReplaceFont(font);
         }
 
         #endregion
@@ -157,6 +156,7 @@ namespace CubePdfUtility
         #endregion
 
         # region Other Methods
+
         /* ----------------------------------------------------------------- */
         ///
         /// ReplaceFont
@@ -166,18 +166,21 @@ namespace CubePdfUtility
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
-        private void ReplaceFont()
+        private void ReplaceFont(string font)
         {
+            if (string.IsNullOrEmpty(font)) return;
+
             var fonts = new System.Drawing.Text.InstalledFontCollection();
             foreach (var ff in fonts.Families)
             {
-                if (ff.Name.Contains("Meiryo"))
+                if (ff.Name == font)
                 {
                     PageRangeTextBox.FontFamily = new System.Windows.Media.FontFamily(ff.Name);
                     break;
                 }
             }
         }
+
         #endregion
 
         #region Variables
