@@ -1404,6 +1404,8 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         private void ReplaceFont()
         {
+            if (FontFamily.Source == "メイリオ" || FontFamily.Source.Contains("Meiryo")) return;
+
             var fonts = new System.Drawing.Text.InstalledFontCollection();
             foreach (var ff in fonts.Families)
             {
