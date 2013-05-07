@@ -1432,9 +1432,9 @@ namespace CubePdfUtility
         private void ChangeLogoVisibility(object sender, EventArgs e)
         {
             // NOTE: これらの値は、該当タブの項目を増やす（減らす）際に調整する必要がある。
-            var edit_tab_width = 910;
-            var view_tab_width = 420;
-            var help_tab_width = 320;
+            var edit_tab_width = 900;
+            var view_tab_width = 410;
+            var help_tab_width = 310;
 
             var limit = EditTab.IsSelected ? edit_tab_width : (ViewTab.IsSelected ? view_tab_width : help_tab_width);
             LogoImage.Visibility = (Width < limit) ? Visibility.Collapsed : Visibility.Visible;
