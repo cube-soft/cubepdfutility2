@@ -83,6 +83,10 @@ namespace CubePdfUtility
             InitializeComponent();
             ReplaceFont();
             SourceInitialized += new EventHandler(LoadSetting);
+
+            var appdata = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            _viewmodel.BackupFolder = System.IO.Path.Combine(appdata, @"CubeSoft\CubePdfUtility2");
+            _viewmodel.BackupDays = 30;
             _viewmodel.RunCompleted += new EventHandler(ViewModel_RunCompleted);
         }
 
@@ -1064,7 +1068,7 @@ namespace CubePdfUtility
         /// OnClosing
         /// 
         /// <summary>
-        /// アプリケーションの終了時に実行されます。
+        /// アプリケーションの終了直前に実行されます。
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
@@ -1074,6 +1078,21 @@ namespace CubePdfUtility
             e.Cancel = !result;
             if (!e.Cancel) SaveSetting(this, e);
             base.OnClosing(e);
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// OnClosed
+        /// 
+        /// <summary>
+        /// アプリケーションの終了時に実行されます。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+            _viewmodel.Dispose();
         }
 
         /* ----------------------------------------------------------------- */
