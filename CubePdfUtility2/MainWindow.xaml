@@ -51,7 +51,7 @@
         <SolidColorBrush x:Key="MainForegroundBrush" Color="#FFB3B3B3"/>
         
         <ImageBrush x:Key="TabBackgroundBrush" ImageSource="Images\Background.png" TileMode="Tile" ViewportUnits="Absolute" Viewport="0,0,4,4"/>
-        <SolidColorBrush x:Key="TabForegroundBrush" Color="#FFBEBEBE"/>
+        <SolidColorBrush x:Key="TabForegroundBrush" Color="#FFE6E6E6"/>
         <SolidColorBrush x:Key="TabBorderBrush" Color="#FF000000"/>
         <SolidColorBrush x:Key="TabMouseOverBackgroundBrush" Opacity="0.1" Color="#FFFFB700"/>
 
