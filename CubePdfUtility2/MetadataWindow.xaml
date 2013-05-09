@@ -96,8 +96,8 @@
         </GroupBox>
 
         <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Content="OK" Width="100" Margin="12,12,6,12" Command="Save"/>
-            <Button Content="キャンセル" Width="100" Margin="6,12,12,12" Command="Close"/>
+            <Button Content="OK" IsDefault="True" Width="100" Margin="12,12,6,12" Command="Save"/>
+            <Button Content="キャンセル" IsCancel="True" Width="100" Margin="6,12,12,12" Command="Close"/>
         </StackPanel>
     </Grid>
 </Window>

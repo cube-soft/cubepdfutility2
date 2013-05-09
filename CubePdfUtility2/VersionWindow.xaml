@@ -21,7 +21,7 @@
         </StackPanel>
 
         <StackPanel Grid.Row="3" Background="{x:Static SystemColors.ControlBrush}">
-            <Button Content="OK" Width="100" HorizontalAlignment="Center" Margin="12" Click="Button_Click"/>
+            <Button Content="OK" IsDefault="True" Width="100" HorizontalAlignment="Center" Margin="12" Click="Button_Click"/>
         </StackPanel>
     </Grid>
 </Window>
