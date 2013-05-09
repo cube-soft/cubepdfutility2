@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ErrorTitle" xml:space="preserve">
+    <value>エラー</value>
+  </data>
   <data name="InsertFile" xml:space="preserve">
     <value>{0} を挿入しています...</value>
   </data>
@@ -134,5 +137,8 @@
   </data>
   <data name="PdfFilter" xml:space="preserve">
     <value>PDF ファイル(*.pdf)|*.pdf|すべてのファイル(*.*)|*.*</value>
+  </data>
+  <data name="SaveError" xml:space="preserve">
+    <value>PDFの保存に失敗しました。PDFファイルがセキュリティ機能によって保護されていないか確認して下さい。</value>
   </data>
 </root>

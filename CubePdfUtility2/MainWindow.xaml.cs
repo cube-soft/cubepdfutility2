@@ -254,7 +254,12 @@ namespace CubePdfUtility
         private void SaveCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             try { _viewmodel.Save(); }
-            catch (Exception err) { Trace.TraceError(err.ToString()); }
+            catch (Exception err)
+            {
+                MessageBox.Show(Properties.Resources.SaveError, Properties.Resources.ErrorTitle,
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                Trace.TraceError(err.ToString());
+            }
         }
 
         #endregion
@@ -287,7 +292,12 @@ namespace CubePdfUtility
                 if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
                 _viewmodel.Save(dialog.FileName);
             }
-            catch (Exception err) { Trace.TraceError(err.ToString()); }
+            catch (Exception err)
+            {
+                MessageBox.Show(Properties.Resources.SaveError, Properties.Resources.ErrorTitle,
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                Trace.TraceError(err.ToString());
+            }
         }
 
         #endregion

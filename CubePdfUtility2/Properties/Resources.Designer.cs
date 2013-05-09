@@ -61,6 +61,15 @@ namespace CubePdfUtility.Properties {
         }
         
         /// <summary>
+        ///   エラー に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string ErrorTitle {
+            get {
+                return ResourceManager.GetString("ErrorTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   {0} を挿入しています... に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string InsertFile {
@@ -111,6 +120,15 @@ namespace CubePdfUtility.Properties {
         internal static string PdfFilter {
             get {
                 return ResourceManager.GetString("PdfFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   PDFの保存に失敗しました。PDFファイルがセキュリティ機能によって保護されていないか確認して下さい。 に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string SaveError {
+            get {
+                return ResourceManager.GetString("SaveError", resourceCulture);
             }
         }
     }
