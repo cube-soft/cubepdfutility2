@@ -88,6 +88,8 @@ namespace CubePdfUtility
             _viewmodel.BackupFolder = System.IO.Path.Combine(appdata, @"CubeSoft\CubePdfUtility2");
             _viewmodel.BackupDays = 30;
             _viewmodel.RunCompleted += new EventHandler(ViewModel_RunCompleted);
+
+            InitializeTrace(_viewmodel.BackupFolder);
         }
 
         /* ----------------------------------------------------------------- */
@@ -105,7 +107,7 @@ namespace CubePdfUtility
         {
             Loaded += (sender, e) => {
                 try { if (!String.IsNullOrEmpty(path))  OpenFile(path, ""); }
-                catch (Exception err) { Debug.WriteLine(err); }
+                catch (Exception err) { Trace.TraceError(err.ToString()); }
             };
         }
 
@@ -185,7 +187,7 @@ namespace CubePdfUtility
                 if (!String.IsNullOrEmpty(_viewmodel.FilePath) && !CloseFile()) return;
                 OpenFile(path, "");
             }
-            catch (Exception err) { Debug.WriteLine(err.GetType().ToString()); }
+            catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
 
         #endregion
@@ -217,7 +219,7 @@ namespace CubePdfUtility
             {
                 e.Handled = CloseFile();
             }
-            catch (Exception err) { Debug.WriteLine(err); }
+            catch (Exception err) { Trace.TraceError(err.ToString()); }
             finally
             {
                 Refresh();
@@ -252,7 +254,7 @@ namespace CubePdfUtility
         private void SaveCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             try { _viewmodel.Save(); }
-            catch (Exception err) { Debug.WriteLine(err); }
+            catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
 
         #endregion
@@ -285,7 +287,7 @@ namespace CubePdfUtility
                 if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
                 _viewmodel.Save(dialog.FileName);
             }
-            catch (Exception err) { Debug.WriteLine(err); }
+            catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
 
         #endregion
@@ -325,7 +327,7 @@ namespace CubePdfUtility
                 if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
                 InsertFile(index, dialog.FileName, "", obj as string);
             }
-            catch (Exception err) { Debug.WriteLine(err); }
+            catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
 
         #endregion
@@ -378,7 +380,7 @@ namespace CubePdfUtility
                 var obj = (src == null) ? RemoveRange.Header : RemoveSelect.Header;
                 _viewmodel.History[0].Text = obj as string;
             }
-            catch (Exception err) { Debug.WriteLine(err); }
+            catch (Exception err) { Trace.TraceError(err.ToString()); }
             finally { _viewmodel.EndCommand(); }
         }
 
@@ -422,7 +424,7 @@ namespace CubePdfUtility
                 if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
                 _viewmodel.Extract(items, dialog.FileName);
             }
-            catch (Exception err) { Debug.WriteLine(err); }
+            catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
 
         #endregion
@@ -462,7 +464,7 @@ namespace CubePdfUtility
                 if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
                 _viewmodel.Split(items, dialog.SelectedPath);
             }
-            catch (Exception err) { Debug.WriteLine(err); }
+            catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
 
         #endregion
@@ -513,7 +515,7 @@ namespace CubePdfUtility
                 }
                 _viewmodel.History[0].Text = (delta < 0) ? ForwardButton.Label : BackButton.Label;
             }
-            catch (Exception err) { Debug.WriteLine(err); }
+            catch (Exception err) { Trace.TraceError(err.ToString()); }
             finally { _viewmodel.EndCommand(); }
         }
 
@@ -556,7 +558,7 @@ namespace CubePdfUtility
                 foreach (var obj in done) Thumbnail.SelectedItems.Add(obj);
                 _viewmodel.History[0].Text = (degree < 0) ? RotateLeftButton.Label : RotateRightButton.Label;
             }
-            catch (Exception err) { Debug.WriteLine(err); }
+            catch (Exception err) { Trace.TraceError(err.ToString()); }
             finally { _viewmodel.EndCommand(); }
         }
 
@@ -593,7 +595,7 @@ namespace CubePdfUtility
                     _viewmodel.UndoHistory[0].Text = text;
                 }
             }
-            catch (Exception err) { Debug.WriteLine(err); }
+            catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
 
         #endregion
@@ -629,7 +631,7 @@ namespace CubePdfUtility
                     _viewmodel.History[0].Text = text;
                 }
             }
-            catch (Exception err) { Debug.WriteLine(err); }
+            catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
 
         #endregion
@@ -676,7 +678,7 @@ namespace CubePdfUtility
                 Thumbnail.SelectedItems.Clear();
                 foreach (var item in selected) Thumbnail.SelectedItems.Add(item);
             }
-            catch (Exception err) { Debug.WriteLine(err); }
+            catch (Exception err) { Trace.TraceError(err.ToString()); }
             finally { Refresh(); }
         }
 
@@ -780,7 +782,7 @@ namespace CubePdfUtility
                 var index = _ViewSize.IndexOf(item);
                 e.CanExecute = index < _ViewSize.Count - 1;
             }
-            catch (Exception err) { Debug.WriteLine(err); }
+            catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
 
         private void ZoomInCommand_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -791,7 +793,7 @@ namespace CubePdfUtility
                 var index = _ViewSize.IndexOf(item);
                 ViewSizeGallery.SelectedItem = _ViewSize[index + 1];
             }
-            catch (Exception err) { Debug.WriteLine(err); }
+            catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
 
         #endregion
@@ -816,7 +818,7 @@ namespace CubePdfUtility
                 var index = _ViewSize.IndexOf(item);
                 e.CanExecute = index > 0;
             }
-            catch (Exception err) { Debug.WriteLine(err); }
+            catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
 
         private void ZoomOutCommand_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -827,7 +829,7 @@ namespace CubePdfUtility
                 var index = _ViewSize.IndexOf(item);
                 ViewSizeGallery.SelectedItem = _ViewSize[index - 1];
             }
-            catch (Exception err) { Debug.WriteLine(err); }
+            catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
 
         #endregion
@@ -856,7 +858,7 @@ namespace CubePdfUtility
                 var width = (int)e.Parameter;
                 if (_viewmodel.ItemWidth != width) _viewmodel.ItemWidth = width;
             }
-            catch (Exception err) { Debug.WriteLine(err); }
+            catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
 
         #endregion
@@ -888,7 +890,7 @@ namespace CubePdfUtility
                     CubePdf.Wpf.ListViewItemVisibility.Minimum :
                     CubePdf.Wpf.ListViewItemVisibility.Normal;
             }
-            catch (Exception err) { Debug.WriteLine(err); }
+            catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
 
         #endregion
@@ -913,7 +915,7 @@ namespace CubePdfUtility
         private void RedrawCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             try { _viewmodel.Reset(); }
-            catch (Exception err) { Debug.WriteLine(err); }
+            catch (Exception err) { Trace.TraceError(err.ToString()); }
             finally
             {
                 Cursor = Cursors.Wait;
@@ -1093,6 +1095,7 @@ namespace CubePdfUtility
         {
             base.OnClosed(e);
             _viewmodel.Dispose();
+            TerminateTrace();
         }
 
         /* ----------------------------------------------------------------- */
@@ -1266,6 +1269,48 @@ namespace CubePdfUtility
 
         #endregion
 
+        #region Methods for trace log
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// InitializeTrace
+        /// 
+        /// <summary>
+        /// Trace に対して必要な初期化処理を行います。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void InitializeTrace(string root)
+        {
+            var dir  = System.IO.Path.Combine(root, DateTime.Today.ToString("yyyymmdd"));
+            if (!System.IO.Directory.Exists(dir)) System.IO.Directory.CreateDirectory(dir);
+
+            var path = System.IO.Path.Combine(dir, "CubePdfUtility.log");
+            Trace.Listeners.Remove("Default");
+            Trace.Listeners.Add(new TextWriterTraceListener(path));
+            Trace.AutoFlush = true;
+
+            Trace.TraceInformation(DateTime.Now.ToString());
+            Trace.TraceInformation("CubePDF Utility version {0} ({1})", _setting.Version, ((IntPtr.Size == 4) ? "x86" : "x64"));
+            Trace.TraceInformation("Windows {0}", Environment.OSVersion.ToString());
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// TerminateTrace
+        /// 
+        /// <summary>
+        /// Trace に対して必要な終了処理を行います。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void TerminateTrace()
+        {
+            Trace.Close();
+        }
+
+        #endregion
+
         #region Other Methods
 
         /* ----------------------------------------------------------------- */
@@ -1306,7 +1351,7 @@ namespace CubePdfUtility
                         else Refresh();
                     }));
                 }
-                catch (Exception err) { Debug.WriteLine(err); }
+                catch (Exception err) { Trace.TraceError(err.ToString()); }
             }), null);
         }
 
@@ -1373,7 +1418,7 @@ namespace CubePdfUtility
                         if (dialog.ShowDialog() == true) InsertFile(index, path, dialog.Password, history);
                     }));
                 }
-                catch (Exception err) { Debug.WriteLine(err); }
+                catch (Exception err) { Trace.TraceError(err.ToString()); }
             }), null);
         }
 
