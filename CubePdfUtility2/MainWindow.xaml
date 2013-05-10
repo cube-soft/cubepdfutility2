@@ -1173,7 +1173,6 @@
             Background="{StaticResource MainBackgroundBrush}"
             MouseDoubleClick="OnPreview">
 
-
             <ListView.View>
                 <local:ImageView x:Name="ThumbnailImageView"
                     ItemWidth="{Binding ElementName=RibbonWindow, Path=ViewModel.ItemWidth}"

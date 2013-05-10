@@ -297,9 +297,6 @@
     <Resource Include="Images\Menu.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\LogoDarkDisable.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Images\LargeIcons\BackDisable.png" />
     <Resource Include="Images\LargeIcons\CloseDisable.png" />
     <Resource Include="Images\LargeIcons\DeleteDisable.png" />
