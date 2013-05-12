@@ -95,9 +95,15 @@
             </Grid>
         </GroupBox>
 
-        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Content="OK" IsDefault="True" Width="100" Margin="12,12,6,12" Command="Save"/>
-            <Button Content="キャンセル" IsCancel="True" Width="100" Margin="6,12,12,12" Command="Close"/>
-        </StackPanel>
+        <Grid Grid.Row="3" Background="{x:Static SystemColors.ControlBrush}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="1" Content="OK" IsDefault="True" Width="100" Margin="12,12,6,12" Command="Save"/>
+            <Button Grid.Column="2" Content="キャンセル" IsCancel="True" Width="100" Margin="6,12,12,12" Command="Close"/>
+        </Grid>
     </Grid>
 </Window>
