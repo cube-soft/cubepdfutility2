@@ -10,11 +10,12 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate>
-                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Visible" Background="{TemplateBinding Background}">
+                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" Background="{TemplateBinding Background}">
                         <WrapPanel Margin="3" IsItemsHost="True"
+                            Width="{Binding (FrameworkElement.ActualWidth), RelativeSource={RelativeSource AncestorType=ScrollContentPresenter}}"
                             ItemWidth="{Binding (ListView.View).ItemWidth, RelativeSource={RelativeSource AncestorType=ListView}}"
-                            MinWidth="{Binding ItemWidth, RelativeSource={RelativeSource Self}}"
-                            Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ScrollContentPresenter}}">
+                            MinWidth="{Binding (ListView.View).ItemWidth, RelativeSource={RelativeSource AncestorType=ListView}}"
+                            ItemHeight="{Binding (ListView.View).ItemHeight, RelativeSource={RelativeSource AncestorType=ListView}}">
                         </WrapPanel>
                     </ScrollViewer>
                 </ControlTemplate>
@@ -26,11 +27,13 @@
         TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
         <Setter Property="Margin"  Value="3"/>
         <Setter Property="Padding" Value="3"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="ContentTemplate">
             <Setter.Value>
                 <DataTemplate>
                     <StackPanel Orientation="Vertical">
-                        <Border Background="White">
+                        <Border BorderThickness="1" BorderBrush="White">
                             <Image Source="{Binding Path=Image, Converter={StaticResource ImageConverter}}"/>
                         </Border>
                         <TextBlock Text="{Binding Path=Text}" HorizontalAlignment="Right" Foreground="White"/>
@@ -38,5 +41,10 @@
                 </DataTemplate>
             </Setter.Value>
         </Setter>
+
+        <Style.Resources>
+            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#FFC1272D"/>
+            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#FFC1272D"/>
+        </Style.Resources>
     </Style>
 </ResourceDictionary>

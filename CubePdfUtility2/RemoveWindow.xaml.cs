@@ -47,6 +47,14 @@ namespace CubePdfUtility
         {
             InitializeComponent();
             PageCount = 0;
+            SourceInitialized += (sender, e) => {
+                if (Top < 0 || Top > SystemParameters.WorkArea.Bottom - Height) Top = 0;
+                if (Left < 0 || Left > SystemParameters.WorkArea.Right - Width) Left = 0;
+            };
+
+            Loaded += (sender, e) => {
+                PageRangeTextBox.Focus();
+            };
         }
 
         /* ----------------------------------------------------------------- */
@@ -58,10 +66,11 @@ namespace CubePdfUtility
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
-        public RemoveWindow(CubePdf.Wpf.IListViewModel viewmodel)
+        public RemoveWindow(CubePdf.Wpf.IListViewModel viewmodel, string font)
             : this()
         {
             PageCount = viewmodel.PageCount;
+            ReplaceFont(font);
         }
 
         #endregion
@@ -147,6 +156,34 @@ namespace CubePdfUtility
         }
 
         #endregion
+
+        #endregion
+
+        # region Other Methods
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// ReplaceFont
+        ///
+        /// <summary>
+        /// コンストラクタ実行時に、画面のフォントを差し替えます。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void ReplaceFont(string font)
+        {
+            if (string.IsNullOrEmpty(font)) return;
+
+            var fonts = new System.Drawing.Text.InstalledFontCollection();
+            foreach (var ff in fonts.Families)
+            {
+                if (ff.Name == font)
+                {
+                    PageRangeTextBox.FontFamily = new System.Windows.Media.FontFamily(ff.Name);
+                    break;
+                }
+            }
+        }
 
         #endregion
 

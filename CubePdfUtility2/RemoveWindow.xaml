@@ -32,9 +32,15 @@
 
         <Label Grid.Row="3" Grid.Column="1" Content="例：1,2,4-7,9" VerticalAlignment="Center"/>
 
-        <StackPanel Grid.Row="5" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Content="OK" Command="Save" Width="100" Margin="12,12,6,12"/>
-            <Button Content="キャンセル" Width="100" Margin="6,12,12,12" Command="Close"/>
-        </StackPanel>
+        <Grid Grid.Row="5" Grid.ColumnSpan="2" Background="{x:Static SystemColors.ControlBrush}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="1" Content="OK" IsDefault="True" Width="100" Margin="12,12,6,12" Command="Save"/>
+            <Button Grid.Column="2" Content="キャンセル" IsCancel="True" Width="100" Margin="6,12,12,12" Command="Close"/>
+        </Grid>
     </Grid>
 </Window>

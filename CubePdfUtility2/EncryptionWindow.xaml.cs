@@ -62,7 +62,7 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         /// EncryptionWindow (constructor)
         /* ----------------------------------------------------------------- */
-        public EncryptionWindow(CubePdf.Wpf.IListViewModel viewmodel)
+        public EncryptionWindow(CubePdf.Wpf.IListViewModel viewmodel, string font)
             : this()
         {
             _crypt = new CubePdf.Data.Encryption(viewmodel.Encryption);
@@ -70,6 +70,8 @@ namespace CubePdfUtility
             DataContext = _crypt;
             if (_crypt.OwnerPassword.Length > 0) OwnerPasswordBox.Password = _crypt.OwnerPassword;
             if (_crypt.UserPassword.Length > 0) UserPasswordBox.Password = _crypt.UserPassword;
+
+            ReplaceFont(font);
         }
 
         #endregion
@@ -164,6 +166,33 @@ namespace CubePdfUtility
         {
             if (String.IsNullOrEmpty(password.Password)) return false;
             return password.Password == confirm.Password;
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// ReplaceFont
+        ///
+        /// <summary>
+        /// コンストラクタ実行時に、画面のフォントを差し替えます。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void ReplaceFont(string font)
+        {
+            if (string.IsNullOrEmpty(font)) return;
+
+            var fonts = new System.Drawing.Text.InstalledFontCollection();
+            foreach (var ff in fonts.Families)
+            {
+                if (ff.Name == font)
+                {
+                    OwnerPasswordBox.FontFamily = new System.Windows.Media.FontFamily(ff.Name);
+                    ConfirmOwnerPasswordBox.FontFamily = new System.Windows.Media.FontFamily(ff.Name);
+                    UserPasswordBox.FontFamily = new System.Windows.Media.FontFamily(ff.Name);
+                    ConfirmUserPasswordBox.FontFamily = new System.Windows.Media.FontFamily(ff.Name);
+                    break;
+                }
+            }
         }
 
         #endregion

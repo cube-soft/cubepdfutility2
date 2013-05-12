@@ -19,10 +19,12 @@
 ///
 /* ------------------------------------------------------------------------- */
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -68,17 +70,45 @@ namespace CubePdfUtility
         }
 
         /* ----------------------------------------------------------------- */
+        ///
         /// MainWindow (constructor)
+        ///
+        /// <summary>
+        /// 既定の値でオブジェクトを初期化します。
+        /// </summary>
+        ///
         /* ----------------------------------------------------------------- */
         public MainWindow()
         {
             InitializeComponent();
-            
-            var size = _ViewSize[2];
-            _viewmodel.ItemWidth = size.Key;
-            ThumbnailImageView.ItemWidth = _viewmodel.ItemWidth;
-            ViewSizeGalleryCategory.ItemsSource = _ViewSize;
-            ViewSizeGallery.SelectedItem = size;
+            ReplaceFont();
+            SourceInitialized += new EventHandler(LoadSetting);
+
+            var appdata = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            _viewmodel.BackupFolder = System.IO.Path.Combine(appdata, @"CubeSoft\CubePdfUtility2");
+            _viewmodel.BackupDays = 30;
+            _viewmodel.RunCompleted += new EventHandler(ViewModel_RunCompleted);
+
+            InitializeTrace(_viewmodel.BackupFolder);
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// MainWindow (constructor)
+        ///
+        /// <summary>
+        /// 引数に指定されたパスを利用して、既定の値でオブジェクトを初期化
+        /// します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        public MainWindow(string path)
+            : this()
+        {
+            Loaded += (sender, e) => {
+                try { if (!String.IsNullOrEmpty(path))  OpenFile(path, ""); }
+                catch (Exception err) { Trace.TraceError(err.ToString()); }
+            };
         }
 
         #endregion
@@ -145,8 +175,7 @@ namespace CubePdfUtility
         {
             try
             {
-                var path = e.Parameter as string;
-                if (!String.IsNullOrEmpty(_viewmodel.FilePath) && !CloseFile()) return;
+                var path = e.Parameter as string;                
                 if (path == null)
                 {
                     var dialog = new System.Windows.Forms.OpenFileDialog();
@@ -155,10 +184,10 @@ namespace CubePdfUtility
                     if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
                     path = dialog.FileName;
                 }
+                if (!String.IsNullOrEmpty(_viewmodel.FilePath) && !CloseFile()) return;
                 OpenFile(path, "");
             }
-            catch (Exception err) { Debug.WriteLine(err.GetType().ToString()); }
-            finally { Refresh(); }
+            catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
 
         #endregion
@@ -190,7 +219,7 @@ namespace CubePdfUtility
             {
                 e.Handled = CloseFile();
             }
-            catch (Exception err) { Debug.WriteLine(err); }
+            catch (Exception err) { Trace.TraceError(err.ToString()); }
             finally
             {
                 Refresh();
@@ -224,12 +253,13 @@ namespace CubePdfUtility
 
         private void SaveCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            try
+            try { _viewmodel.Save(); }
+            catch (Exception err)
             {
-                _viewmodel.Save();
+                MessageBox.Show(Properties.Resources.SaveError, Properties.Resources.ErrorTitle,
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                Trace.TraceError(err.ToString());
             }
-            catch (Exception err) { Debug.WriteLine(err); }
-            finally { Refresh(); }
         }
 
         #endregion
@@ -262,8 +292,12 @@ namespace CubePdfUtility
                 if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
                 _viewmodel.Save(dialog.FileName);
             }
-            catch (Exception err) { Debug.WriteLine(err); }
-            finally { Refresh(); }
+            catch (Exception err)
+            {
+                MessageBox.Show(Properties.Resources.SaveError, Properties.Resources.ErrorTitle,
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                Trace.TraceError(err.ToString());
+            }
         }
 
         #endregion
@@ -301,11 +335,9 @@ namespace CubePdfUtility
                 dialog.Filter = Properties.Resources.PdfFilter;
                 dialog.CheckFileExists = true;
                 if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
-                _viewmodel.Insert(index, dialog.FileName);
-                _viewmodel.History[0].Text = obj as string;
+                InsertFile(index, dialog.FileName, "", obj as string);
             }
-            catch (Exception err) { Debug.WriteLine(err); }
-            finally { Refresh(); }
+            catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
 
         #endregion
@@ -337,7 +369,7 @@ namespace CubePdfUtility
             var src = e.Parameter as IList;
             if (src == null)
             {
-                var dialog = new RemoveWindow(_viewmodel);
+                var dialog = new RemoveWindow(_viewmodel, _font);
                 dialog.Owner = this;
                 if (dialog.ShowDialog() == false) return;
                 foreach (var i in dialog.PageRange) items.Add(_viewmodel.Items[i - 1]);
@@ -346,6 +378,7 @@ namespace CubePdfUtility
 
             try
             {
+                Cursor = Cursors.Wait;
                 _viewmodel.BeginCommand();
                 while (items.Count > 0)
                 {
@@ -357,12 +390,8 @@ namespace CubePdfUtility
                 var obj = (src == null) ? RemoveRange.Header : RemoveSelect.Header;
                 _viewmodel.History[0].Text = obj as string;
             }
-            catch (Exception err) { Debug.WriteLine(err); }
-            finally
-            {
-                _viewmodel.EndCommand();
-                Refresh();
-            }
+            catch (Exception err) { Trace.TraceError(err.ToString()); }
+            finally { _viewmodel.EndCommand(); }
         }
 
         #endregion
@@ -405,8 +434,7 @@ namespace CubePdfUtility
                 if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
                 _viewmodel.Extract(items, dialog.FileName);
             }
-            catch (Exception err) { Debug.WriteLine(err); }
-            finally { Refresh(); }
+            catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
 
         #endregion
@@ -446,8 +474,7 @@ namespace CubePdfUtility
                 if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
                 _viewmodel.Split(items, dialog.SelectedPath);
             }
-            catch (Exception err) { Debug.WriteLine(err); }
-            finally { Refresh(); }
+            catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
 
         #endregion
@@ -498,12 +525,8 @@ namespace CubePdfUtility
                 }
                 _viewmodel.History[0].Text = (delta < 0) ? ForwardButton.Label : BackButton.Label;
             }
-            catch (Exception err) { Debug.WriteLine(err); }
-            finally
-            {
-                _viewmodel.EndCommand();
-                Refresh();
-            }
+            catch (Exception err) { Trace.TraceError(err.ToString()); }
+            finally { _viewmodel.EndCommand(); }
         }
 
         #endregion
@@ -531,6 +554,7 @@ namespace CubePdfUtility
         {
             try
             {
+                Cursor = Cursors.Wait;
                 var degree = int.Parse(e.Parameter as string);
                 var done = new System.Collections.ArrayList();
                 _viewmodel.BeginCommand();
@@ -544,12 +568,8 @@ namespace CubePdfUtility
                 foreach (var obj in done) Thumbnail.SelectedItems.Add(obj);
                 _viewmodel.History[0].Text = (degree < 0) ? RotateLeftButton.Label : RotateRightButton.Label;
             }
-            catch (Exception err) { Debug.WriteLine(err); }
-            finally
-            {
-                _viewmodel.EndCommand();
-                Refresh();
-            }
+            catch (Exception err) { Trace.TraceError(err.ToString()); }
+            finally { _viewmodel.EndCommand(); }
         }
 
         #endregion
@@ -576,6 +596,7 @@ namespace CubePdfUtility
         {
             try
             {
+                Cursor = Cursors.Wait;
                 var count = (e.Parameter != null) ? HistoryGallery.Items.IndexOf(e.Parameter) + 1 : 1;
                 for (var i = 0; i < count; ++i)
                 {
@@ -584,8 +605,7 @@ namespace CubePdfUtility
                     _viewmodel.UndoHistory[0].Text = text;
                 }
             }
-            catch (Exception err) { Debug.WriteLine(err); }
-            finally { Refresh(); }
+            catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
 
         #endregion
@@ -612,6 +632,7 @@ namespace CubePdfUtility
         {
             try
             {
+                Cursor = Cursors.Wait;
                 var count = (e.Parameter != null) ? UndoHistoryGallery.Items.IndexOf(e.Parameter) + 1 : 1;
                 for (var i = 0; i < count; ++i)
                 {
@@ -620,8 +641,7 @@ namespace CubePdfUtility
                     _viewmodel.History[0].Text = text;
                 }
             }
-            catch (Exception err) { Debug.WriteLine(err); }
-            finally { Refresh(); }
+            catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
 
         #endregion
@@ -668,7 +688,7 @@ namespace CubePdfUtility
                 Thumbnail.SelectedItems.Clear();
                 foreach (var item in selected) Thumbnail.SelectedItems.Add(item);
             }
-            catch (Exception err) { Debug.WriteLine(err); }
+            catch (Exception err) { Trace.TraceError(err.ToString()); }
             finally { Refresh(); }
         }
 
@@ -744,7 +764,7 @@ namespace CubePdfUtility
 
         private void MetadataCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            var dialog = new MetadataWindow(_viewmodel);
+            var dialog = new MetadataWindow(_viewmodel, _font);
             dialog.Owner = this;
             dialog.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
             if (dialog.ShowDialog() == true) _viewmodel.Metadata = dialog.Metadata;
@@ -772,7 +792,7 @@ namespace CubePdfUtility
                 var index = _ViewSize.IndexOf(item);
                 e.CanExecute = index < _ViewSize.Count - 1;
             }
-            catch (Exception err) { Debug.WriteLine(err); }
+            catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
 
         private void ZoomInCommand_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -783,7 +803,7 @@ namespace CubePdfUtility
                 var index = _ViewSize.IndexOf(item);
                 ViewSizeGallery.SelectedItem = _ViewSize[index + 1];
             }
-            catch (Exception err) { Debug.WriteLine(err); }
+            catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
 
         #endregion
@@ -808,7 +828,7 @@ namespace CubePdfUtility
                 var index = _ViewSize.IndexOf(item);
                 e.CanExecute = index > 0;
             }
-            catch (Exception err) { Debug.WriteLine(err); }
+            catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
 
         private void ZoomOutCommand_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -819,7 +839,68 @@ namespace CubePdfUtility
                 var index = _ViewSize.IndexOf(item);
                 ViewSizeGallery.SelectedItem = _ViewSize[index - 1];
             }
-            catch (Exception err) { Debug.WriteLine(err); }
+            catch (Exception err) { Trace.TraceError(err.ToString()); }
+        }
+
+        #endregion
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// ViewSize
+        ///
+        /// <summary>
+        /// サムネイルのサイズを変更します。
+        /// パラメータ (e.Parameter) はサムネイルの新しい幅が指定されます。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        #region ViewSize
+
+        private void ViewSizeCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        private void ViewSizeCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            try
+            {
+                var width = (int)e.Parameter;
+                if (_viewmodel.ItemWidth != width) _viewmodel.ItemWidth = width;
+            }
+            catch (Exception err) { Trace.TraceError(err.ToString()); }
+        }
+
+        #endregion
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// ViewMode
+        ///
+        /// <summary>
+        /// 枠線のみ表示するかどうかを変更します。
+        /// パラメータ (e.Parameter) は「枠線のみ表示するかどうか」を表す
+        /// 真偽値です。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        #region ViewMode
+
+        private void ViewModeCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        private void ViewModeCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            try
+            {
+                var enable = (bool)e.Parameter;
+                _viewmodel.ItemVisibility = enable ?
+                    CubePdf.Wpf.ListViewItemVisibility.Minimum :
+                    CubePdf.Wpf.ListViewItemVisibility.Normal;
+            }
+            catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
 
         #endregion
@@ -843,12 +924,14 @@ namespace CubePdfUtility
 
         private void RedrawCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            try
+            try { _viewmodel.Reset(); }
+            catch (Exception err) { Trace.TraceError(err.ToString()); }
+            finally
             {
-                _viewmodel.Reset();
+                Cursor = Cursors.Wait;
+                Thumbnail.Items.Refresh();
+                Cursor = Cursors.Arrow;
             }
-            catch (Exception err) { Debug.WriteLine(err); }
-            finally { Refresh(); }
         }
 
         #endregion
@@ -872,7 +955,7 @@ namespace CubePdfUtility
 
         private void EncryptionCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            var dialog = new EncryptionWindow(_viewmodel);
+            var dialog = new EncryptionWindow(_viewmodel, _font);
             dialog.Owner = this;
             dialog.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
             if (dialog.ShowDialog() == true) _viewmodel.Encryption = dialog.Encryption;
@@ -900,10 +983,90 @@ namespace CubePdfUtility
 
         private void VersionCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            var dialog = new VersionWindow();
+            var dialog = new VersionWindow(_setting.Version);
             dialog.Owner = this;
             dialog.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
             dialog.ShowDialog();
+        }
+
+        #endregion
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// Help
+        ///
+        /// <summary>
+        /// ヘルプ（マニュアル）を表示します。
+        /// パラメータ (e.Parameter) は常に null です。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        #region Help
+
+        private void HelpCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            // TODO: 実装
+            e.CanExecute = false;
+        }
+
+        private void HelpCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            // TODO: 実装
+        }
+
+        #endregion
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// Web
+        ///
+        /// <summary>
+        /// Web ページを表示します。
+        /// パラメータ (e.Parameter) は表示する Web ページの URL です。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        #region Web
+
+        private void WebCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        private void WebCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var url = e.Parameter as string;
+            if (url == null) return;
+            Process.Start(url);
+        }
+
+        #endregion
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// Password
+        ///
+        /// <summary>
+        /// 暗号化を解除するためのパスワードダイアログを表示します。
+        /// パラメータ (e.Parameter) は常に null です。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        #region Password
+
+        private void PasswordCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = _viewmodel.EncryptionStatus == CubePdf.Data.EncryptionStatus.RestrictedAccess;
+        }
+
+        private void PasswordCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var path = _viewmodel.FilePath;
+            if (String.IsNullOrEmpty(path)) return;
+
+            var dialog = new PasswordWindow(path, _font);
+            dialog.Owner = this;
+            if (dialog.ShowDialog() == true && CloseFile()) OpenFile(path, dialog.Password);
         }
 
         #endregion
@@ -917,7 +1080,7 @@ namespace CubePdfUtility
         /// OnClosing
         /// 
         /// <summary>
-        /// アプリケーションの終了時に実行されます。
+        /// アプリケーションの終了直前に実行されます。
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
@@ -925,7 +1088,24 @@ namespace CubePdfUtility
         {
             var result = CloseFile();
             e.Cancel = !result;
+            if (!e.Cancel) SaveSetting(this, e);
             base.OnClosing(e);
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// OnClosed
+        /// 
+        /// <summary>
+        /// アプリケーションの終了時に実行されます。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+            _viewmodel.Dispose();
+            TerminateTrace();
         }
 
         /* ----------------------------------------------------------------- */
@@ -1025,44 +1205,118 @@ namespace CubePdfUtility
 
         /* ----------------------------------------------------------------- */
         ///
-        /// ViewSize_Changed
+        /// ViewModel_RunCompleted
         /// 
         /// <summary>
-        /// サムネイルのサイズが変更された際に実行されます。
+        /// ViewModel の各種処理が終了した際に実行されるイベントハンドラです。
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
-        private void ViewSize_Changed(object sender, RoutedPropertyChangedEventArgs<object> e)
+        private void ViewModel_RunCompleted(object sender, EventArgs e)
         {
-            try
+            Refresh();
+        }
+
+        #endregion
+
+        #region Methods for UserSetting
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// LoadSetting
+        /// 
+        /// <summary>
+        /// ユーザ設定をメイン画面に適用します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void LoadSetting(object sender, EventArgs e)
+        {
+            _setting.Load();
+
+            if (_setting.IsMaximized) WindowState = WindowState.Maximized;
+            else
             {
-                var element = (KeyValuePair<int, string>)ViewSizeGallery.SelectedItem;
-                if (_viewmodel.ItemWidth != element.Key)
-                {
-                    _viewmodel.ItemWidth = element.Key;
-                    ThumbnailImageView.ItemWidth = _viewmodel.ItemWidth;
-                }
+                Width  = Math.Max(_setting.Size.Width, _MinSize);
+                Height = Math.Max(_setting.Size.Height, _MinSize);
+                Left   = Math.Max(Math.Min(_setting.Position.X, SystemParameters.WorkArea.Right - Width), 8);
+                Top    = Math.Max(Math.Min(_setting.Position.Y, SystemParameters.WorkArea.Bottom - Height), 0);
             }
-            catch (Exception err) { Debug.WriteLine(err); }
+
+            // NOTE: ItemWidth は、既に用意されている選択肢 (_ViewSize) のうち、
+            // ユーザ設定に保存されている値を超えない最大値を使用する。
+            ViewSizeGalleryCategory.ItemsSource = _ViewSize;
+            var size = _ViewSize[0];
+            foreach (var item in _ViewSize)
+            {
+                if (item.Key > _setting.ItemWidth) break;
+                size = item;
+            }
+            ViewSizeGallery.SelectedItem = size;
+
+            _viewmodel.ItemVisibility = _setting.ItemVisibility;
+            ViewModeCheckBox.IsChecked = (_setting.ItemVisibility == CubePdf.Wpf.ListViewItemVisibility.Minimum);
         }
 
         /* ----------------------------------------------------------------- */
         ///
-        /// ViewMode_Changed
+        /// SaveSetting
         /// 
         /// <summary>
-        /// 枠線のみ表示にするかどうかの状態が変更された時に実行されます。
+        /// メイン画面の現在の状態をユーザ設定に保存します。
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
-        private void ViewMode_Changed(object sender, RoutedEventArgs e)
+        private void SaveSetting(object sender, EventArgs e)
         {
-            var control = sender as CheckBox;
-            if (control == null) return;
+            _setting.Position = new Point(Left, Top);
+            _setting.Size = new Size((int)Width, (int)Height);
+            _setting.IsMaximized = (WindowState == WindowState.Maximized);
+            _setting.ItemWidth = _viewmodel.ItemWidth;
+            _setting.ItemVisibility = _viewmodel.ItemVisibility;
+            _setting.Save();
+        }
 
-            _viewmodel.ItemVisibility = (control.IsChecked == true) ?
-                CubePdf.Wpf.ListViewItemVisibility.Minimum :
-                CubePdf.Wpf.ListViewItemVisibility.Normal;
+        #endregion
+
+        #region Methods for trace log
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// InitializeTrace
+        /// 
+        /// <summary>
+        /// Trace に対して必要な初期化処理を行います。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void InitializeTrace(string root)
+        {
+            var dir  = System.IO.Path.Combine(root, DateTime.Today.ToString("yyyymmdd"));
+            if (!System.IO.Directory.Exists(dir)) System.IO.Directory.CreateDirectory(dir);
+
+            var path = System.IO.Path.Combine(dir, "CubePdfUtility.log");
+            Trace.Listeners.Remove("Default");
+            Trace.Listeners.Add(new TextWriterTraceListener(path));
+            Trace.AutoFlush = true;
+
+            Trace.TraceInformation(DateTime.Now.ToString());
+            Trace.TraceInformation("CubePDF Utility version {0} ({1})", _setting.Version, ((IntPtr.Size == 4) ? "x86" : "x64"));
+            Trace.TraceInformation("Windows {0}", Environment.OSVersion.ToString());
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// TerminateTrace
+        /// 
+        /// <summary>
+        /// Trace に対して必要な終了処理を行います。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void TerminateTrace()
+        {
+            Trace.Close();
         }
 
         #endregion
@@ -1084,16 +1338,31 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         private void OpenFile(string path, string password)
         {
-            try
-            {
-                _viewmodel.Open(path, password);
-            }
-            catch (CubePdf.Data.EncryptionException /* err */)
-            {
-                var dialog = new PasswordWindow(path);
-                dialog.Owner = this;
-                if (dialog.ShowDialog() == true) OpenFile(path, dialog.Password);
-            }
+            Cursor = Cursors.Wait;
+            var filename = System.IO.Path.GetFileName(path);
+            var message = String.Format(Properties.Resources.OpenFile, filename);
+            InfoStatusBarItem.Content = message;
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback((Object parameter) => {
+                try
+                {
+                    var reader = new CubePdf.Editing.DocumentReader(path, password);
+                    Dispatcher.BeginInvoke(new Action(() => {
+                        _viewmodel.Open(reader);
+                        reader.Dispose();
+                    }));
+                }
+                catch (CubePdf.Data.EncryptionException /* err */)
+                {
+                    Dispatcher.BeginInvoke(new Action(() => {
+                        var dialog = new PasswordWindow(path, _font);
+                        dialog.Owner = this;
+                        if (dialog.ShowDialog() == true) OpenFile(path, dialog.Password);
+                        else Refresh();
+                    }));
+                }
+                catch (Exception err) { Trace.TraceError(err.ToString()); }
+            }), null);
         }
 
         /* ----------------------------------------------------------------- */
@@ -1115,10 +1384,52 @@ namespace CubePdfUtility
                 var result = MessageBox.Show(Properties.Resources.IsOverwrite, ProductName,
                     MessageBoxButton.YesNoCancel, MessageBoxImage.Information);
                 if (result == MessageBoxResult.Cancel) return false;
-                if (result == MessageBoxResult.Yes) SaveCommand_Executed(this, null);
+                if (result == MessageBoxResult.Yes) _viewmodel.SaveOnClose();
             }
             _viewmodel.Close();
             return true;
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// InsertFile
+        /// 
+        /// <summary>
+        /// index の位置に指定された PDF ファイルを挿入します。パスワードが
+        /// 設定されている場合は、パスワードを入力するためのダイアログを表示
+        /// してユーザに入力してもらいます。入力されたパスワードが間違って
+        /// いた場合は、正しいパスワードが入力されるか、またはキャンセル
+        /// ボタンが押下されるまでダイアログを表示し続けます。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void InsertFile(int index, string path, string password, string history)
+        {
+            Cursor = Cursors.Wait;
+            var filename = System.IO.Path.GetFileName(path);
+            var message = String.Format(Properties.Resources.InsertFile, filename);
+            InfoStatusBarItem.Content = message;
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback((Object parameter) => {
+                try
+                {
+                    var reader = new CubePdf.Editing.DocumentReader(path, password);
+                    Dispatcher.BeginInvoke(new Action(() => {
+                        _viewmodel.Insert(index, reader);
+                        _viewmodel.History[0].Text = history;
+                        reader.Dispose();
+                    }));
+                }
+                catch (CubePdf.Data.EncryptionException /* err */)
+                {
+                    Dispatcher.BeginInvoke(new Action(() => {
+                        var dialog = new PasswordWindow(path, _font);
+                        dialog.Owner = this;
+                        if (dialog.ShowDialog() == true) InsertFile(index, path, dialog.Password, history);
+                    }));
+                }
+                catch (Exception err) { Trace.TraceError(err.ToString()); }
+            }), null);
         }
 
         /* ----------------------------------------------------------------- */
@@ -1143,27 +1454,79 @@ namespace CubePdfUtility
                 var mstr = _viewmodel.IsModified ? "*" : "";
                 Title = String.Format("{0}{1}{2} - {3}", filename, mstr, rstr, ProductName);
 
-                PageCountStatusBarItem.Content = String.Format("{0} ページ", _viewmodel.PageCount);
+                InfoStatusBarItem.Content = String.Format("{0} ページ", _viewmodel.PageCount);
                 LockStatusBarItem.Visibility = restricted ? Visibility.Visible : Visibility.Collapsed;
-                Thumbnail.Items.Refresh();
                 Thumbnail.Focus();
             }
             else
             {
                 Title = ProductName;
-                if (PageCountStatusBarItem != null) PageCountStatusBarItem.Content = string.Empty;
+                if (InfoStatusBarItem != null) InfoStatusBarItem.Content = string.Empty;
                 if (LockStatusBarItem != null) LockStatusBarItem.Visibility = Visibility.Collapsed;
             }
+            Cursor = Cursors.Arrow;
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// ReplaceFont
+        ///
+        /// <summary>
+        /// コンストラクタ実行時に、画面のフォントを差し替えます。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void ReplaceFont()
+        {
+            if (FontFamily.Source == "メイリオ" || FontFamily.Source.Contains("Meiryo")) return;
+
+            var fonts = new System.Drawing.Text.InstalledFontCollection();
+            foreach (var ff in fonts.Families)
+            {
+                if (ff.Name == "メイリオ" || ff.Name.Contains("Meiryo"))
+                {
+                    TextElement.FontFamilyProperty.OverrideMetadata(typeof(TextElement), new FrameworkPropertyMetadata(new FontFamily(ff.Name)));
+                    TextBlock.FontFamilyProperty.OverrideMetadata(typeof(TextBlock), new FrameworkPropertyMetadata(new FontFamily(ff.Name)));
+                    MainRibbon.FontFamily = new FontFamily(ff.Name);
+                    Thumbnail.ContextMenu.FontFamily = new FontFamily(ff.Name);
+                    FooterStatusBar.FontFamily = new FontFamily(ff.Name);
+                    _font = ff.Name;
+                    break;
+                }
+            }
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// ChangeLogoVisibility
+        ///
+        /// <summary>
+        /// メイン画面の幅によって、ロゴを表示するかどうかを切り替えます。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void ChangeLogoVisibility(object sender, EventArgs e)
+        {
+            // NOTE: これらの値は、該当タブの項目を増やす（減らす）際に調整する必要がある。
+            var edit_tab_width = 900;
+            var view_tab_width = 410;
+            var help_tab_width = 310;
+
+            var limit = EditTab.IsSelected ? edit_tab_width : (ViewTab.IsSelected ? view_tab_width : help_tab_width);
+            LogoImage.Visibility = (Width < limit) ? Visibility.Collapsed : Visibility.Visible;
         }
 
         #endregion
 
         #region Variables
+        private UserSetting _setting = new UserSetting();
+        private string _font = string.Empty;
         private CubePdf.Wpf.IListViewModel _viewmodel = new CubePdf.Wpf.ListViewModel();
         #endregion
 
         #region Static variables
         private static readonly IList<KeyValuePair<int, string>> _ViewSize;
+        private static readonly int _MinSize = 400;
         #endregion
 
         /* ----------------------------------------------------------------- */
@@ -1178,10 +1541,15 @@ namespace CubePdfUtility
         #region ICommand variables
         public static readonly ICommand Select   = new RoutedCommand("Select",   typeof(MainWindow));
         public static readonly ICommand UnSelect = new RoutedCommand("UnSelect", typeof(MainWindow));
-        public static readonly ICommand Version  = new RoutedCommand("Version",  typeof(MainWindow));
         public static readonly ICommand ZoomIn   = new RoutedCommand("ZoomIn",   typeof(MainWindow));
         public static readonly ICommand ZoomOut  = new RoutedCommand("ZoomOut",  typeof(MainWindow));
+        public static readonly ICommand ViewSize = new RoutedCommand("ViewSize", typeof(MainWindow));
+        public static readonly ICommand ViewMode = new RoutedCommand("ViewMode", typeof(MainWindow));
         public static readonly ICommand Redraw   = new RoutedCommand("Redraw",   typeof(MainWindow));
+        public static readonly ICommand Version  = new RoutedCommand("Version",  typeof(MainWindow));
+        public static readonly ICommand Help     = new RoutedCommand("Help",     typeof(MainWindow));
+        public static readonly ICommand Web      = new RoutedCommand("Web",      typeof(MainWindow));
+        public static readonly ICommand Password = new RoutedCommand("Password", typeof(MainWindow));
         #endregion
     }
 }

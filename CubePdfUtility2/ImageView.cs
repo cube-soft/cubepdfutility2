@@ -51,6 +51,21 @@ namespace CubePdfUtility
         }
 
         /* ----------------------------------------------------------------- */
+        ///
+        /// ItemHeight
+        /// 
+        /// <summary>
+        /// 表示される各項目の幅を取得、または設定します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        public double ItemHeight
+        {
+            get { return (double)GetValue(ItemHeightProperty); }
+            set { SetValue(ItemHeightProperty, value); }
+        }
+        
+        /* ----------------------------------------------------------------- */
         /// DefaultStyleKey
         /* ----------------------------------------------------------------- */
         protected override object DefaultStyleKey
@@ -68,6 +83,7 @@ namespace CubePdfUtility
 
         #region Dependency Properties
         public static readonly DependencyProperty ItemWidthProperty = WrapPanel.ItemWidthProperty.AddOwner(typeof(ImageView));
+        public static readonly DependencyProperty ItemHeightProperty = WrapPanel.ItemHeightProperty.AddOwner(typeof(ImageView));
         #endregion
     }
 }
