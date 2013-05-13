@@ -1,0 +1,66 @@
+-------------------------------------------------------------------------------
+  CubePDF Utility
+  Copyright (c) 2013 CubeSoft, Inc. All rights reserved.
+
+  開発・配布：株式会社キューブ・ソフト
+  Mailto: support@cube-soft.jp
+  URL: http://www.cube-soft.jp/
+-------------------------------------------------------------------------------
+
+■What's this
+CubPDF Utility は、既存の PDF ファイルのページ挿入や削除、文書プロパティ、各種セキュリティ機能
+などを設定・変更するためのソフトウェアです。
+
+CubePDF Utility を使用するためには、Microsoft .NetFramework 3.5 SP1 がインストールされている必要があります。
+Microsoft .NetFramework 3.5 SP1 は、以下の URL からダウンロードして下さい。
+http://www.microsoft.com/ja-jp/download/confirmation.aspx?id=22
+
+■使用用法
+まず、ファイルを開くボタンやドラッグ&ドラップを通じて編集したい PDF ファイルを開きます。
+この際、選択した PDF ファイルに対して、既にセキュリティ機能が設定されている場合には、
+パスワードを尋ねるダイアログボックスが表示されますので、正しいパスワードを入力します。
+その後、メイン画面を通じて開いた PDF ファイルに必要な編集を行い、「上書き保存」、または
+「名前を付けて保存」ボタンを押すと、編集が適用された PDF ファイルが作成されます。
+
+CubePDF Utility で編集可能なものは以下の通りです。
+
+1. ページ編集
+ - 挿入 ... 選択位置/ページ先頭/ページ末尾のいずれかに別の PDF ファイルを挿入します
+ - 削除 ... 選択したページ、またはページ番号を指定して該当ページを削除します
+ - 抽出 ... 選択したページ、またはページ番号を指定して該当ページを別の PDF ファイルとして保存します
+ - 順序 ... PDF ファイルのページ順序を変更します
+ - 回転 ... 選択したページを回転します
+
+2. 文書プロパティ
+ - タイトル
+ - 作成者
+ - サブタイトル
+ - キーワード
+ - アプリケーション
+
+3. セキュリティ
+ - パスワード（オーナパスワード）
+ - PDF ファイルを開く際のパスワード（ユーザパスワード）
+ - 印刷を許可する
+ - 文書内容の変更を許可する
+ - 文書アセンブリ（ページの挿入・削除・回転）を許可する
+ - テキストや画像のコピーを許可する
+ - アクセシビリティのための内容の抽出を許可する
+ - ページの抽出を許可する
+ - 注釈の追加・編集操作を許可する
+ - フォームフィールドへの入力を許可する
+
+■使用ライブラリ
+CubePDFは、以下のライブラリを利用しています。
+それぞれのライブラリについては、記載した URL から取得することができます。
+ - iTextSharp
+   URL: http://sourceforge.net/projects/itextsharp/
+   GNU Affero General Public License ( http://www.gnu.org/licenses/agpl.html )
+ - PDFLibNet
+   Copyright (c) Antonio Sandoval.
+   URL: http://www.codeproject.com/KB/files/xpdf_csharp.aspx
+   GNU General Public License ( http://www.gnu.org/licenses/gpl.html )
+
+■バージョン履歴
+2013/05/20 version 0.1.0
+ - 最初の公開バージョン

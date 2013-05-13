@@ -16,12 +16,12 @@
             <Label x:Name="VersionLabel" Content="Version 1.0.0β" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" Padding="0"/>
             <Label Content="Copyright (c) 2013 CubeSoft." HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" Padding="0"/>
             <Label HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,10,0,0">
-                <Hyperlink Click="HyperLink_Click">http://www.cube-soft.jp/cubepdfutility/</Hyperlink>
+                <Hyperlink Click="HyperLink_Click">http://www.cube-soft.jp/</Hyperlink>
             </Label>
         </StackPanel>
 
         <StackPanel Grid.Row="3" Background="{x:Static SystemColors.ControlBrush}">
-            <Button Content="OK" Width="100" HorizontalAlignment="Center" Margin="12" Click="Button_Click"/>
+            <Button Content="OK" IsDefault="True" Width="100" HorizontalAlignment="Center" Margin="12" Click="Button_Click"/>
         </StackPanel>
     </Grid>
 </Window>

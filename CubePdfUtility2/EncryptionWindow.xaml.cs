@@ -62,7 +62,7 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         /// EncryptionWindow (constructor)
         /* ----------------------------------------------------------------- */
-        public EncryptionWindow(CubePdf.Wpf.IListViewModel viewmodel)
+        public EncryptionWindow(CubePdf.Wpf.IListViewModel viewmodel, string font)
             : this()
         {
             _crypt = new CubePdf.Data.Encryption(viewmodel.Encryption);
@@ -71,7 +71,7 @@ namespace CubePdfUtility
             if (_crypt.OwnerPassword.Length > 0) OwnerPasswordBox.Password = _crypt.OwnerPassword;
             if (_crypt.UserPassword.Length > 0) UserPasswordBox.Password = _crypt.UserPassword;
 
-            ReplaceFont();
+            ReplaceFont(font);
         }
 
         #endregion
@@ -177,12 +177,14 @@ namespace CubePdfUtility
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
-        private void ReplaceFont()
+        private void ReplaceFont(string font)
         {
+            if (string.IsNullOrEmpty(font)) return;
+
             var fonts = new System.Drawing.Text.InstalledFontCollection();
             foreach (var ff in fonts.Families)
             {
-                if (ff.Name.Contains("Meiryo"))
+                if (ff.Name == font)
                 {
                     OwnerPasswordBox.FontFamily = new System.Windows.Media.FontFamily(ff.Name);
                     ConfirmOwnerPasswordBox.FontFamily = new System.Windows.Media.FontFamily(ff.Name);

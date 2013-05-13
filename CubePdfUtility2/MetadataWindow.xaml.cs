@@ -54,7 +54,7 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         /// MetadataWindow (constructor)
         /* ----------------------------------------------------------------- */
-        public MetadataWindow(CubePdf.Wpf.IListViewModel viewmodel)
+        public MetadataWindow(CubePdf.Wpf.IListViewModel viewmodel, string font)
             : this()
         {
             _metadata = new CubePdf.Data.Metadata(viewmodel.Metadata);
@@ -72,7 +72,7 @@ namespace CubePdfUtility
             // Version.Minor は読み取り専用なので Binding ではなくコード側で対応
             PdfVersion.SelectedIndex = _metadata.Version.Minor;
 
-            ReplaceFont();
+            ReplaceFont(font);
 
         }
 
@@ -135,6 +135,7 @@ namespace CubePdfUtility
         #endregion
 
         # region Other Methods
+
         /* ----------------------------------------------------------------- */
         ///
         /// ReplaceFont
@@ -144,12 +145,14 @@ namespace CubePdfUtility
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
-        private void ReplaceFont()
+        private void ReplaceFont(string font)
         {
+            if (string.IsNullOrEmpty(font)) return;
+
             var fonts = new System.Drawing.Text.InstalledFontCollection();
             foreach (var ff in fonts.Families)
             {
-                if (ff.Name.Contains("Meiryo"))
+                if (ff.Name == font)
                 {
                     TitleTextBox.FontFamily = new System.Windows.Media.FontFamily(ff.Name);
                     AuthorTextBox.FontFamily = new System.Windows.Media.FontFamily(ff.Name);
@@ -160,6 +163,7 @@ namespace CubePdfUtility
                 }
             }
         }
+
         #endregion
 
         #region Variables
