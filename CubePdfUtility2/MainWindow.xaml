@@ -39,8 +39,10 @@
         <CommandBinding Command="{x:Static local:MainWindow.Web}"      CanExecute="WebCommand_CanExecute"      Executed="WebCommand_Executed"/>
         <CommandBinding Command="{x:Static local:MainWindow.Password}" CanExecute="PasswordCommand_CanExecute" Executed="PasswordCommand_Executed" />
     </Window.CommandBindings>
-    
+
     <Window.Resources>
+        <cube:DataResource x:Key="SelectedItems" BindingTarget="{Binding ElementName=Thumbnail, Path=SelectedItems}" />
+        <cube:DataResource x:Key="SelectedIndex" BindingTarget="{Binding ElementName=Thumbnail, Path=SelectedIndex}" />
         <cube:ControlToTagConverter x:Key="ControlToTagConverter"/>
         <cube:IsEnabledToVisibilityConverter x:Key="IsEnabledToVisibilityConverter" />
         <local:ItemHeightConverter x:Key="ItemHeightConverter"/>
@@ -195,7 +197,49 @@
                 Command="{x:Static cube:ListViewCommands.Encryption}"/>
         </ContextMenu>
     </Window.Resources>
-    
+
+    <Window.InputBindings>
+        <KeyBinding Gesture="Insert" Command="{x:Static cube:ListViewCommands.Insert}">
+            <KeyBinding.CommandParameter>
+                <cube:DataResourceBinding DataResource="{StaticResource SelectedIndex}" />
+            </KeyBinding.CommandParameter>
+        </KeyBinding>
+
+        <KeyBinding Gesture="Delete" Command="{x:Static cube:ListViewCommands.Remove}">
+            <KeyBinding.CommandParameter>
+                <cube:DataResourceBinding DataResource="{StaticResource SelectedItems}" />
+            </KeyBinding.CommandParameter>
+        </KeyBinding>
+
+        <KeyBinding Gesture="Backspace" Command="{x:Static cube:ListViewCommands.Remove}">
+            <KeyBinding.CommandParameter>
+                <cube:DataResourceBinding DataResource="{StaticResource SelectedItems}" />
+            </KeyBinding.CommandParameter>
+        </KeyBinding>
+
+        <KeyBinding Gesture="Ctrl+E" Command="{x:Static cube:ListViewCommands.Extract}">
+            <KeyBinding.CommandParameter>
+                <cube:DataResourceBinding DataResource="{StaticResource SelectedItems}" />
+            </KeyBinding.CommandParameter>
+        </KeyBinding>
+
+        <KeyBinding Gesture="Ctrl+W" Command="Close" />
+        <KeyBinding Gesture="Ctrl+Q" Command="Close" CommandParameter="Exit" />
+        <KeyBinding Gesture="Ctrl+U" Command="{x:Static local:MainWindow.Password}" />
+        <KeyBinding Gesture="Ctrl+D" Command="{x:Static local:MainWindow.UnSelect}" />
+        <KeyBinding Gesture="Ctrl+B" Command="{x:Static cube:ListViewCommands.Move}" CommandParameter="1" />
+        <KeyBinding Gesture="Ctrl+F" Command="{x:Static cube:ListViewCommands.Move}" CommandParameter="-1" />
+        <KeyBinding Gesture="Ctrl+L" Command="{x:Static cube:ListViewCommands.Rotate}" CommandParameter="-90" />
+        <KeyBinding Gesture="Ctrl+R" Command="{x:Static cube:ListViewCommands.Rotate}" CommandParameter="90" />
+        <KeyBinding Gesture="Ctrl+I" Command="{x:Static cube:ListViewCommands.Metadata}" />
+        <KeyBinding Gesture="Ctrl+K" Command="{x:Static cube:ListViewCommands.Encryption}" />
+        <KeyBinding Gesture="F5" Command="{x:Static local:MainWindow.Redraw}" />
+        <KeyBinding Gesture="Ctrl+OemPlus" Command="{x:Static local:MainWindow.ZoomIn}" />
+        <KeyBinding Gesture="Ctrl+Add" Command="{x:Static local:MainWindow.ZoomIn}" />
+        <KeyBinding Gesture="Ctrl+OemMinus" Command="{x:Static local:MainWindow.ZoomOut}" />
+        <KeyBinding Gesture="Ctrl+Subtract" Command="{x:Static local:MainWindow.ZoomOut}" />
+    </Window.InputBindings>
+
     <Grid x:Name="LayoutRoot">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -220,7 +264,7 @@
                     SmallImageSource="Images\Menu.png"
                     Loaded="ApplicationMenu_Loaded">
 
-                    <r:RibbonApplicationMenuItem Header="開く"
+                    <r:RibbonApplicationMenuItem Header="開く(_O)"
                         ToolTipTitle="開く"
                         Command="Open">
 
@@ -239,7 +283,7 @@
                         </r:RibbonApplicationMenuItem.Style>
                     </r:RibbonApplicationMenuItem>
 
-                    <r:RibbonApplicationMenuItem Header="上書き保存"
+                    <r:RibbonApplicationMenuItem Header="上書き保存(_S)"
                         ToolTipTitle="上書き保存"
                         Command="Save">
 
@@ -258,7 +302,7 @@
                         </r:RibbonApplicationMenuItem.Style>
                     </r:RibbonApplicationMenuItem>
 
-                    <r:RibbonApplicationMenuItem Header="名前を付けて保存"
+                    <r:RibbonApplicationMenuItem Header="名前を付けて保存(_A)"
                         ToolTipTitle="名前を付けて保存"
                         Command="SaveAs">
 
@@ -279,7 +323,7 @@
 
                     <r:RibbonSeparator />
 
-                    <r:RibbonApplicationMenuItem Header="バージョン情報"
+                    <r:RibbonApplicationMenuItem Header="バージョン情報(_V)"
                         ToolTipTitle="バージョン情報"
                         ImageSource="Images\LargeIcons\Version.png"
                         Command="{x:Static local:MainWindow.Version}">
@@ -301,7 +345,7 @@
 
                     <r:RibbonSeparator />
 
-                    <r:RibbonApplicationMenuItem Header="閉じる"
+                    <r:RibbonApplicationMenuItem Header="閉じる(_C)"
                         ToolTipTitle="閉じる"
                         Command="Close">
 
@@ -320,7 +364,7 @@
                         </r:RibbonApplicationMenuItem.Style>
                     </r:RibbonApplicationMenuItem>
 
-                    <r:RibbonApplicationMenuItem Header="終了"
+                    <r:RibbonApplicationMenuItem Header="終了(_X)"
                         ToolTipTitle="終了"
                         Command="Close"
                         CommandParameter="Exit">
