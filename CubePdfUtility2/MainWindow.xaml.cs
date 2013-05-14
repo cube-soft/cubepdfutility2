@@ -434,7 +434,12 @@ namespace CubePdfUtility
                 if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
                 _viewmodel.Extract(items, dialog.FileName);
             }
-            catch (Exception err) { Trace.TraceError(err.ToString()); }
+            catch (Exception err)
+            {
+                MessageBox.Show(Properties.Resources.SaveError, Properties.Resources.ErrorTitle,
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                Trace.TraceError(err.ToString());
+            }
         }
 
         #endregion
@@ -474,7 +479,12 @@ namespace CubePdfUtility
                 if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
                 _viewmodel.Split(items, dialog.SelectedPath);
             }
-            catch (Exception err) { Trace.TraceError(err.ToString()); }
+            catch (Exception err)
+            {
+                MessageBox.Show(Properties.Resources.SaveError, Properties.Resources.ErrorTitle,
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                Trace.TraceError(err.ToString());
+            }
         }
 
         #endregion
