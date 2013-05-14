@@ -151,7 +151,7 @@
                     CommandParameter="{Binding PlacementTarget.SelectedItems, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"/>
                 <MenuItem Header="選択ページを個別ファイルとして抽出"
                     Command="{x:Static cube:ListViewCommands.Split}"
-                    CommandParameter="{Binding Placement.SelectedItems, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"/>
+                    CommandParameter="{Binding PlacementTarget.SelectedItems, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"/>
                 <MenuItem Header="全てのページを単一ファイルとして抽出"
                     Command="{x:Static cube:ListViewCommands.Extract}"/>
                 <MenuItem Header="全てのページを個別ファイルとして抽出"
