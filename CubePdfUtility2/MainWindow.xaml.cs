@@ -566,16 +566,17 @@ namespace CubePdfUtility
             {
                 Cursor = Cursors.Wait;
                 var degree = int.Parse(e.Parameter as string);
-                var done = new System.Collections.ArrayList();
+                var done = new List<int>();
                 _viewmodel.BeginCommand();
                 while (Thumbnail.SelectedItems.Count > 0)
                 {
                     var obj = Thumbnail.SelectedItems[0];
-                    _viewmodel.Rotate(obj, degree);
-                    done.Add(obj);
+                    var index = _viewmodel.IndexOf(obj);
+                    _viewmodel.RotateAt(index, degree);
+                    done.Add(index);
                     Thumbnail.SelectedItems.Remove(obj);
                 }
-                foreach (var obj in done) Thumbnail.SelectedItems.Add(obj);
+                foreach (var index in done) Thumbnail.SelectedItems.Add(_viewmodel.Items[index]);
                 _viewmodel.History[0].Text = (degree < 0) ? RotateLeftButton.Label : RotateRightButton.Label;
             }
             catch (Exception err) { Trace.TraceError(err.ToString()); }
