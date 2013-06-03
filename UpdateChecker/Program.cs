@@ -20,6 +20,7 @@
 /* ------------------------------------------------------------------------- */
 using System;
 using System.Threading;
+using System.Diagnostics;
 using System.Windows.Forms;
 using System.Collections.Generic;
 
@@ -64,11 +65,7 @@ namespace CubePdfUtility
                     }
                 }
             }
-            catch (Exception /* err */)
-            {
-                //MessageBox.Show("Exception");
-                return;
-            }
+            catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
 
         /* ----------------------------------------------------------------- */
@@ -83,7 +80,7 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         public static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
         {
-            //MessageBox.Show("Application_ThreadException");
+            Trace.TraceError(e.Exception.ToString());
             return;
         }
 
@@ -99,7 +96,7 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         public static void Application_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            //MessageBox.Show("Application_UnhandledException");
+            Trace.TraceError("UnhandledException was occured");
             return;
         }
     }
