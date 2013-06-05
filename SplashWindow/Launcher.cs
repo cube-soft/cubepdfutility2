@@ -1,6 +1,6 @@
 ﻿/* ------------------------------------------------------------------------- */
 ///
-/// VersionWindow.xaml.cs
+/// Launcher.cs
 ///
 /// Copyright (c) 2013 CubeSoft, Inc. All rights reserved.
 ///
@@ -19,109 +19,108 @@
 ///
 /* ------------------------------------------------------------------------- */
 using System;
-using System.Windows;
+using System.Diagnostics;
+using System.Collections.Generic;
 
 namespace CubePdfUtility
 {
     /* --------------------------------------------------------------------- */
     ///
-    /// VersionWindow
+    /// Launcher
     /// 
     /// <summary>
-    /// VersionWindow.xaml の相互作用ロジック
+    /// CubePDF Utility を起動させるためのクラスです。
     /// </summary>
-    /// 
+    ///
     /* --------------------------------------------------------------------- */
-    public partial class VersionWindow : Window
+    public class Launcher
     {
         #region Initialization and Termination
 
         /* ----------------------------------------------------------------- */
         ///
-        /// VersionWindow (constructor)
-        /// 
-        /// <summary>
-        /// 指定されたバージョンの値を使用して、オブジェクトを初期化します。
-        /// </summary>
-        ///
-        /* ----------------------------------------------------------------- */
-        public VersionWindow(string version)
-        {
-            InitializeComponent();
-            SetVersion(version);
-            SourceInitialized += (sender, e) => {
-                if (Top < 0 || Top > SystemParameters.WorkArea.Bottom - Height) Top = 0;
-                if (Left < 0 || Left > SystemParameters.WorkArea.Right - Width) Left = 0;
-            };
-        }
-
-        /* ----------------------------------------------------------------- */
-        ///
-        /// VersionWindow (constructor)
+        /// Launcher (constructor)
         /// 
         /// <summary>
         /// 既定の値でオブジェクトを初期化します。
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
-        public VersionWindow()
-            : this(System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()) { }
+        public Launcher() { }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// Launcher (constructor)
+        /// 
+        /// <summary>
+        /// 引数に指定されたコマンド引数の配列を用いて、オブジェクトを
+        /// 初期化します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        public Launcher(string[] args)
+            : this()
+        {
+            foreach (var s in args) _arguments.Add(s);
+        }
 
         #endregion
 
-        #region Event handlers
+        #region Properties
 
         /* ----------------------------------------------------------------- */
         ///
-        /// Button_Click
+        /// Arguments
         /// 
         /// <summary>
-        /// OK ボタンがクリックされた時に実行されるイベントハンドラです。
+        /// CubePDF Utility に渡すコマンドライン引数の一覧を取得、または
+        /// 設定します。
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
-        private void Button_Click(object sender, EventArgs e)
+        public IList<string> Arguments
         {
-            Close();
+            get { return _arguments; }
         }
 
+        #endregion
+
         /* ----------------------------------------------------------------- */
         ///
-        /// HyperLink_Click
+        /// Run
         /// 
         /// <summary>
-        /// ハイパーリンクテキストが実行された時に実行されるイベントハンドラ
-        /// です。該当 URL へ移動します。
+        /// CubePDF Utility を起動させます。
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
-        private void HyperLink_Click(object sender, EventArgs e)
+        public bool Run()
         {
             try
             {
-                System.Diagnostics.Process.Start("http://www.cube-soft.jp/cubepdfutility/");
+                var registry = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(_RegRoot, false);
+                var install = registry.GetValue(_RegPath, string.Empty) as string;
+                if (string.IsNullOrEmpty(install)) return false;
+
+                var args = new System.Text.StringBuilder();
+                foreach (var s in _arguments) args.AppendFormat("\"{0}\" ", s);
+
+                var process = new Process();
+                process.StartInfo.FileName = System.IO.Path.Combine(install, "CubePdfUtility.exe");
+                process.StartInfo.Arguments = args.ToString();
+                return process.Start();
             }
-            catch { }
+            catch (Exception /* err */) { return false; }
         }
 
+        #region Variables
+        private List<string> _arguments = new List<string>();
         #endregion
 
-        #region Other methods
-
-        /* ----------------------------------------------------------------- */
-        ///
-        /// SetVersion
-        /// 
-        /// <summary>
-        /// バージョン情報を設定します。
-        /// </summary>
-        ///
-        /* ----------------------------------------------------------------- */
-        private void SetVersion(string version)
-        {
-            VersionLabel.Content = String.Format("Version {0} ({1})", version, ((IntPtr.Size == 4) ? "x86" : "x64"));
-        }
-
+        #region Constant variables
+        private static readonly string _RegRoot = @"Software\CubeSoft\CubePDF Utility2";
+        private static readonly string _RegPath = "InstallDirectory";
+        //private static readonly string _RegVersion = "Version";
         #endregion
     }
 }

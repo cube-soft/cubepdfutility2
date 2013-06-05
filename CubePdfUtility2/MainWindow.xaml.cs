@@ -89,7 +89,7 @@ namespace CubePdfUtility
             _viewmodel.BackupDays = 30;
             _viewmodel.RunCompleted += new EventHandler(ViewModel_RunCompleted);
 
-            InitializeTrace(_viewmodel.BackupFolder);
+            //InitializeTrace(_viewmodel.BackupFolder);
         }
 
         /* ----------------------------------------------------------------- */
@@ -1116,7 +1116,7 @@ namespace CubePdfUtility
         {
             base.OnClosed(e);
             _viewmodel.Dispose();
-            TerminateTrace();
+            //TerminateTrace();
         }
 
         /* ----------------------------------------------------------------- */
@@ -1191,6 +1191,34 @@ namespace CubePdfUtility
             if (Thumbnail == null || Thumbnail.SelectedIndex == -1) return;
             var dialog = new PreviewWindow(_viewmodel, Thumbnail.SelectedIndex);
             dialog.ShowDialog();
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// OnContentRendered
+        /// 
+        /// <summary>
+        /// メイン画面が表示された後に実行されるイベントハンドラです。
+        /// スプラッシュ画面の終了とアップデートの確認が行われます。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        protected override void OnContentRendered(EventArgs e)
+        {
+            base.OnContentRendered(e);
+            if (_shown) return;
+            _shown = true;
+
+            try
+            {
+                foreach (var ps in Process.GetProcessesByName("CubePdfUtilitySplash")) ps.Kill();
+
+                if (string.IsNullOrEmpty(_setting.InstallDirectory) ||
+                    DateTime.Now > _setting.LastCheckUpdate.AddDays(1)) return;
+                var path = System.IO.Path.Combine(_setting.InstallDirectory, "UpdateChecker.exe");
+                Process.Start(path);
+            }
+            catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
 
         /* ----------------------------------------------------------------- */
@@ -1533,6 +1561,7 @@ namespace CubePdfUtility
         private UserSetting _setting = new UserSetting();
         private string _font = string.Empty;
         private CubePdf.Wpf.IListViewModel _viewmodel = new CubePdf.Wpf.ListViewModel();
+        private bool _shown = false;
         #endregion
 
         #region Static variables
