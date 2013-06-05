@@ -1214,7 +1214,7 @@ namespace CubePdfUtility
                 foreach (var ps in Process.GetProcessesByName("CubePdfUtilitySplash")) ps.Kill();
 
                 if (string.IsNullOrEmpty(_setting.InstallDirectory) ||
-                    DateTime.Now > _setting.LastCheckUpdate.AddDays(1)) return;
+                    DateTime.Now <= _setting.LastCheckUpdate.AddDays(1)) return;
                 var path = System.IO.Path.Combine(_setting.InstallDirectory, "UpdateChecker.exe");
                 Process.Start(path);
             }
