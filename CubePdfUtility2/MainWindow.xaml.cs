@@ -1214,7 +1214,7 @@ namespace CubePdfUtility
                 foreach (var ps in Process.GetProcessesByName("CubePdfUtilitySplash")) ps.Kill();
 
                 if (string.IsNullOrEmpty(_setting.InstallDirectory) ||
-                    DateTime.Now > _setting.LastCheckUpdate.AddDays(1)) return;
+                    DateTime.Now <= _setting.LastCheckUpdate.AddDays(1)) return;
                 var path = System.IO.Path.Combine(_setting.InstallDirectory, "UpdateChecker.exe");
                 Process.Start(path);
             }
@@ -1331,7 +1331,7 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         private void InitializeTrace(string root)
         {
-            var dir  = System.IO.Path.Combine(root, DateTime.Today.ToString("yyyymmdd"));
+            var dir  = System.IO.Path.Combine(root, DateTime.Today.ToString("yyyyMMdd"));
             if (!System.IO.Directory.Exists(dir)) System.IO.Directory.CreateDirectory(dir);
 
             var path = System.IO.Path.Combine(dir, "CubePdfUtility.log");

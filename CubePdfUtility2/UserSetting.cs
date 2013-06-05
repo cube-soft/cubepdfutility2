@@ -250,7 +250,6 @@ namespace CubePdfUtility
                 setting.Root.Add(new CubePdf.Settings.Node(_RegMaximize, _maximize));
                 setting.Root.Add(new CubePdf.Settings.Node(_RegItemWidth, _itemwidth));
                 setting.Root.Add(new CubePdf.Settings.Node(_RegVisibility, (int)_visibility));
-                setting.Root.Add(new CubePdf.Settings.Node(_RegLastCheck, _last.ToString()));
 
                 setting.Write(root);
             }
