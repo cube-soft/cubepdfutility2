@@ -83,6 +83,7 @@ namespace CubePdfUtility
             InitializeComponent();
             ReplaceFont();
             SourceInitialized += new EventHandler(LoadSetting);
+            Loaded += new RoutedEventHandler(CheckUpdate);
 
             var appdata = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
             _viewmodel.BackupFolder = System.IO.Path.Combine(appdata, @"CubeSoft\CubePdfUtility2");
@@ -1525,6 +1526,28 @@ namespace CubePdfUtility
 
             var limit = EditTab.IsSelected ? edit_tab_width : (ViewTab.IsSelected ? view_tab_width : help_tab_width);
             LogoImage.Visibility = (Width < limit) ? Visibility.Collapsed : Visibility.Visible;
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// CheckUpdate
+        /// 
+        /// <summary>
+        /// アップデートの確認を行います。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void CheckUpdate(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(_setting.InstallDirectory) ||
+                DateTime.Now > _setting.LastCheckUpdate.AddDays(1)) return;
+
+            try
+            {
+                var path = System.IO.Path.Combine(_setting.InstallDirectory, "UpdateChecker.exe");
+                Process.Start(path);
+            }
+            catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
 
         #endregion
