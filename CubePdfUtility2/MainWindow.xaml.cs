@@ -1331,7 +1331,7 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         private void InitializeTrace(string root)
         {
-            var dir  = System.IO.Path.Combine(root, DateTime.Today.ToString("yyyymmdd"));
+            var dir  = System.IO.Path.Combine(root, DateTime.Today.ToString("yyyyMMdd"));
             if (!System.IO.Directory.Exists(dir)) System.IO.Directory.CreateDirectory(dir);
 
             var path = System.IO.Path.Combine(dir, "CubePdfUtility.log");
