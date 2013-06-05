@@ -99,7 +99,7 @@ namespace CubePdfUtility
         {
             try
             {
-                System.Diagnostics.Process.Start("http://www.cube-soft.jp/");
+                System.Diagnostics.Process.Start("http://www.cube-soft.jp/cubepdfutility/");
             }
             catch { }
         }
@@ -119,7 +119,7 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         private void SetVersion(string version)
         {
-            VersionLabel.Content = String.Format("Version {0}", version);
+            VersionLabel.Content = String.Format("Version {0} ({1})", version, ((IntPtr.Size == 4) ? "x86" : "x64"));
         }
 
         #endregion
