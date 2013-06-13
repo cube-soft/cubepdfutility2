@@ -51,7 +51,7 @@ CubePDF Utility で編集可能なものは以下の通りです。
  - フォームフィールドへの入力を許可する
 
 ■使用ライブラリ
-CubePDFは、以下のライブラリを利用しています。
+CubePDF Utility は、以下のライブラリを利用しています。
 それぞれのライブラリについては、記載した URL から取得することができます。
  - iTextSharp
    URL: http://sourceforge.net/projects/itextsharp/
