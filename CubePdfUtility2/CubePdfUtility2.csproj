@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CubePdfUtility</RootNamespace>
     <AssemblyName>CubePdfUtility</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -89,6 +89,7 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xaml" />
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -353,14 +354,14 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy $(TargetPath) $(SolutionDir)Release\$(PlatformName)\
-copy $(TargetPath).config $(SolutionDir)Release\$(PlatformName)\
-copy $(TargetDir)CubePdf.*.dll $(SolutionDir)Release\$(PlatformName)\
-copy $(TargetDir)itextsharp.dll $(SolutionDir)Release\$(PlatformName)\
-copy $(TargetDir)Interop.IWshRuntimeLibrary.dll $(SolutionDir)Release\$(PlatformName)\
-copy $(TargetDir)Microsoft.Windows.Shell.dll $(SolutionDir)Release\$(PlatformName)\
-copy $(TargetDir)RibbonControlsLibrary.dll $(SolutionDir)Release\$(PlatformName)\
-copy $(TargetDir)System.Windows.Interactivity.dll $(SolutionDir)Release\$(PlatformName)\</PostBuildEvent>
+    <PostBuildEvent>copy $(TargetPath) $(SolutionDir)Release\$(PlatformName)\net4\
+copy $(TargetPath).config $(SolutionDir)Release\$(PlatformName)\net4\
+copy $(TargetDir)CubePdf.*.dll $(SolutionDir)Release\$(PlatformName)\net4\
+copy $(TargetDir)itextsharp.dll $(SolutionDir)Release\$(PlatformName)\net4\
+copy $(TargetDir)Interop.IWshRuntimeLibrary.dll $(SolutionDir)Release\$(PlatformName)\net4\
+copy $(TargetDir)Microsoft.Windows.Shell.dll $(SolutionDir)Release\$(PlatformName)\net4\
+copy $(TargetDir)RibbonControlsLibrary.dll $(SolutionDir)Release\$(PlatformName)\net4\
+copy $(TargetDir)System.Windows.Interactivity.dll $(SolutionDir)Release\$(PlatformName)\net4\</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

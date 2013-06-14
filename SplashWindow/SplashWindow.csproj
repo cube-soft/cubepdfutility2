@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CubePdfUtility</RootNamespace>
     <AssemblyName>CubePdfUtilitySplash</AssemblyName>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -101,8 +101,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy $(TargetPath) $(ProjectDir)..\Release\$(PlatformName)\
-copy $(TargetPath).config $(ProjectDir)..\Release\$(PlatformName)\</PostBuildEvent>
+    <PostBuildEvent>copy $(TargetPath) $(SolutionDir)Release\$(PlatformName)\net4\
+copy $(TargetPath).config $(SolutionDir)Release\$(PlatformName)\net4\</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

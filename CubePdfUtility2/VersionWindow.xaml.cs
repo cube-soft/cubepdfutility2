@@ -120,6 +120,8 @@ namespace CubePdfUtility
         private void SetVersion(string version)
         {
             VersionLabel.Content = String.Format("Version {0} ({1})", version, ((IntPtr.Size == 4) ? "x86" : "x64"));
+            OSVersionLabel.Content = Environment.OSVersion.ToString();
+            DotNetVersionLabel.Content = String.Format(".NET Framework {0}", Environment.Version.ToString());
         }
 
         #endregion
