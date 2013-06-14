@@ -24,6 +24,7 @@ using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Linq;
 using System.Text;
@@ -1426,6 +1427,11 @@ namespace CubePdfUtility
                 if (result == MessageBoxResult.Yes) _viewmodel.SaveOnClose();
             }
             _viewmodel.Close();
+
+            if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+            {
+                Win32Api.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
+            }
             return true;
         }
 
@@ -1567,6 +1573,16 @@ namespace CubePdfUtility
         #region Static variables
         private static readonly IList<KeyValuePair<int, string>> _ViewSize;
         private static readonly int _MinSize = 400;
+        #endregion
+
+        #region Win32 APIs
+
+        internal class Win32Api
+        {
+            [DllImport("kernel32.dll")]
+            public static extern bool SetProcessWorkingSetSize(IntPtr procHandle, int min, int max);
+        }
+
         #endregion
 
         /* ----------------------------------------------------------------- */
