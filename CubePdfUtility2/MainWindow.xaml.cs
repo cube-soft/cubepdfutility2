@@ -1424,7 +1424,17 @@ namespace CubePdfUtility
                 var result = MessageBox.Show(Properties.Resources.IsOverwrite, ProductName,
                     MessageBoxButton.YesNoCancel, MessageBoxImage.Information);
                 if (result == MessageBoxResult.Cancel) return false;
-                if (result == MessageBoxResult.Yes) _viewmodel.SaveOnClose();
+                if (result == MessageBoxResult.Yes)
+                {
+                    try { _viewmodel.SaveOnClose(); }
+                    catch (Exception err)
+                    {
+                        MessageBox.Show(Properties.Resources.SaveError, Properties.Resources.ErrorTitle,
+                            MessageBoxButton.OK, MessageBoxImage.Error);
+                        Trace.TraceError(err.ToString());
+                        return false;
+                    }
+                }
             }
             _viewmodel.Close();
 
