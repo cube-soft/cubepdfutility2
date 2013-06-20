@@ -11,9 +11,9 @@
 CubPDF Utility は、既存の PDF ファイルのページ挿入や削除、文書プロパティ、各種セキュリティ機能
 などを設定・変更するためのソフトウェアです。
 
-CubePDF Utility を使用するためには、Microsoft .NetFramework 3.5 SP1 がインストールされている必要があります。
+CubePDF Utility を使用するためには、Microsoft .NetFramework 3.5 SP1 以上がインストールされている必要があります。
 Microsoft .NetFramework 3.5 SP1 は、以下の URL からダウンロードして下さい。
-http://www.microsoft.com/ja-jp/download/confirmation.aspx?id=22
+http://www.microsoft.com/ja-jp/download/details.aspx?id=22
 
 ■使用用法
 まず、ファイルを開くボタンやドラッグ&ドラップを通じて編集したい PDF ファイルを開きます。
@@ -51,7 +51,7 @@ CubePDF Utility で編集可能なものは以下の通りです。
  - フォームフィールドへの入力を許可する
 
 ■使用ライブラリ
-CubePDFは、以下のライブラリを利用しています。
+CubePDF Utility は、以下のライブラリを利用しています。
 それぞれのライブラリについては、記載した URL から取得することができます。
  - iTextSharp
    URL: http://sourceforge.net/projects/itextsharp/
@@ -62,5 +62,15 @@ CubePDFは、以下のライブラリを利用しています。
    GNU General Public License ( http://www.gnu.org/licenses/gpl.html )
 
 ■バージョン履歴
-2013/05/20 version 0.1.0
+2013/06/17 version 0.1.2β
+ - .NET Framework 4、および 4.5 に対応
+ - 上書き保存して終了時、何らかの理由で上書き保存に失敗した場合にメッセージを表示するように修正
+
+2013/06/06 version 0.1.1β
+ - 起動時にスプラッシュ画面を表示するように修正
+ - パソコン起動時、またはアプリケーション起動時にアップデートの確認を行うように修正
+ - PDF ファイルをマウス右クリック時に「CubePDF Utility で開く」と言うメニューを追加
+ - 特定の環境で、アプリケーション終了時にエラーが発生する不都合を修正
+
+2013/05/20 version 0.1.0β
  - 最初の公開バージョン

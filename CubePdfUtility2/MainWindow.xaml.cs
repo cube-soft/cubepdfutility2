@@ -24,6 +24,7 @@ using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Linq;
 using System.Text;
@@ -89,7 +90,7 @@ namespace CubePdfUtility
             _viewmodel.BackupDays = 30;
             _viewmodel.RunCompleted += new EventHandler(ViewModel_RunCompleted);
 
-            InitializeTrace(_viewmodel.BackupFolder);
+            //InitializeTrace(_viewmodel.BackupFolder);
         }
 
         /* ----------------------------------------------------------------- */
@@ -1116,7 +1117,7 @@ namespace CubePdfUtility
         {
             base.OnClosed(e);
             _viewmodel.Dispose();
-            TerminateTrace();
+            //TerminateTrace();
         }
 
         /* ----------------------------------------------------------------- */
@@ -1191,6 +1192,34 @@ namespace CubePdfUtility
             if (Thumbnail == null || Thumbnail.SelectedIndex == -1) return;
             var dialog = new PreviewWindow(_viewmodel, Thumbnail.SelectedIndex);
             dialog.ShowDialog();
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// OnContentRendered
+        /// 
+        /// <summary>
+        /// メイン画面が表示された後に実行されるイベントハンドラです。
+        /// スプラッシュ画面の終了とアップデートの確認が行われます。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        protected override void OnContentRendered(EventArgs e)
+        {
+            base.OnContentRendered(e);
+            if (_shown) return;
+            _shown = true;
+
+            try
+            {
+                foreach (var ps in Process.GetProcessesByName("CubePdfUtilitySplash")) ps.Kill();
+
+                if (string.IsNullOrEmpty(_setting.InstallDirectory) ||
+                    DateTime.Now <= _setting.LastCheckUpdate.AddDays(1)) return;
+                var path = System.IO.Path.Combine(_setting.InstallDirectory, "UpdateChecker.exe");
+                Process.Start(path);
+            }
+            catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
 
         /* ----------------------------------------------------------------- */
@@ -1303,7 +1332,7 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         private void InitializeTrace(string root)
         {
-            var dir  = System.IO.Path.Combine(root, DateTime.Today.ToString("yyyymmdd"));
+            var dir  = System.IO.Path.Combine(root, DateTime.Today.ToString("yyyyMMdd"));
             if (!System.IO.Directory.Exists(dir)) System.IO.Directory.CreateDirectory(dir);
 
             var path = System.IO.Path.Combine(dir, "CubePdfUtility.log");
@@ -1395,9 +1424,24 @@ namespace CubePdfUtility
                 var result = MessageBox.Show(Properties.Resources.IsOverwrite, ProductName,
                     MessageBoxButton.YesNoCancel, MessageBoxImage.Information);
                 if (result == MessageBoxResult.Cancel) return false;
-                if (result == MessageBoxResult.Yes) _viewmodel.SaveOnClose();
+                if (result == MessageBoxResult.Yes)
+                {
+                    try { _viewmodel.SaveOnClose(); }
+                    catch (Exception err)
+                    {
+                        MessageBox.Show(Properties.Resources.SaveError, Properties.Resources.ErrorTitle,
+                            MessageBoxButton.OK, MessageBoxImage.Error);
+                        Trace.TraceError(err.ToString());
+                        return false;
+                    }
+                }
             }
             _viewmodel.Close();
+
+            if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+            {
+                Win32Api.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
+            }
             return true;
         }
 
@@ -1533,11 +1577,22 @@ namespace CubePdfUtility
         private UserSetting _setting = new UserSetting();
         private string _font = string.Empty;
         private CubePdf.Wpf.IListViewModel _viewmodel = new CubePdf.Wpf.ListViewModel();
+        private bool _shown = false;
         #endregion
 
         #region Static variables
         private static readonly IList<KeyValuePair<int, string>> _ViewSize;
         private static readonly int _MinSize = 400;
+        #endregion
+
+        #region Win32 APIs
+
+        internal class Win32Api
+        {
+            [DllImport("kernel32.dll")]
+            public static extern bool SetProcessWorkingSetSize(IntPtr procHandle, int min, int max);
+        }
+
         #endregion
 
         /* ----------------------------------------------------------------- */

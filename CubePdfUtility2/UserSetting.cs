@@ -166,6 +166,20 @@ namespace CubePdfUtility
             set { _visibility = value; }
         }
 
+        /* ----------------------------------------------------------------- */
+        ///
+        /// LastCheckUpdate
+        /// 
+        /// <summary>
+        /// 最後にアップデートの確認を行った日時を取得します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        public DateTime LastCheckUpdate
+        {
+            get { return _last; }
+        }
+
         #endregion
 
         #region Public methods
@@ -205,6 +219,9 @@ namespace CubePdfUtility
 
                 var visibility = setting.Root.Find(_RegVisibility);
                 if (visibility != null) _visibility = (CubePdf.Wpf.ListViewItemVisibility)visibility.Value;
+
+                var date = setting.Root.Find(_RegLastCheck);
+                if (date != null) _last = DateTime.Parse(date.Value as string);
             }
             catch (Exception /* err */) { }
         }
@@ -249,6 +266,7 @@ namespace CubePdfUtility
         private bool _maximize = false;
         private CubePdf.Wpf.ListViewItemVisibility _visibility = CubePdf.Wpf.ListViewItemVisibility.Normal;
         private int _itemwidth = 150;
+        private DateTime _last = new DateTime();
         #endregion
 
         #region Constant variables
@@ -262,6 +280,7 @@ namespace CubePdfUtility
         private static readonly string _RegMaximize   = "IsMaximized";
         private static readonly string _RegVisibility = "ItemVisibility";
         private static readonly string _RegItemWidth  = "ItemWidth";
+        private static readonly string _RegLastCheck  = "LastCheckUpdate";
         #endregion
     }
 }
