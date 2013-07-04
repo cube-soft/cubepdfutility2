@@ -1233,7 +1233,7 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         private void ApplicationMenu_Loaded(object sender, RoutedEventArgs e)
         {   
-            var recents = CubePdf.Data.SystemEnvironment.GetRecentFiles("*.pdf");
+            var recents = CubePdf.Misc.Environment.GetRecentFiles("*.pdf");
             for (int i = 0; i < recents.Count; ++i)
             {
                 var gallery = new RibbonGalleryItem();

@@ -61,7 +61,7 @@ namespace CubePdfUtility
             DataContext = _metadata;
 
             var info = new System.IO.FileInfo(viewmodel.FilePath);
-            var sizestr = CubePdf.Data.StringConverter.FormatByteSize(info.Length);
+            var sizestr = CubePdf.Misc.StringConverter.FormatByteSize(info.Length);
 
             // 読み取り専用の情報
             FileName.Text        = System.IO.Path.GetFileName(viewmodel.FilePath);
