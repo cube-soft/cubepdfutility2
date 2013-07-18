@@ -329,7 +329,14 @@ namespace CubePdfUtility
         {
             try
             {
+                var items = e.Parameter as IList;
                 var index = (e.Parameter != null) ? Math.Min((int)e.Parameter + 1, _viewmodel.PageCount) : 0;
+                MessageBox.Show(index.ToString());
+                foreach (var item in Thumbnail.Items)
+                {
+                    MessageBox.Show(items.IndexOf(item).ToString());
+                    //if (items.Contains(item)) index = items.IndexOf(item);
+                }
                 var obj = (index == 0) ? InsertHead.Header
                     : (index == _viewmodel.PageCount) ? InsertTail.Header
                     : InsertSelect.Header;
@@ -429,12 +436,17 @@ namespace CubePdfUtility
             {
                 var items = e.Parameter as IList;
                 if (items == null) items = _viewmodel.Items;
+                var selected = new ArrayList();
+                foreach (var item in Thumbnail.Items)
+                {
+                    if (items.Contains(item)) selected.Add(item);
+                }
 
                 var dialog = new System.Windows.Forms.SaveFileDialog();
                 dialog.Filter = Properties.Resources.PdfFilter;
                 dialog.OverwritePrompt = true;
                 if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
-                _viewmodel.Extract(items, dialog.FileName);
+                _viewmodel.Extract(selected, dialog.FileName);
             }
             catch (Exception err)
             {
