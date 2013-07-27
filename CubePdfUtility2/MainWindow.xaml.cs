@@ -24,6 +24,7 @@ using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Linq;
 using System.Text;
@@ -36,6 +37,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using IWshRuntimeLibrary;
 using Microsoft.Windows.Controls.Ribbon;
 
 namespace CubePdfUtility
@@ -1232,7 +1234,7 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         private void ApplicationMenu_Loaded(object sender, RoutedEventArgs e)
         {   
-            var recents = CubePdf.Data.SystemEnvironment.GetRecentFiles("*.pdf");
+            var recents = GetRecentFiles("*.pdf");
             for (int i = 0; i < recents.Count; ++i)
             {
                 var gallery = new RibbonGalleryItem();
@@ -1423,9 +1425,24 @@ namespace CubePdfUtility
                 var result = MessageBox.Show(Properties.Resources.IsOverwrite, ProductName,
                     MessageBoxButton.YesNoCancel, MessageBoxImage.Information);
                 if (result == MessageBoxResult.Cancel) return false;
-                if (result == MessageBoxResult.Yes) _viewmodel.SaveOnClose();
+                if (result == MessageBoxResult.Yes)
+                {
+                    try { _viewmodel.SaveOnClose(); }
+                    catch (Exception err)
+                    {
+                        MessageBox.Show(Properties.Resources.SaveError, Properties.Resources.ErrorTitle,
+                            MessageBoxButton.OK, MessageBoxImage.Error);
+                        Trace.TraceError(err.ToString());
+                        return false;
+                    }
+                }
             }
             _viewmodel.Close();
+
+            if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+            {
+                Win32Api.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
+            }
             return true;
         }
 
@@ -1537,6 +1554,39 @@ namespace CubePdfUtility
 
         /* ----------------------------------------------------------------- */
         ///
+        /// GetRecentFiles
+        /// 
+        /// <summary>
+        /// システムの「最近開いたファイル」から pattern に一致するファイル
+        /// 一覧を取得します（.lnk は自動的に付与されます）。
+        /// </summary>
+        /// 
+        /// <remarks>
+        /// 取得されるパスは、リンク先の最終的なファイルへのパスです。
+        /// 「最近開いたファイル」のうち、既に存在しないファイルは結果に
+        /// 含まれません。
+        /// </remarks>
+        ///
+        /* ----------------------------------------------------------------- */
+        private IList<string> GetRecentFiles(string pattern)
+        {
+            var dest = new List<string>();
+            var shell = new IWshShell_Class();
+            var folder = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Recent);
+            var links = System.IO.Directory.GetFiles(folder + "\\", pattern + ".lnk");
+
+            foreach (var link in links)
+            {
+                var shortcut = shell.CreateShortcut(link) as IWshShortcut_Class;
+                if (shortcut == null || !System.IO.File.Exists(shortcut.TargetPath)) continue;
+                dest.Add(shortcut.TargetPath);
+            }
+
+            return dest;
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
         /// ChangeLogoVisibility
         ///
         /// <summary>
@@ -1567,6 +1617,16 @@ namespace CubePdfUtility
         #region Static variables
         private static readonly IList<KeyValuePair<int, string>> _ViewSize;
         private static readonly int _MinSize = 400;
+        #endregion
+
+        #region Win32 APIs
+
+        internal class Win32Api
+        {
+            [DllImport("kernel32.dll")]
+            public static extern bool SetProcessWorkingSetSize(IntPtr procHandle, int min, int max);
+        }
+
         #endregion
 
         /* ----------------------------------------------------------------- */

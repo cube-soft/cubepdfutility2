@@ -126,7 +126,7 @@ namespace CubePdfUtility
         {
             try
             {
-                var pages = CubePdf.Data.StringConverter.ParseRange(PageRangeTextBox.Text);
+                var pages = CubePdf.Misc.StringConverter.ParseRange(PageRangeTextBox.Text);
                 foreach (var page in pages)
                 {
                     if (page <= PageCount) PageRange.Add(page);
