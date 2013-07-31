@@ -78,6 +78,9 @@
     <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="RibbonControlsLibrary, Version=3.5.41019.1, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -369,7 +372,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy $(TargetPath) $(SolutionDir)Release\$(PlatformName)\
+    <PostBuildEvent>mkdir $(SolutionDir)Release\$(PlatformName)
+copy $(TargetPath) $(SolutionDir)Release\$(PlatformName)\
 copy $(TargetPath).config $(SolutionDir)Release\$(PlatformName)\
 copy $(TargetDir)CubePdf.*.dll $(SolutionDir)Release\$(PlatformName)\
 copy $(TargetDir)itextsharp.dll $(SolutionDir)Release\$(PlatformName)\

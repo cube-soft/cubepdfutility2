@@ -101,7 +101,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy $(TargetPath) $(ProjectDir)..\Release\$(PlatformName)\
+    <PostBuildEvent>mkdir $(ProjectDir)..\Release\$(PlatformName)
+copy $(TargetPath) $(ProjectDir)..\Release\$(PlatformName)\
 copy $(TargetPath).config $(ProjectDir)..\Release\$(PlatformName)\</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

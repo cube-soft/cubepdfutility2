@@ -11,8 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CubePdf.Editing", "..\CubeP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CubePdf.Wpf", "..\CubePdfLib\CubePdf.Wpf\CubePdf.Wpf.csproj", "{3AE6F4EA-CD53-48D0-92D4-D2A48ED54D87}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CubePdfTests", "..\CubePdfLib\CubePdfTests\CubePdfTests.csproj", "{48BA7BCA-EF0F-4DF5-8507-B990D486E440}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CubePdf.Settings", "..\CubePdfLib\CubePdf.Settings\CubePdf.Settings.csproj", "{0E3F9DF4-DAC5-4C36-B82A-5C8AA45A4E2D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UpdateChecker", "UpdateChecker\UpdateChecker.csproj", "{3B9BA893-3D12-4828-817A-BD9F362828D8}"
@@ -90,17 +88,6 @@ Global
 		{3AE6F4EA-CD53-48D0-92D4-D2A48ED54D87}.Release|x64.Build.0 = Release|x64
 		{3AE6F4EA-CD53-48D0-92D4-D2A48ED54D87}.Release|x86.ActiveCfg = Release|x86
 		{3AE6F4EA-CD53-48D0-92D4-D2A48ED54D87}.Release|x86.Build.0 = Release|x86
-		{48BA7BCA-EF0F-4DF5-8507-B990D486E440}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{48BA7BCA-EF0F-4DF5-8507-B990D486E440}.Debug|x64.ActiveCfg = Debug|x64
-		{48BA7BCA-EF0F-4DF5-8507-B990D486E440}.Debug|x64.Build.0 = Debug|x64
-		{48BA7BCA-EF0F-4DF5-8507-B990D486E440}.Debug|x86.ActiveCfg = Debug|x86
-		{48BA7BCA-EF0F-4DF5-8507-B990D486E440}.Debug|x86.Build.0 = Debug|x86
-		{48BA7BCA-EF0F-4DF5-8507-B990D486E440}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{48BA7BCA-EF0F-4DF5-8507-B990D486E440}.Release|Any CPU.Build.0 = Release|Any CPU
-		{48BA7BCA-EF0F-4DF5-8507-B990D486E440}.Release|x64.ActiveCfg = Release|x64
-		{48BA7BCA-EF0F-4DF5-8507-B990D486E440}.Release|x64.Build.0 = Release|x64
-		{48BA7BCA-EF0F-4DF5-8507-B990D486E440}.Release|x86.ActiveCfg = Release|x86
-		{48BA7BCA-EF0F-4DF5-8507-B990D486E440}.Release|x86.Build.0 = Release|x86
 		{0E3F9DF4-DAC5-4C36-B82A-5C8AA45A4E2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0E3F9DF4-DAC5-4C36-B82A-5C8AA45A4E2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E3F9DF4-DAC5-4C36-B82A-5C8AA45A4E2D}.Debug|x64.ActiveCfg = Debug|x64

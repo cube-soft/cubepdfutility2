@@ -427,9 +427,7 @@ namespace CubePdfUtility
         {
             try
             {
-                var items = e.Parameter as IList;
-                if (items == null) items = _viewmodel.Items;
-
+                var items = GetSortedItems(e.Parameter as IList);
                 var dialog = new System.Windows.Forms.SaveFileDialog();
                 dialog.Filter = Properties.Resources.PdfFilter;
                 dialog.OverwritePrompt = true;
@@ -1584,6 +1582,29 @@ namespace CubePdfUtility
 
             return dest;
         }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// GetSortedItems
+        /// 
+        /// <summary>
+        /// 引数に指定されたリストを ListViewModel.Items で格納されている
+        /// 順番にソートして返します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private IList GetSortedItems(IList src)
+        {
+            if (src == null) return _viewmodel.Items;
+
+            var dest = new List<CubePdf.Drawing.ImageContainer>();
+            foreach (var item in _viewmodel.Items)
+            {
+                if (src.Contains(item)) dest.Add(item);
+            }
+            return dest;
+        }
+
 
         /* ----------------------------------------------------------------- */
         ///
