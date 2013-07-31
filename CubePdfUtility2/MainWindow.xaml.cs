@@ -329,14 +329,7 @@ namespace CubePdfUtility
         {
             try
             {
-                var items = e.Parameter as IList;
                 var index = (e.Parameter != null) ? Math.Min((int)e.Parameter + 1, _viewmodel.PageCount) : 0;
-                MessageBox.Show(index.ToString());
-                foreach (var item in Thumbnail.Items)
-                {
-                    MessageBox.Show(items.IndexOf(item).ToString());
-                    //if (items.Contains(item)) index = items.IndexOf(item);
-                }
                 var obj = (index == 0) ? InsertHead.Header
                     : (index == _viewmodel.PageCount) ? InsertTail.Header
                     : InsertSelect.Header;
@@ -434,19 +427,12 @@ namespace CubePdfUtility
         {
             try
             {
-                var items = e.Parameter as IList;
-                if (items == null) items = _viewmodel.Items;
-                var selected = new ArrayList();
-                foreach (var item in Thumbnail.Items)
-                {
-                    if (items.Contains(item)) selected.Add(item);
-                }
-
+                var items = GetSortedItems(e.Parameter as IList);
                 var dialog = new System.Windows.Forms.SaveFileDialog();
                 dialog.Filter = Properties.Resources.PdfFilter;
                 dialog.OverwritePrompt = true;
                 if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
-                _viewmodel.Extract(selected, dialog.FileName);
+                _viewmodel.Extract(items, dialog.FileName);
             }
             catch (Exception err)
             {
@@ -1596,6 +1582,29 @@ namespace CubePdfUtility
 
             return dest;
         }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// GetSortedItems
+        /// 
+        /// <summary>
+        /// 引数に指定されたリストを ListViewModel.Items で格納されている
+        /// 順番にソートして返します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private IList GetSortedItems(IList src)
+        {
+            if (src == null) return _viewmodel.Items;
+
+            var dest = new List<CubePdf.Drawing.ImageContainer>();
+            foreach (var item in _viewmodel.Items)
+            {
+                if (src.Contains(item)) dest.Add(item);
+            }
+            return dest;
+        }
+
 
         /* ----------------------------------------------------------------- */
         ///
