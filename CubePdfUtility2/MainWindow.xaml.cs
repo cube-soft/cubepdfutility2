@@ -1400,7 +1400,6 @@ namespace CubePdfUtility
                         else Refresh();
                     }));
                 }
-                catch (Exception err) { Trace.TraceError(err.ToString()); }
             }), null);
         }
 
@@ -1469,9 +1468,17 @@ namespace CubePdfUtility
                 {
                     var reader = new CubePdf.Editing.DocumentReader(path, password);
                     Dispatcher.BeginInvoke(new Action(() => {
-                        _viewmodel.Insert(index, reader);
-                        _viewmodel.History[0].Text = history;
-                        reader.Dispose();
+                        try
+                        {
+                            _viewmodel.Insert(index, reader);
+                            _viewmodel.History[0].Text = history;
+                            reader.Dispose();
+                        }
+                        catch (ArgumentException err)
+                        {
+                            MessageBox.Show(err.Message, Properties.Resources.ErrorTitle,
+                                MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
                     }));
                 }
                 catch (CubePdf.Data.EncryptionException /* err */)
@@ -1482,7 +1489,6 @@ namespace CubePdfUtility
                         if (dialog.ShowDialog() == true) InsertFile(index, path, dialog.Password, history);
                     }));
                 }
-                catch (Exception err) { Trace.TraceError(err.ToString()); }
             }), null);
         }
 
