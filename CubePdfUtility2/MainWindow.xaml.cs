@@ -1257,6 +1257,21 @@ namespace CubePdfUtility
             Refresh();
         }
 
+        /* ----------------------------------------------------------------- */
+        ///
+        /// Thumbnail_ScrollChanged
+        /// 
+        /// <summary>
+        /// サムネイルを表示しているコントロールがスクロールされた時に
+        /// 実行されるイベントハンドラです。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void Thumbnail_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            _viewmodel.Refresh();
+        }
+
         #endregion
 
         #region Methods for UserSetting
