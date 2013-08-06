@@ -1215,7 +1215,8 @@
             VirtualizingStackPanel.IsVirtualizing="True"
             SelectionMode="Extended"
             Background="{StaticResource MainBackgroundBrush}"
-            MouseDoubleClick="OnPreview">
+            MouseDoubleClick="OnPreview"
+            ScrollViewer.ScrollChanged="Thumbnail_ScrollChanged">
 
             <ListView.View>
                 <local:ImageView x:Name="ThumbnailImageView"
