@@ -78,6 +78,9 @@
     <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="RibbonControlsLibrary, Version=3.5.41019.1, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -89,6 +92,7 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Core" />
+    <Reference Include="System.XML" />
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -201,6 +205,10 @@
     <ProjectReference Include="..\..\CubePdfLib\CubePdf.Editing\CubePdf.Editing.csproj">
       <Project>{6E397197-250C-404A-9FE9-BA8397C518C1}</Project>
       <Name>CubePdf.Editing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\CubePdfLib\CubePdf.Misc\CubePdf.Misc.csproj">
+      <Project>{193B7028-1F28-462A-B172-36F485002349}</Project>
+      <Name>CubePdf.Misc</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\CubePdfLib\CubePdf.Settings\CubePdf.Settings.csproj">
       <Project>{0E3F9DF4-DAC5-4C36-B82A-5C8AA45A4E2D}</Project>
@@ -351,9 +359,21 @@
     <Resource Include="Images\SmallIcons\ZoomInDisable.png" />
     <Resource Include="Images\SmallIcons\ZoomOutDisable.png" />
   </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="IWshRuntimeLibrary">
+      <Guid>{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy $(TargetPath) $(SolutionDir)Release\$(PlatformName)\
+    <PostBuildEvent>mkdir $(SolutionDir)Release\$(PlatformName)
+copy $(TargetPath) $(SolutionDir)Release\$(PlatformName)\
 copy $(TargetPath).config $(SolutionDir)Release\$(PlatformName)\
 copy $(TargetDir)CubePdf.*.dll $(SolutionDir)Release\$(PlatformName)\
 copy $(TargetDir)itextsharp.dll $(SolutionDir)Release\$(PlatformName)\
