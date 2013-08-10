@@ -1399,14 +1399,8 @@ namespace CubePdfUtility
             InfoStatusBarItem.Content = message;
 
             ThreadPool.QueueUserWorkItem(new WaitCallback((Object parameter) => {
-                try
-                {
-                    var reader = new CubePdf.Editing.DocumentReader(path, password);
-                    Dispatcher.BeginInvoke(new Action(() => {
-                        _viewmodel.Open(reader);
-                        reader.Dispose();
-                    }));
-                }
+                var reader = new CubePdf.Editing.DocumentReader();
+                try { reader.Open(path, password); }
                 catch (CubePdf.Data.EncryptionException /* err */)
                 {
                     Dispatcher.BeginInvoke(new Action(() => {
@@ -1416,6 +1410,17 @@ namespace CubePdfUtility
                         else Refresh();
                     }));
                 }
+
+                Dispatcher.BeginInvoke(new Action(() => {
+                    try { _viewmodel.Open(reader); }
+                    catch (Exception err)
+                    {
+                        MessageBox.Show(Properties.Resources.OpenError, Properties.Resources.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+                        Trace.TraceError(err.ToString());
+                        Refresh();
+                    }
+                    finally { reader.Dispose(); }
+                }));
             }), null);
         }
 
@@ -1443,8 +1448,7 @@ namespace CubePdfUtility
                     try { _viewmodel.SaveOnClose(); }
                     catch (Exception err)
                     {
-                        MessageBox.Show(Properties.Resources.SaveError, Properties.Resources.ErrorTitle,
-                            MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show(Properties.Resources.SaveError, Properties.Resources.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                         Trace.TraceError(err.ToString());
                         return false;
                     }
@@ -1480,23 +1484,8 @@ namespace CubePdfUtility
             InfoStatusBarItem.Content = message;
 
             ThreadPool.QueueUserWorkItem(new WaitCallback((Object parameter) => {
-                try
-                {
-                    var reader = new CubePdf.Editing.DocumentReader(path, password);
-                    Dispatcher.BeginInvoke(new Action(() => {
-                        try
-                        {
-                            _viewmodel.Insert(index, reader);
-                            _viewmodel.History[0].Text = history;
-                            reader.Dispose();
-                        }
-                        catch (ArgumentException err)
-                        {
-                            MessageBox.Show(err.Message, Properties.Resources.ErrorTitle,
-                                MessageBoxButton.OK, MessageBoxImage.Error);
-                        }
-                    }));
-                }
+                var reader = new CubePdf.Editing.DocumentReader();
+                try { reader.Open(path, password); }
                 catch (CubePdf.Data.EncryptionException /* err */)
                 {
                     Dispatcher.BeginInvoke(new Action(() => {
@@ -1505,6 +1494,28 @@ namespace CubePdfUtility
                         if (dialog.ShowDialog() == true) InsertFile(index, path, dialog.Password, history);
                     }));
                 }
+
+                Dispatcher.BeginInvoke(new Action(() => {
+                    try
+                    {
+                        _viewmodel.Insert(index, reader);
+                        _viewmodel.History[0].Text = history;
+                    }
+                    catch (ArgumentException err)
+                    {
+                        MessageBox.Show(err.Message, Properties.Resources.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+                        Trace.TraceError(err.ToString());
+                        Refresh();
+                    }
+                    catch (Exception err)
+                    {
+                        MessageBox.Show(Properties.Resources.InsertError, Properties.Resources.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+                        Trace.TraceError(err.ToString());
+                        Refresh();
+                    }
+                    finally { reader.Dispose(); }
+                }));
+
             }), null);
         }
 
