@@ -37,6 +37,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using IWshRuntimeLibrary;
 using Microsoft.Windows.Controls.Ribbon;
 
 namespace CubePdfUtility
@@ -86,6 +87,7 @@ namespace CubePdfUtility
             SourceInitialized += new EventHandler(LoadSetting);
 
             var appdata = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            _viewmodel.View = Thumbnail;
             _viewmodel.BackupFolder = System.IO.Path.Combine(appdata, @"CubeSoft\CubePdfUtility2");
             _viewmodel.BackupDays = 30;
             _viewmodel.RunCompleted += new EventHandler(ViewModel_RunCompleted);
@@ -426,9 +428,7 @@ namespace CubePdfUtility
         {
             try
             {
-                var items = e.Parameter as IList;
-                if (items == null) items = _viewmodel.Items;
-
+                var items = GetSortedItems(e.Parameter as IList);
                 var dialog = new System.Windows.Forms.SaveFileDialog();
                 dialog.Filter = Properties.Resources.PdfFilter;
                 dialog.OverwritePrompt = true;
@@ -1233,7 +1233,7 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         private void ApplicationMenu_Loaded(object sender, RoutedEventArgs e)
         {   
-            var recents = CubePdf.Data.SystemEnvironment.GetRecentFiles("*.pdf");
+            var recents = GetRecentFiles("*.pdf");
             for (int i = 0; i < recents.Count; ++i)
             {
                 var gallery = new RibbonGalleryItem();
@@ -1255,6 +1255,21 @@ namespace CubePdfUtility
         private void ViewModel_RunCompleted(object sender, EventArgs e)
         {
             Refresh();
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// Thumbnail_ScrollChanged
+        /// 
+        /// <summary>
+        /// サムネイルを表示しているコントロールがスクロールされた時に
+        /// 実行されるイベントハンドラです。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void Thumbnail_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            _viewmodel.Refresh();
         }
 
         #endregion
@@ -1384,14 +1399,8 @@ namespace CubePdfUtility
             InfoStatusBarItem.Content = message;
 
             ThreadPool.QueueUserWorkItem(new WaitCallback((Object parameter) => {
-                try
-                {
-                    var reader = new CubePdf.Editing.DocumentReader(path, password);
-                    Dispatcher.BeginInvoke(new Action(() => {
-                        _viewmodel.Open(reader);
-                        reader.Dispose();
-                    }));
-                }
+                var reader = new CubePdf.Editing.DocumentReader();
+                try { reader.Open(path, password); }
                 catch (CubePdf.Data.EncryptionException /* err */)
                 {
                     Dispatcher.BeginInvoke(new Action(() => {
@@ -1401,7 +1410,17 @@ namespace CubePdfUtility
                         else Refresh();
                     }));
                 }
-                catch (Exception err) { Trace.TraceError(err.ToString()); }
+
+                Dispatcher.BeginInvoke(new Action(() => {
+                    try { _viewmodel.Open(reader); }
+                    catch (Exception err)
+                    {
+                        MessageBox.Show(Properties.Resources.OpenError, Properties.Resources.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+                        Trace.TraceError(err.ToString());
+                        Refresh();
+                    }
+                    finally { reader.Dispose(); }
+                }));
             }), null);
         }
 
@@ -1429,8 +1448,7 @@ namespace CubePdfUtility
                     try { _viewmodel.SaveOnClose(); }
                     catch (Exception err)
                     {
-                        MessageBox.Show(Properties.Resources.SaveError, Properties.Resources.ErrorTitle,
-                            MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show(Properties.Resources.SaveError, Properties.Resources.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                         Trace.TraceError(err.ToString());
                         return false;
                     }
@@ -1466,15 +1484,8 @@ namespace CubePdfUtility
             InfoStatusBarItem.Content = message;
 
             ThreadPool.QueueUserWorkItem(new WaitCallback((Object parameter) => {
-                try
-                {
-                    var reader = new CubePdf.Editing.DocumentReader(path, password);
-                    Dispatcher.BeginInvoke(new Action(() => {
-                        _viewmodel.Insert(index, reader);
-                        _viewmodel.History[0].Text = history;
-                        reader.Dispose();
-                    }));
-                }
+                var reader = new CubePdf.Editing.DocumentReader();
+                try { reader.Open(path, password); }
                 catch (CubePdf.Data.EncryptionException /* err */)
                 {
                     Dispatcher.BeginInvoke(new Action(() => {
@@ -1483,7 +1494,28 @@ namespace CubePdfUtility
                         if (dialog.ShowDialog() == true) InsertFile(index, path, dialog.Password, history);
                     }));
                 }
-                catch (Exception err) { Trace.TraceError(err.ToString()); }
+
+                Dispatcher.BeginInvoke(new Action(() => {
+                    try
+                    {
+                        _viewmodel.Insert(index, reader);
+                        _viewmodel.History[0].Text = history;
+                    }
+                    catch (ArgumentException err)
+                    {
+                        MessageBox.Show(err.Message, Properties.Resources.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+                        Trace.TraceError(err.ToString());
+                        Refresh();
+                    }
+                    catch (Exception err)
+                    {
+                        MessageBox.Show(Properties.Resources.InsertError, Properties.Resources.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+                        Trace.TraceError(err.ToString());
+                        Refresh();
+                    }
+                    finally { reader.Dispose(); }
+                }));
+
             }), null);
         }
 
@@ -1553,6 +1585,62 @@ namespace CubePdfUtility
 
         /* ----------------------------------------------------------------- */
         ///
+        /// GetRecentFiles
+        /// 
+        /// <summary>
+        /// システムの「最近開いたファイル」から pattern に一致するファイル
+        /// 一覧を取得します（.lnk は自動的に付与されます）。
+        /// </summary>
+        /// 
+        /// <remarks>
+        /// 取得されるパスは、リンク先の最終的なファイルへのパスです。
+        /// 「最近開いたファイル」のうち、既に存在しないファイルは結果に
+        /// 含まれません。
+        /// </remarks>
+        ///
+        /* ----------------------------------------------------------------- */
+        private IList<string> GetRecentFiles(string pattern)
+        {
+            var dest = new List<string>();
+            var shell = new IWshShell_Class();
+            var folder = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Recent);
+            var links = System.IO.Directory.GetFiles(folder + "\\", pattern + ".lnk");
+
+            foreach (var link in links)
+            {
+                var shortcut = shell.CreateShortcut(link) as IWshShortcut_Class;
+                if (shortcut == null || !System.IO.File.Exists(shortcut.TargetPath)) continue;
+                dest.Add(shortcut.TargetPath);
+            }
+
+            return dest;
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// GetSortedItems
+        /// 
+        /// <summary>
+        /// 引数に指定されたリストを ListViewModel.Items で格納されている
+        /// 順番にソートして返します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private IList GetSortedItems(IList src)
+        {
+            if (src == null) return _viewmodel.Items;
+
+            var dest = new List<CubePdf.Drawing.ImageContainer>();
+            foreach (var item in _viewmodel.Items)
+            {
+                if (src.Contains(item)) dest.Add(item);
+            }
+            return dest;
+        }
+
+
+        /* ----------------------------------------------------------------- */
+        ///
         /// ChangeLogoVisibility
         ///
         /// <summary>
@@ -1576,7 +1664,7 @@ namespace CubePdfUtility
         #region Variables
         private UserSetting _setting = new UserSetting();
         private string _font = string.Empty;
-        private CubePdf.Wpf.IListViewModel _viewmodel = new CubePdf.Wpf.ListViewModel();
+        private CubePdf.Wpf.ListViewModel _viewmodel = new CubePdf.Wpf.ListViewModel();
         private bool _shown = false;
         #endregion
 
