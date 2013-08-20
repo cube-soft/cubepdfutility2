@@ -87,6 +87,7 @@ namespace CubePdfUtility
             SourceInitialized += new EventHandler(LoadSetting);
 
             var appdata = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            _viewmodel.View = Thumbnail;
             _viewmodel.BackupFolder = System.IO.Path.Combine(appdata, @"CubeSoft\CubePdfUtility2");
             _viewmodel.BackupDays = 30;
             _viewmodel.RunCompleted += new EventHandler(ViewModel_RunCompleted);
@@ -427,9 +428,7 @@ namespace CubePdfUtility
         {
             try
             {
-                var items = e.Parameter as IList;
-                if (items == null) items = _viewmodel.Items;
-
+                var items = GetSortedItems(e.Parameter as IList);
                 var dialog = new System.Windows.Forms.SaveFileDialog();
                 dialog.Filter = Properties.Resources.PdfFilter;
                 dialog.OverwritePrompt = true;
@@ -1258,6 +1257,21 @@ namespace CubePdfUtility
             Refresh();
         }
 
+        /* ----------------------------------------------------------------- */
+        ///
+        /// Thumbnail_ScrollChanged
+        /// 
+        /// <summary>
+        /// サムネイルを表示しているコントロールがスクロールされた時に
+        /// 実行されるイベントハンドラです。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void Thumbnail_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            _viewmodel.Refresh();
+        }
+
         #endregion
 
         #region Methods for UserSetting
@@ -1385,14 +1399,8 @@ namespace CubePdfUtility
             InfoStatusBarItem.Content = message;
 
             ThreadPool.QueueUserWorkItem(new WaitCallback((Object parameter) => {
-                try
-                {
-                    var reader = new CubePdf.Editing.DocumentReader(path, password);
-                    Dispatcher.BeginInvoke(new Action(() => {
-                        _viewmodel.Open(reader);
-                        reader.Dispose();
-                    }));
-                }
+                var reader = new CubePdf.Editing.DocumentReader();
+                try { reader.Open(path, password); }
                 catch (CubePdf.Data.EncryptionException /* err */)
                 {
                     Dispatcher.BeginInvoke(new Action(() => {
@@ -1402,7 +1410,17 @@ namespace CubePdfUtility
                         else Refresh();
                     }));
                 }
-                catch (Exception err) { Trace.TraceError(err.ToString()); }
+
+                Dispatcher.BeginInvoke(new Action(() => {
+                    try { _viewmodel.Open(reader); }
+                    catch (Exception err)
+                    {
+                        MessageBox.Show(Properties.Resources.OpenError, Properties.Resources.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+                        Trace.TraceError(err.ToString());
+                        Refresh();
+                    }
+                    finally { reader.Dispose(); }
+                }));
             }), null);
         }
 
@@ -1430,8 +1448,7 @@ namespace CubePdfUtility
                     try { _viewmodel.SaveOnClose(); }
                     catch (Exception err)
                     {
-                        MessageBox.Show(Properties.Resources.SaveError, Properties.Resources.ErrorTitle,
-                            MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show(Properties.Resources.SaveError, Properties.Resources.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                         Trace.TraceError(err.ToString());
                         return false;
                     }
@@ -1467,15 +1484,8 @@ namespace CubePdfUtility
             InfoStatusBarItem.Content = message;
 
             ThreadPool.QueueUserWorkItem(new WaitCallback((Object parameter) => {
-                try
-                {
-                    var reader = new CubePdf.Editing.DocumentReader(path, password);
-                    Dispatcher.BeginInvoke(new Action(() => {
-                        _viewmodel.Insert(index, reader);
-                        _viewmodel.History[0].Text = history;
-                        reader.Dispose();
-                    }));
-                }
+                var reader = new CubePdf.Editing.DocumentReader();
+                try { reader.Open(path, password); }
                 catch (CubePdf.Data.EncryptionException /* err */)
                 {
                     Dispatcher.BeginInvoke(new Action(() => {
@@ -1484,7 +1494,28 @@ namespace CubePdfUtility
                         if (dialog.ShowDialog() == true) InsertFile(index, path, dialog.Password, history);
                     }));
                 }
-                catch (Exception err) { Trace.TraceError(err.ToString()); }
+
+                Dispatcher.BeginInvoke(new Action(() => {
+                    try
+                    {
+                        _viewmodel.Insert(index, reader);
+                        _viewmodel.History[0].Text = history;
+                    }
+                    catch (ArgumentException err)
+                    {
+                        MessageBox.Show(err.Message, Properties.Resources.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+                        Trace.TraceError(err.ToString());
+                        Refresh();
+                    }
+                    catch (Exception err)
+                    {
+                        MessageBox.Show(Properties.Resources.InsertError, Properties.Resources.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+                        Trace.TraceError(err.ToString());
+                        Refresh();
+                    }
+                    finally { reader.Dispose(); }
+                }));
+
             }), null);
         }
 
@@ -1587,6 +1618,29 @@ namespace CubePdfUtility
 
         /* ----------------------------------------------------------------- */
         ///
+        /// GetSortedItems
+        /// 
+        /// <summary>
+        /// 引数に指定されたリストを ListViewModel.Items で格納されている
+        /// 順番にソートして返します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private IList GetSortedItems(IList src)
+        {
+            if (src == null) return _viewmodel.Items;
+
+            var dest = new List<CubePdf.Drawing.ImageContainer>();
+            foreach (var item in _viewmodel.Items)
+            {
+                if (src.Contains(item)) dest.Add(item);
+            }
+            return dest;
+        }
+
+
+        /* ----------------------------------------------------------------- */
+        ///
         /// ChangeLogoVisibility
         ///
         /// <summary>
@@ -1610,7 +1664,7 @@ namespace CubePdfUtility
         #region Variables
         private UserSetting _setting = new UserSetting();
         private string _font = string.Empty;
-        private CubePdf.Wpf.IListViewModel _viewmodel = new CubePdf.Wpf.ListViewModel();
+        private CubePdf.Wpf.ListViewModel _viewmodel = new CubePdf.Wpf.ListViewModel();
         private bool _shown = false;
         #endregion
 
