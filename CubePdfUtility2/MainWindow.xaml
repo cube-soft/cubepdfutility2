@@ -1206,7 +1206,7 @@
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             Stretch="None"
-            Margin="0,0,5,0" />
+            Margin="0,0,5,0" ImageFailed="LogoImage_ImageFailed" />
 
         <ListView Grid.Row="1" Grid.ColumnSpan="2" x:Name="Thumbnail"
             ItemsSource="{Binding ElementName=RibbonWindow, Path=ViewModel.Items}"
@@ -1228,6 +1228,8 @@
                 <cube:ListViewDragBehavior ViewModel="{Binding ElementName=RibbonWindow, Path=ViewModel}"/>
             </i:Interaction.Behaviors>
         </ListView>
+
+        <local:StartMessage x:Name="StartMessage" Margin="0,0,0,0" Grid.Row="1" Width="300" Grid.ColumnSpan="2"/>
 
         <StatusBar Grid.Row="2" Grid.ColumnSpan="2" x:Name="FooterStatusBar" Height="23"
             Foreground="{StaticResource TabForegroundBrush}"

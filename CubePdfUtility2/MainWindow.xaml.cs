@@ -1241,6 +1241,7 @@ namespace CubePdfUtility
                 gallery.Tag = recents[i];
                 RecentFilesGallery.Items.Add(gallery);
             }
+            StartMessage.AddRecentFiles(recents);
         }
 
         /* ----------------------------------------------------------------- */
@@ -1255,6 +1256,7 @@ namespace CubePdfUtility
         private void ViewModel_RunCompleted(object sender, EventArgs e)
         {
             Refresh();
+            UpdateStartMessage();
         }
 
         /* ----------------------------------------------------------------- */
@@ -1659,6 +1661,22 @@ namespace CubePdfUtility
             LogoImage.Visibility = (Width < limit) ? Visibility.Collapsed : Visibility.Visible;
         }
 
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// UpdateStartMessage
+        ///
+        /// <summary>
+        /// ファイルが開かれていない場合、最近開いたファイルを表示する
+        /// StartMessageを表示します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void UpdateStartMessage()
+        {
+            StartMessage.Visibility = (_viewmodel != null && _viewmodel.PageCount > 0) ? Visibility.Collapsed : Visibility.Visible;
+        }
+
         #endregion
 
         #region Variables
@@ -1705,5 +1723,10 @@ namespace CubePdfUtility
         public static readonly ICommand Web      = new RoutedCommand("Web",      typeof(MainWindow));
         public static readonly ICommand Password = new RoutedCommand("Password", typeof(MainWindow));
         #endregion
+
+        private void LogoImage_ImageFailed(object sender, ExceptionRoutedEventArgs e)
+        {
+
+        }
     }
 }

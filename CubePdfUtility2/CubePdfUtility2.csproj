@@ -116,6 +116,9 @@
     <Compile Include="EncryptionWindow.xaml.cs">
       <DependentUpon>EncryptionWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="StartMessage.xaml.cs">
+      <DependentUpon>StartMessage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserSetting.cs" />
     <Compile Include="VersionWindow.xaml.cs">
       <DependentUpon>VersionWindow.xaml</DependentUpon>
@@ -150,6 +153,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="EncryptionWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="StartMessage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
