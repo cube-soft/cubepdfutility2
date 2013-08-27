@@ -1,0 +1,26 @@
+﻿<Canvas x:Class="CubePdfUtility.StartMessage"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:r="clr-namespace:Microsoft.Windows.Controls.Ribbon;assembly=RibbonControlsLibrary"
+        xmlns:cube="clr-namespace:CubePdf.Wpf;assembly=CubePdf.Wpf"
+        xmlns:local="clr-namespace:CubePdfUtility"
+        Height="300" Width="300">
+    
+    <Canvas.Resources>
+        <cube:ControlToTagConverter x:Key="ControlToTagConverter"/>
+    </Canvas.Resources>
+
+    <Rectangle Height="300" Width="300" Canvas.Left="0" Canvas.Top="0">
+        <Rectangle.Fill>
+            <SolidColorBrush Color="White" />
+        </Rectangle.Fill>
+    </Rectangle>
+
+    <Image x:Name="LogoImage" Source="Images\Logo.png" Canvas.Left="6" Canvas.Top="6" Height="33" Width="144" />
+    <Label Content="最近開いたファイル" Canvas.Left="176" Canvas.Top="6" Height="25" />
+    <r:RibbonGallery Canvas.Left="6" Canvas.Top="37" Height="257" Width="288"
+                     Command="Open"
+                     CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=SelectedItem, Converter={StaticResource ControlToTagConverter}}" >
+        <r:RibbonGalleryCategory x:Name="RecentFilesGallery" />
+    </r:RibbonGallery>
+</Canvas>
