@@ -1206,7 +1206,7 @@
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             Stretch="None"
-            Margin="0,0,5,0" ImageFailed="LogoImage_ImageFailed" />
+            Margin="0,0,5,0" />
 
         <ListView Grid.Row="1" Grid.ColumnSpan="2" x:Name="Thumbnail"
             ItemsSource="{Binding ElementName=RibbonWindow, Path=ViewModel.Items}"
@@ -1229,7 +1229,7 @@
             </i:Interaction.Behaviors>
         </ListView>
 
-        <local:StartMessage x:Name="StartMessage" Margin="0,0,0,0" Grid.Row="1" Width="300" Grid.ColumnSpan="2"/>
+        <local:NavigationCanvas x:Name="NavigationCanvas" Margin="0,0,0,0" Grid.Row="1" Width="550" Grid.ColumnSpan="2"/>
 
         <StatusBar Grid.Row="2" Grid.ColumnSpan="2" x:Name="FooterStatusBar" Height="23"
             Foreground="{StaticResource TabForegroundBrush}"

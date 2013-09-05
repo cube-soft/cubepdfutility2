@@ -15,11 +15,11 @@ using Microsoft.Windows.Controls.Ribbon;
 namespace CubePdfUtility
 {
     /// <summary>
-    /// Interaction logic for StartMessage.xaml
+    /// Interaction logic for NavigationCanvas.xaml
     /// </summary>
-    public partial class StartMessage : Canvas
+    public partial class NavigationCanvas : Canvas
     {
-        public StartMessage()
+        public NavigationCanvas()
         {
             InitializeComponent();
         }
@@ -29,7 +29,7 @@ namespace CubePdfUtility
         /// AddRecentFiles
         ///
         /// <summary>
-        /// StartMessageに最近開いたファイルを追加します。
+        /// オブジェクトに最近開いたファイルを追加します。
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
