@@ -1241,7 +1241,7 @@ namespace CubePdfUtility
                 gallery.Tag = recents[i];
                 RecentFilesGallery.Items.Add(gallery);
             }
-            NavigationCanvas.AddRecentFiles(recents);
+            NavigationCanvas.AddFiles(recents);
         }
 
         /* ----------------------------------------------------------------- */
@@ -1272,6 +1272,25 @@ namespace CubePdfUtility
         private void Thumbnail_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
             _viewmodel.Refresh();
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// NavigationCanvas_MenuItemClick
+        /// 
+        /// <summary>
+        /// ナビゲーション画面に表示されている各メニュー項目がクリックされた
+        /// 時に実行されるイベントハンドラです。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void NavigationCanvas_MenuItemClick(object sender, RoutedEventArgs e)
+        {
+            var control = sender as Control;
+            if (control != null && control.Tag != null)
+            {
+                OpenFile(control.Tag as string, "");
+            }
         }
 
         #endregion
@@ -1674,8 +1693,8 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         private void UpdateNavigationCanvas()
         {
-            var is_open = (_viewmodel != null && _viewmodel.PageCount > 0);
-            NavigationCanvas.Visibility = is_open ? Visibility.Collapsed : Visibility.Visible;
+            var hidden = (_viewmodel != null && _viewmodel.PageCount > 0) || Thumbnail.ActualWidth < 550;
+            NavigationCanvas.Visibility = hidden ? Visibility.Collapsed : Visibility.Visible;
         }
 
         #endregion

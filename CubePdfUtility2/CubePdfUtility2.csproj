@@ -380,6 +380,9 @@
   <ItemGroup>
     <Resource Include="Images\NavigationHeader.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\PdfFile.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir $(SolutionDir)Release\$(PlatformName)
