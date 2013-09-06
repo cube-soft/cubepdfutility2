@@ -398,12 +398,13 @@
                                 Padding="5,3,0,3"/>
 
                             <r:RibbonGallery
+                                x:Name="RecentFilesGallery"
                                 Margin="0,1,0,1"
                                 Grid.Row="1"
                                 MaxColumnCount="1"
                                 Command="Open"
                                 CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=SelectedItem, Converter={StaticResource ControlToTagConverter}}">
-                                <r:RibbonGalleryCategory x:Name="RecentFilesGallery" />
+                                <r:RibbonGalleryCategory x:Name="RecentFilesGalleryCategory" />
                             </r:RibbonGallery>
                         </Grid>
                     </r:RibbonApplicationMenu.AuxiliaryPaneContent>

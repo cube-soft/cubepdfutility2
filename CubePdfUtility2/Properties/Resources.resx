@@ -136,7 +136,7 @@
     <value>{0} を開いています...</value>
   </data>
   <data name="PasswordPrompt" xml:space="preserve">
-    <value>{0} はパスワードで保護されています。パスワードを入力して下さい。</value>
+    <value>{0} はパスワードで保護されています。編集するためにはオーナーパスワードを入力して下さい。</value>
   </data>
   <data name="PdfExtension" xml:space="preserve">
     <value>.pdf</value>
