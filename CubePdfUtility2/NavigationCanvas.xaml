@@ -21,8 +21,7 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <Image Grid.Row="0" Grid.ColumnSpan="2"
-            Source="Images\NavigationHeader.png" Width="550" Height="90" />
+        <Image Grid.Row="0" Grid.ColumnSpan="2" Source="Images\NavigationHeader.png" />
 
         <Label Grid.Row="1" Grid.Column="0" Content="最近使用したファイルを開く"
             FontSize="14" FontWeight="Bold" Margin="6,0,0,0" />
