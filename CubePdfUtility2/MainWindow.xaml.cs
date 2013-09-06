@@ -109,7 +109,7 @@ namespace CubePdfUtility
             : this()
         {
             Loaded += (sender, e) => {
-                try { if (!String.IsNullOrEmpty(path))  OpenFile(path, ""); }
+                try { if (!String.IsNullOrEmpty(path))  OpenFileAsync(path, ""); }
                 catch (Exception err) { Trace.TraceError(err.ToString()); }
             };
         }
@@ -188,7 +188,7 @@ namespace CubePdfUtility
                     path = dialog.FileName;
                 }
                 if (!String.IsNullOrEmpty(_viewmodel.FilePath) && !CloseFile()) return;
-                OpenFile(path, "");
+                OpenFileAsync(path, "");
             }
             catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
@@ -338,7 +338,7 @@ namespace CubePdfUtility
                 dialog.Filter = Properties.Resources.PdfFilter;
                 dialog.CheckFileExists = true;
                 if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
-                InsertFile(index, dialog.FileName, "", obj as string);
+                InsertFileAsync(index, dialog.FileName, "", obj as string);
             }
             catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
@@ -1078,7 +1078,7 @@ namespace CubePdfUtility
 
             var dialog = new PasswordWindow(path, _font);
             dialog.Owner = this;
-            if (dialog.ShowDialog() == true && CloseFile()) OpenFile(path, dialog.Password);
+            if (dialog.ShowDialog() == true && CloseFile()) OpenFileAsync(path, dialog.Password);
         }
 
         #endregion
@@ -1171,7 +1171,7 @@ namespace CubePdfUtility
             {
                 if (System.IO.Path.GetExtension(file) == Properties.Resources.PdfExtension)
                 {
-                    OpenFile(file, "");
+                    OpenFileAsync(file, "");
                     e.Handled = true;
                     return;
                 }
@@ -1239,7 +1239,7 @@ namespace CubePdfUtility
                 var gallery = new RibbonGalleryItem();
                 gallery.Content = String.Format("{0} {1}", i + 1, System.IO.Path.GetFileName(recents[i]));
                 gallery.Tag = recents[i];
-                RecentFilesGallery.Items.Add(gallery);
+                RecentFilesGalleryCategory.Items.Add(gallery);
             }
             NavigationCanvas.AddFiles(recents);
         }
@@ -1285,10 +1285,10 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         private void NavigationCanvas_MenuItemClick(object sender, RoutedEventArgs e)
         {
-            var control = sender as Control;
+            var control = sender as MenuItem;
             if (control != null && control.Tag != null)
             {
-                OpenFile(control.Tag as string, "");
+                OpenFileAsync(control.Tag as string, "");
             }
         }
 
@@ -1396,51 +1396,156 @@ namespace CubePdfUtility
 
         #endregion
 
-        #region Other Methods
+        #region Open, Insert, and Close methods
 
         /* ----------------------------------------------------------------- */
         ///
         /// OpenFile
         /// 
         /// <summary>
-        /// 指定されたパスの PDF ファイルを開きます。パスワードが設定されて
-        /// いる場合は、パスワードを入力するためのダイアログを表示して
-        /// ユーザに入力してもらいます。入力されたパスワードが間違っていた
-        /// 場合は、正しいパスワードが入力されるか、またはキャンセルボタンが
-        /// 押下されるまでダイアログを表示し続けます。
+        /// 指定された DocumentReader オブジェクトを用いて GUI 上に該当
+        /// ファイルの内容を表示します。
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
-        private void OpenFile(string path, string password)
+        private void OpenFile(CubePdf.Editing.DocumentReader reader)
+        {
+            try { _viewmodel.Open(reader); }
+            catch (Exception err)
+            {
+                MessageBox.Show(Properties.Resources.OpenError, Properties.Resources.ErrorTitle,
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                Trace.TraceError(err.ToString());
+                Refresh();
+            }
+            finally { reader.Dispose(); }
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// OpenFileAsync
+        /// 
+        /// <summary>
+        /// 指定されたパスの PDF ファイルを非同期で開きます。
+        /// </summary>
+        /// 
+        /// <remarks>
+        /// パスワードが設定されている場合は、パスワードを入力するための
+        /// ダイアログを表示してユーザに入力してもらいます。入力された
+        /// パスワードが間違っていた場合は、正しいパスワードが入力されるか、
+        /// またはキャンセルボタンが押下されるまでダイアログを表示し続けます。
+        /// 
+        /// ナビゲーション用の画面に関しては、非同期処理中にメニュー項目が
+        /// クリックされたと誤判断される事があるため、非同期処理に移る前に
+        /// 非表示に設定しています。
+        /// </remarks>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void OpenFileAsync(string path, string password)
         {
             Cursor = Cursors.Wait;
             var filename = System.IO.Path.GetFileName(path);
             var message = String.Format(Properties.Resources.OpenFile, filename);
             InfoStatusBarItem.Content = message;
 
+            NavigationCanvas.Visibility = Visibility.Collapsed;
             ThreadPool.QueueUserWorkItem(new WaitCallback((Object parameter) => {
                 var reader = new CubePdf.Editing.DocumentReader();
-                try { reader.Open(path, password); }
+                try
+                {
+                    reader.Open(path, password);
+                    if (NeedPassword(reader)) throw new CubePdf.Data.EncryptionException();
+                    else Dispatcher.BeginInvoke(new Action(() => {
+                        OpenFile(reader);
+                    }));
+                }
                 catch (CubePdf.Data.EncryptionException /* err */)
                 {
                     Dispatcher.BeginInvoke(new Action(() => {
                         var dialog = new PasswordWindow(path, _font);
                         dialog.Owner = this;
-                        if (dialog.ShowDialog() == true) OpenFile(path, dialog.Password);
+                        if (dialog.ShowDialog() == true) OpenFileAsync(path, dialog.Password);
                         else Refresh();
                     }));
                 }
+            }), null);
+        }
 
-                Dispatcher.BeginInvoke(new Action(() => {
-                    try { _viewmodel.Open(reader); }
-                    catch (Exception err)
-                    {
-                        MessageBox.Show(Properties.Resources.OpenError, Properties.Resources.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
-                        Trace.TraceError(err.ToString());
-                        Refresh();
-                    }
-                    finally { reader.Dispose(); }
-                }));
+        /* ----------------------------------------------------------------- */
+        ///
+        /// InsertFile
+        /// 
+        /// <summary>
+        /// 指定された DocumentReader オブジェクトを用いて GUI 上に該当
+        /// ファイルの内容を追加表示します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void InsertFile(int index, CubePdf.Editing.DocumentReader reader, string history)
+        {
+            try
+            {
+                _viewmodel.Insert(index, reader);
+                _viewmodel.History[0].Text = history;
+            }
+            catch (ArgumentException err)
+            {
+                MessageBox.Show(err.Message, Properties.Resources.ErrorTitle,
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                Trace.TraceError(err.ToString());
+                Refresh();
+            }
+            catch (Exception err)
+            {
+                MessageBox.Show(Properties.Resources.InsertError, Properties.Resources.ErrorTitle,
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                Trace.TraceError(err.ToString());
+                Refresh();
+            }
+            finally { reader.Dispose(); }
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// InsertFileAsync
+        /// 
+        /// <summary>
+        /// index の位置に指定された PDF ファイルを挿入します。
+        /// </summary>
+        /// 
+        /// <remarks>
+        /// パスワードが設定されている場合は、パスワードを入力するための
+        /// ダイアログを表示してユーザに入力してもらいます。入力された
+        /// パスワードが間違っていた場合は、正しいパスワードが入力されるか、
+        /// またはキャンセルボタンが押下されるまでダイアログを表示し続けます。
+        /// </remarks>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void InsertFileAsync(int index, string path, string password, string history)
+        {
+            Cursor = Cursors.Wait;
+            var filename = System.IO.Path.GetFileName(path);
+            var message = String.Format(Properties.Resources.InsertFile, filename);
+            InfoStatusBarItem.Content = message;
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback((Object parameter) => {
+                var reader = new CubePdf.Editing.DocumentReader();
+                try
+                {
+                    reader.Open(path, password);
+                    if (NeedPassword(reader)) throw new CubePdf.Data.EncryptionException();
+                    Dispatcher.BeginInvoke(new Action(() => {
+                        InsertFile(index, reader, history);
+                    }));
+                }
+                catch (CubePdf.Data.EncryptionException /* err */)
+                {
+                    Dispatcher.BeginInvoke(new Action(() => {
+                        var dialog = new PasswordWindow(path, _font);
+                        dialog.Owner = this;
+                        if (dialog.ShowDialog() == true) InsertFileAsync(index, path, dialog.Password, history);
+                    }));
+                }
             }), null);
         }
 
@@ -1483,61 +1588,9 @@ namespace CubePdfUtility
             return true;
         }
 
-        /* ----------------------------------------------------------------- */
-        ///
-        /// InsertFile
-        /// 
-        /// <summary>
-        /// index の位置に指定された PDF ファイルを挿入します。パスワードが
-        /// 設定されている場合は、パスワードを入力するためのダイアログを表示
-        /// してユーザに入力してもらいます。入力されたパスワードが間違って
-        /// いた場合は、正しいパスワードが入力されるか、またはキャンセル
-        /// ボタンが押下されるまでダイアログを表示し続けます。
-        /// </summary>
-        ///
-        /* ----------------------------------------------------------------- */
-        private void InsertFile(int index, string path, string password, string history)
-        {
-            Cursor = Cursors.Wait;
-            var filename = System.IO.Path.GetFileName(path);
-            var message = String.Format(Properties.Resources.InsertFile, filename);
-            InfoStatusBarItem.Content = message;
+        #endregion
 
-            ThreadPool.QueueUserWorkItem(new WaitCallback((Object parameter) => {
-                var reader = new CubePdf.Editing.DocumentReader();
-                try { reader.Open(path, password); }
-                catch (CubePdf.Data.EncryptionException /* err */)
-                {
-                    Dispatcher.BeginInvoke(new Action(() => {
-                        var dialog = new PasswordWindow(path, _font);
-                        dialog.Owner = this;
-                        if (dialog.ShowDialog() == true) InsertFile(index, path, dialog.Password, history);
-                    }));
-                }
-
-                Dispatcher.BeginInvoke(new Action(() => {
-                    try
-                    {
-                        _viewmodel.Insert(index, reader);
-                        _viewmodel.History[0].Text = history;
-                    }
-                    catch (ArgumentException err)
-                    {
-                        MessageBox.Show(err.Message, Properties.Resources.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
-                        Trace.TraceError(err.ToString());
-                        Refresh();
-                    }
-                    catch (Exception err)
-                    {
-                        MessageBox.Show(Properties.Resources.InsertError, Properties.Resources.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
-                        Trace.TraceError(err.ToString());
-                        Refresh();
-                    }
-                    finally { reader.Dispose(); }
-                }));
-
-            }), null);
-        }
+        #region Other methods
 
         /* ----------------------------------------------------------------- */
         ///
@@ -1574,6 +1627,27 @@ namespace CubePdfUtility
                 if (LockStatusBarItem != null) LockStatusBarItem.Visibility = Visibility.Collapsed;
             }
             Cursor = Cursors.Arrow;
+            RecentFilesGallery.SelectedItem = null;
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// NeedPassword
+        /// 
+        /// <summary>
+        /// パスワードが必要かどうかを判断します。
+        /// </summary>
+        /// 
+        /// <remarks>
+        /// AES256 の場合は、オーナーパスワード無しでは表示できないため
+        /// （PDFLibNet の関係）パスワードを要求するようにしています。
+        /// </remarks>
+        ///
+        /* ----------------------------------------------------------------- */
+        private bool NeedPassword(CubePdf.Editing.DocumentReader reader)
+        {
+            return reader.EncryptionStatus == CubePdf.Data.EncryptionStatus.RestrictedAccess &&
+                   reader.EncryptionMethod == CubePdf.Data.EncryptionMethod.Aes256;
         }
 
         /* ----------------------------------------------------------------- */
