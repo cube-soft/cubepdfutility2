@@ -1256,7 +1256,6 @@ namespace CubePdfUtility
         private void ViewModel_RunCompleted(object sender, EventArgs e)
         {
             Refresh();
-            UpdateNavigationCanvas();
         }
 
         /* ----------------------------------------------------------------- */
@@ -1562,6 +1561,7 @@ namespace CubePdfUtility
                 var mstr = _viewmodel.IsModified ? "*" : "";
                 Title = String.Format("{0}{1}{2} - {3}", filename, mstr, rstr, ProductName);
 
+                NavigationCanvas.Visibility = Visibility.Collapsed;
                 InfoStatusBarItem.Content = String.Format("{0} ページ", _viewmodel.PageCount);
                 LockStatusBarItem.Visibility = restricted ? Visibility.Visible : Visibility.Collapsed;
                 Thumbnail.Focus();
@@ -1569,6 +1569,7 @@ namespace CubePdfUtility
             else
             {
                 Title = ProductName;
+                NavigationCanvas.Visibility = Visibility.Visible;
                 if (InfoStatusBarItem != null) InfoStatusBarItem.Content = string.Empty;
                 if (LockStatusBarItem != null) LockStatusBarItem.Visibility = Visibility.Collapsed;
             }
@@ -1678,23 +1679,6 @@ namespace CubePdfUtility
 
             var limit = EditTab.IsSelected ? edit_tab_width : (ViewTab.IsSelected ? view_tab_width : help_tab_width);
             LogoImage.Visibility = (Width < limit) ? Visibility.Collapsed : Visibility.Visible;
-        }
-
-
-        /* ----------------------------------------------------------------- */
-        ///
-        /// UpdateNavigationCanvas
-        ///
-        /// <summary>
-        /// ファイルが開かれていない場合、最近開いたファイルを表示する
-        /// NavigationCanvas を表示します。
-        /// </summary>
-        ///
-        /* ----------------------------------------------------------------- */
-        private void UpdateNavigationCanvas()
-        {
-            var hidden = (_viewmodel != null && _viewmodel.PageCount > 0) || Thumbnail.ActualWidth < 550;
-            NavigationCanvas.Visibility = hidden ? Visibility.Collapsed : Visibility.Visible;
         }
 
         #endregion
