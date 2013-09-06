@@ -1229,6 +1229,9 @@
             </i:Interaction.Behaviors>
         </ListView>
 
+        <local:NavigationCanvas Grid.Row="1" Grid.ColumnSpan="2" x:Name="NavigationCanvas"
+            Margin="0,0,0,0" Width="550" MenuItemClick="NavigationCanvas_MenuItemClick" />
+
         <StatusBar Grid.Row="2" Grid.ColumnSpan="2" x:Name="FooterStatusBar" Height="23"
             Foreground="{StaticResource TabForegroundBrush}"
             Background="{StaticResource TabBackgroundBrush}"

@@ -1241,6 +1241,7 @@ namespace CubePdfUtility
                 gallery.Tag = recents[i];
                 RecentFilesGallery.Items.Add(gallery);
             }
+            NavigationCanvas.AddFiles(recents);
         }
 
         /* ----------------------------------------------------------------- */
@@ -1270,6 +1271,25 @@ namespace CubePdfUtility
         private void Thumbnail_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
             _viewmodel.Refresh();
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// NavigationCanvas_MenuItemClick
+        /// 
+        /// <summary>
+        /// ナビゲーション画面に表示されている各メニュー項目がクリックされた
+        /// 時に実行されるイベントハンドラです。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void NavigationCanvas_MenuItemClick(object sender, RoutedEventArgs e)
+        {
+            var control = sender as Control;
+            if (control != null && control.Tag != null)
+            {
+                OpenFile(control.Tag as string, "");
+            }
         }
 
         #endregion
@@ -1541,6 +1561,7 @@ namespace CubePdfUtility
                 var mstr = _viewmodel.IsModified ? "*" : "";
                 Title = String.Format("{0}{1}{2} - {3}", filename, mstr, rstr, ProductName);
 
+                NavigationCanvas.Visibility = Visibility.Collapsed;
                 InfoStatusBarItem.Content = String.Format("{0} ページ", _viewmodel.PageCount);
                 LockStatusBarItem.Visibility = restricted ? Visibility.Visible : Visibility.Collapsed;
                 Thumbnail.Focus();
@@ -1548,6 +1569,7 @@ namespace CubePdfUtility
             else
             {
                 Title = ProductName;
+                NavigationCanvas.Visibility = Visibility.Visible;
                 if (InfoStatusBarItem != null) InfoStatusBarItem.Content = string.Empty;
                 if (LockStatusBarItem != null) LockStatusBarItem.Visibility = Visibility.Collapsed;
             }
