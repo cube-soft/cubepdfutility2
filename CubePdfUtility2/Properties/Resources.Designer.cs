@@ -151,7 +151,7 @@ namespace CubePdfUtility.Properties {
         }
         
         /// <summary>
-        ///   このファイルはタグ付き PDF（構造化された PDF）です。保存すると一部の情報が消失する可能性があります。 に類似しているローカライズされた文字列を検索します。
+        ///   このファイルはタグ付き PDF（構造化された PDF）です。保存すると一部の情報が失われる可能性があります。 に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string TaggedPdf {
             get {
