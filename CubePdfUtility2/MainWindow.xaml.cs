@@ -1457,6 +1457,11 @@ namespace CubePdfUtility
                     if (NeedPassword(reader)) throw new CubePdf.Data.EncryptionException();
                     else Dispatcher.BeginInvoke(new Action(() => {
                         OpenFile(reader);
+                        if (reader.IsTaggedDocument)
+                        {
+                            MessageBox.Show(Properties.Resources.TaggedPdf, Properties.Resources.WarningTitle,
+                                MessageBoxButton.OK, MessageBoxImage.Warning);
+                        }
                     }));
                 }
                 catch (CubePdf.Data.EncryptionException /* err */)

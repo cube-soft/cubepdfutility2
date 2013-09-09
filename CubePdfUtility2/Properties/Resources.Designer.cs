@@ -149,5 +149,23 @@ namespace CubePdfUtility.Properties {
                 return ResourceManager.GetString("SaveError", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   このファイルはタグ付き PDF（構造化された PDF）です。保存すると一部の情報が消失する可能性があります。 に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string TaggedPdf {
+            get {
+                return ResourceManager.GetString("TaggedPdf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   CubePDF Utility に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string WarningTitle {
+            get {
+                return ResourceManager.GetString("WarningTitle", resourceCulture);
+            }
+        }
     }
 }
