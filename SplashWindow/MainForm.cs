@@ -50,10 +50,16 @@ namespace CubePdfUtility
         public MainForm()
         {
             InitializeComponent();
+            GetEnvironments();
 
             Width  = Properties.Resources.Splash.Width;
             Height = Properties.Resources.Splash.Height;
             InfoLabel.ForeColor = Color.FromArgb(0x333333);
+
+            var edition = (IntPtr.Size == 4) ? "x86" : "x64";
+            var dotnet = Environment.Version.ToString();
+            VersionLabel.Text = string.Format(Properties.Resources.Version, _version, edition, dotnet);
+            VersionLabel.ForeColor = Color.FromArgb(0x333333);
             
             _modules = new List<string>() {
                 "System",
@@ -172,9 +178,39 @@ namespace CubePdfUtility
 
         #endregion
 
+        #region Other methods
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// GetEnvironments
+        /// 
+        /// <summary>
+        /// スプラッシュ画面に表示するための情報を取得します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void GetEnvironments()
+        {
+            try
+            {
+                var registry = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(_RegRoot, false);
+                var version = registry.GetValue(_RegVersion, string.Empty) as string;
+                if (!string.IsNullOrEmpty(version)) _version = version;
+            }
+            catch (Exception err) { System.Diagnostics.Trace.WriteLine(err.ToString()); }
+        }
+
+        #endregion
+
+        #region Constant variables
+        private static readonly string _RegRoot = @"Software\CubeSoft\CubePDF Utility2";
+        private static readonly string _RegVersion = "Version";
+        #endregion
+
         #region Variagles
         private Launcher _launcher = new Launcher();
         private List<string> _modules = new List<string>();
+        private string _version = "1.0.0";
         private int _current = 0;
         private DateTime _limit;
         #endregion
