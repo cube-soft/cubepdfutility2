@@ -68,8 +68,18 @@ namespace CubePdfUtility
             _crypt = new CubePdf.Data.Encryption(viewmodel.Encryption);
             if (_crypt.Method == CubePdf.Data.EncryptionMethod.Unknown) _crypt.Method = CubePdf.Data.EncryptionMethod.Standard128;
             DataContext = _crypt;
-            if (_crypt.OwnerPassword.Length > 0) OwnerPasswordBox.Password = _crypt.OwnerPassword;
-            if (_crypt.UserPassword.Length > 0) UserPasswordBox.Password = _crypt.UserPassword;
+            if (_crypt.OwnerPassword.Length > 0)
+            {
+                OwnerPasswordBox.Password = _crypt.OwnerPassword;
+                ConfirmOwnerPasswordBox.Password = _crypt.OwnerPassword;
+            }
+
+            if (_crypt.UserPassword.Length > 0)
+            {
+                UserPasswordCheckBox.IsChecked = true;
+                UserPasswordBox.Password = _crypt.UserPassword;
+                ConfirmUserPasswordBox.Password = _crypt.UserPassword;
+            }
 
             ReplaceFont(font);
         }
