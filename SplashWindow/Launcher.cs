@@ -46,7 +46,16 @@ namespace CubePdfUtility
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
-        public Launcher() { }
+        public Launcher()
+        {
+            try
+            {
+                var registry = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(_RegRoot, false);
+                _install = registry.GetValue(_RegPath, string.Empty) as string;
+                _version = registry.GetValue(_RegVersion, string.Empty) as string;
+            }
+            catch (Exception err) { Trace.WriteLine(err.ToString()); }
+        }
 
         /* ----------------------------------------------------------------- */
         ///
@@ -83,6 +92,35 @@ namespace CubePdfUtility
             get { return _arguments; }
         }
 
+        /* ----------------------------------------------------------------- */
+        ///
+        /// InstallDirectory
+        /// 
+        /// <summary>
+        /// CubePDF Utility がインストールされているディレクトリへのパスを
+        /// 取得します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        public string InstallDirectory
+        {
+            get { return _install; }
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// Version
+        /// 
+        /// <summary>
+        /// CubePDF Utility のバージョンを取得します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        public string Version
+        {
+            get { return _version; }
+        }
+
         #endregion
 
         /* ----------------------------------------------------------------- */
@@ -98,15 +136,13 @@ namespace CubePdfUtility
         {
             try
             {
-                var registry = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(_RegRoot, false);
-                var install = registry.GetValue(_RegPath, string.Empty) as string;
-                if (string.IsNullOrEmpty(install)) return false;
+                if (string.IsNullOrEmpty(_install)) return false;
 
                 var args = new System.Text.StringBuilder();
                 foreach (var s in _arguments) args.AppendFormat("\"{0}\" ", s);
 
                 var process = new Process();
-                process.StartInfo.FileName = System.IO.Path.Combine(install, "CubePdfUtility.exe");
+                process.StartInfo.FileName = System.IO.Path.Combine(_install, "CubePdfUtility.exe");
                 process.StartInfo.Arguments = args.ToString();
                 return process.Start();
             }
@@ -115,12 +151,14 @@ namespace CubePdfUtility
 
         #region Variables
         private List<string> _arguments = new List<string>();
+        private string _install = string.Empty;
+        private string _version = string.Empty;
         #endregion
 
         #region Constant variables
         private static readonly string _RegRoot = @"Software\CubeSoft\CubePDF Utility2";
         private static readonly string _RegPath = "InstallDirectory";
-        //private static readonly string _RegVersion = "Version";
+        private static readonly string _RegVersion = "Version";
         #endregion
     }
 }
