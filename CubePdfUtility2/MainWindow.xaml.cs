@@ -146,7 +146,7 @@ namespace CubePdfUtility
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
-        public CubePdf.Wpf.IListViewModel ViewModel
+        public CubePdf.Wpf.ListViewModel ViewModel
         {
             get { return _viewmodel; }
         }

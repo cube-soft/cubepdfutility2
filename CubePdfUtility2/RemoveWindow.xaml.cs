@@ -66,7 +66,7 @@ namespace CubePdfUtility
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
-        public RemoveWindow(CubePdf.Wpf.IListViewModel viewmodel, string font)
+        public RemoveWindow(CubePdf.Wpf.ListViewModel viewmodel, string font)
             : this()
         {
             PageCount = viewmodel.PageCount;

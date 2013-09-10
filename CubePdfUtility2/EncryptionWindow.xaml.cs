@@ -62,7 +62,7 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         /// EncryptionWindow (constructor)
         /* ----------------------------------------------------------------- */
-        public EncryptionWindow(CubePdf.Wpf.IListViewModel viewmodel, string font)
+        public EncryptionWindow(CubePdf.Wpf.ListViewModel viewmodel, string font)
             : this()
         {
             _crypt = new CubePdf.Data.Encryption(viewmodel.Encryption);

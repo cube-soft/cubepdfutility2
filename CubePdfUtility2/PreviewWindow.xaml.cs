@@ -58,7 +58,7 @@ namespace CubePdfUtility
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
-        public PreviewWindow(CubePdf.Wpf.IListViewModel viewmodel, int index)
+        public PreviewWindow(CubePdf.Wpf.ListViewModel viewmodel, int index)
             : this()
         {
             var page = viewmodel.ToPage(viewmodel.Items[index]);
