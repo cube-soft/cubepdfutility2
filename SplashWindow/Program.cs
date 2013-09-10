@@ -37,15 +37,27 @@ namespace CubePdfUtility
         [STAThread]
         static void Main(string[] args)
         {
-            var created = true;
-            var mutex = new System.Threading.Mutex(true, "CubePdfUtilitySplash", out created);
-            if (!created) return;
+            try
+            {
+                var created = true;
+                var mutex = new System.Threading.Mutex(true, "CubePdfUtilitySplash", out created);
+                if (!created) return;
 
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainForm(args));
+                var processes = System.Diagnostics.Process.GetProcessesByName("CubePdfUtility");
+                if (processes != null && processes.Length > 0)
+                {
+                    var launcher = new Launcher(args);
+                    launcher.Run();
+                    return;
+                }
 
-            mutex.ReleaseMutex();
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                Application.Run(new MainForm(args));
+
+                mutex.ReleaseMutex();
+            }
+            catch (Exception err) { System.Diagnostics.Trace.WriteLine(err.ToString()); }
         }
     }
 }

@@ -23,7 +23,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <GroupBox Grid.Row="0" Margin="12,8">
+        <GroupBox Grid.Row="0" x:Name="RootGroupBox" Margin="12,8">
             <GroupBox.Header>
                 <CheckBox Content="パスワードによるセキュリティを設定する" IsChecked="{Binding IsEnabled, Mode=TwoWay}" Padding="5,0,5,5" Margin="5,5,0,5" />
             </GroupBox.Header>
