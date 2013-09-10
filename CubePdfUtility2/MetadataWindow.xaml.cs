@@ -54,7 +54,7 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         /// MetadataWindow (constructor)
         /* ----------------------------------------------------------------- */
-        public MetadataWindow(CubePdf.Wpf.IListViewModel viewmodel, string font)
+        public MetadataWindow(CubePdf.Wpf.ListViewModel viewmodel, string font)
             : this()
         {
             _metadata = new CubePdf.Data.Metadata(viewmodel.Metadata);

@@ -146,7 +146,7 @@ namespace CubePdfUtility
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
-        public CubePdf.Wpf.IListViewModel ViewModel
+        public CubePdf.Wpf.ListViewModel ViewModel
         {
             get { return _viewmodel; }
         }
@@ -1652,7 +1652,7 @@ namespace CubePdfUtility
         private bool NeedPassword(CubePdf.Editing.DocumentReader reader)
         {
             return reader.EncryptionStatus == CubePdf.Data.EncryptionStatus.RestrictedAccess &&
-                   reader.EncryptionMethod == CubePdf.Data.EncryptionMethod.Aes256;
+                   reader.Encryption.Method == CubePdf.Data.EncryptionMethod.Aes256;
         }
 
         /* ----------------------------------------------------------------- */

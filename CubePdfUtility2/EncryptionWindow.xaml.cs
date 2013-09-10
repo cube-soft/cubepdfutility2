@@ -62,9 +62,10 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         /// EncryptionWindow (constructor)
         /* ----------------------------------------------------------------- */
-        public EncryptionWindow(CubePdf.Wpf.IListViewModel viewmodel, string font)
+        public EncryptionWindow(CubePdf.Wpf.ListViewModel viewmodel, string font)
             : this()
         {
+            RootGroupBox.IsEnabled = (viewmodel.EncryptionStatus != CubePdf.Data.EncryptionStatus.RestrictedAccess);
             _crypt = new CubePdf.Data.Encryption(viewmodel.Encryption);
             if (_crypt.Method == CubePdf.Data.EncryptionMethod.Unknown) _crypt.Method = CubePdf.Data.EncryptionMethod.Standard128;
             DataContext = _crypt;
