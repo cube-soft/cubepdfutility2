@@ -1233,15 +1233,7 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         private void ApplicationMenu_Loaded(object sender, RoutedEventArgs e)
         {   
-            var recents = GetRecentFiles("*.pdf");
-            for (int i = 0; i < recents.Count; ++i)
-            {
-                var gallery = new RibbonGalleryItem();
-                gallery.Content = String.Format("{0} {1}", i + 1, System.IO.Path.GetFileName(recents[i]));
-                gallery.Tag = recents[i];
-                RecentFilesGalleryCategory.Items.Add(gallery);
-            }
-            NavigationCanvas.AddFiles(recents);
+            UpdateRecentFiles();
         }
 
         /* ----------------------------------------------------------------- */
@@ -1403,17 +1395,17 @@ namespace CubePdfUtility
         /// OpenFile
         /// 
         /// <summary>
-        /// 指定された DocumentReader オブジェクトを用いて GUI 上に該当
+        /// 指定された IDocumentReader オブジェクトを用いて GUI 上に該当
         /// ファイルの内容を表示します。
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
-        private void OpenFile(CubePdf.Editing.DocumentReader reader)
+        private void OpenFile(CubePdf.Data.IDocumentReader reader)
         {
             try {
                 _viewmodel.Open(reader);
-                CreateRecentFileLink(reader.FilePath);
-                RefreshRecentFilesList();
+                AddRecentFile(reader.FilePath);
+                UpdateRecentFiles();
             }
             catch (Exception err)
             {
@@ -1485,12 +1477,12 @@ namespace CubePdfUtility
         /// InsertFile
         /// 
         /// <summary>
-        /// 指定された DocumentReader オブジェクトを用いて GUI 上に該当
+        /// 指定された IDocumentReader オブジェクトを用いて GUI 上に該当
         /// ファイルの内容を追加表示します。
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
-        private void InsertFile(int index, CubePdf.Editing.DocumentReader reader, string history)
+        private void InsertFile(int index, CubePdf.Data.IDocumentReader reader, string history)
         {
             try
             {
@@ -1690,22 +1682,23 @@ namespace CubePdfUtility
 
         /* ----------------------------------------------------------------- */
         ///
-        /// CreateRecentFileLink
+        /// AddRecentFile
         /// 
         /// <summary>
-        /// 「最近開いたファイル」フォルダ内に、開こうとしている
-        ///  pdfファイルのリンクを作ります。
+        /// システムの「最近開いたファイル」に、指定された PDF ファイルを
+        /// 追加します。
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
-        private void CreateRecentFileLink(string path)
+        private void AddRecentFile(string path)
         {
-            string shortcutpath = System.IO.Path.Combine(Environment.GetFolderPath(System.Environment.SpecialFolder.Recent), System.IO.Path.GetFileName(path) + ".lnk");
-            string targetpath = path;
-            var shell = new IWshRuntimeLibrary.WshShell();
-            var shortcut = (IWshRuntimeLibrary.IWshShortcut)shell.CreateShortcut(shortcutpath);
+            var dir      = Environment.GetFolderPath(System.Environment.SpecialFolder.Recent);
+            var link     = System.IO.Path.Combine(dir, System.IO.Path.GetFileName(path) + ".lnk");
+            var shell    = new IWshRuntimeLibrary.WshShell();
+            var shortcut = shell.CreateShortcut(link) as IWshRuntimeLibrary.IWshShortcut;
+            if (shortcut == null) return;
 
-            shortcut.TargetPath = targetpath;
+            shortcut.TargetPath = path;
             shortcut.WindowStyle = 1;
             shortcut.Save();
             System.Runtime.InteropServices.Marshal.ReleaseComObject(shortcut);
@@ -1713,18 +1706,19 @@ namespace CubePdfUtility
 
         /* ----------------------------------------------------------------- */
         ///
-        /// RefreshRecentFilesList
+        /// UpdateRecentFiles
         /// 
         /// <summary>
-        /// メニュー、ナビゲーション画面の「最近開いたファイル」の一覧を更新します。
+        /// システムの「最近開いたファイル」から情報を取得して、最新の状態に
+        /// 更新します。
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
-        private void RefreshRecentFilesList()
+        private void UpdateRecentFiles()
         {
             var recents = GetRecentFiles("*.pdf");
+
             RecentFilesGalleryCategory.Items.Clear();
-            NavigationCanvas.Clear();
             for (int i = 0; i < recents.Count; ++i)
             {
                 var gallery = new RibbonGalleryItem();
@@ -1732,6 +1726,8 @@ namespace CubePdfUtility
                 gallery.Tag = recents[i];
                 RecentFilesGalleryCategory.Items.Add(gallery);
             }
+
+            NavigationCanvas.Clear();
             NavigationCanvas.AddFiles(recents);
         }
 
