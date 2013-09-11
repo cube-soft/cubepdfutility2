@@ -91,8 +91,6 @@ namespace CubePdfUtility
             _viewmodel.BackupFolder = System.IO.Path.Combine(appdata, @"CubeSoft\CubePdfUtility2");
             _viewmodel.BackupDays = 30;
             _viewmodel.RunCompleted += new EventHandler(ViewModel_RunCompleted);
-
-            //InitializeTrace(_viewmodel.BackupFolder);
         }
 
         /* ----------------------------------------------------------------- */
@@ -1117,7 +1115,6 @@ namespace CubePdfUtility
         {
             base.OnClosed(e);
             _viewmodel.Dispose();
-            //TerminateTrace();
         }
 
         /* ----------------------------------------------------------------- */
@@ -1286,7 +1283,7 @@ namespace CubePdfUtility
 
         #endregion
 
-        #region Methods for UserSetting
+        #region Private methods for UserSetting
 
         /* ----------------------------------------------------------------- */
         ///
@@ -1346,49 +1343,7 @@ namespace CubePdfUtility
 
         #endregion
 
-        #region Methods for trace log
-
-        /* ----------------------------------------------------------------- */
-        ///
-        /// InitializeTrace
-        /// 
-        /// <summary>
-        /// Trace に対して必要な初期化処理を行います。
-        /// </summary>
-        ///
-        /* ----------------------------------------------------------------- */
-        private void InitializeTrace(string root)
-        {
-            var dir  = System.IO.Path.Combine(root, DateTime.Today.ToString("yyyyMMdd"));
-            if (!System.IO.Directory.Exists(dir)) System.IO.Directory.CreateDirectory(dir);
-
-            var path = System.IO.Path.Combine(dir, "CubePdfUtility.log");
-            Trace.Listeners.Remove("Default");
-            Trace.Listeners.Add(new TextWriterTraceListener(path));
-            Trace.AutoFlush = true;
-
-            Trace.TraceInformation(DateTime.Now.ToString());
-            Trace.TraceInformation("CubePDF Utility version {0} ({1})", _setting.Version, ((IntPtr.Size == 4) ? "x86" : "x64"));
-            Trace.TraceInformation("Windows {0}", Environment.OSVersion.ToString());
-        }
-
-        /* ----------------------------------------------------------------- */
-        ///
-        /// TerminateTrace
-        /// 
-        /// <summary>
-        /// Trace に対して必要な終了処理を行います。
-        /// </summary>
-        ///
-        /* ----------------------------------------------------------------- */
-        private void TerminateTrace()
-        {
-            Trace.Close();
-        }
-
-        #endregion
-
-        #region Open, Insert, and Close methods
+        #region Private methods for Open, Insert, and Close operations
 
         /* ----------------------------------------------------------------- */
         ///
@@ -1591,7 +1546,95 @@ namespace CubePdfUtility
 
         #endregion
 
-        #region Other methods
+        #region Private methods for recent files
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// AddRecentFile
+        /// 
+        /// <summary>
+        /// システムの「最近開いたファイル」に、指定された PDF ファイルを
+        /// 追加します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void AddRecentFile(string path)
+        {
+            var dir = Environment.GetFolderPath(System.Environment.SpecialFolder.Recent);
+            var link = System.IO.Path.Combine(dir, System.IO.Path.GetFileName(path) + ".lnk");
+            var shell = new IWshRuntimeLibrary.WshShell();
+            var shortcut = shell.CreateShortcut(link) as IWshRuntimeLibrary.IWshShortcut;
+            if (shortcut == null) return;
+
+            shortcut.TargetPath = path;
+            shortcut.WindowStyle = 1;
+            shortcut.Save();
+            System.Runtime.InteropServices.Marshal.ReleaseComObject(shortcut);
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// UpdateRecentFiles
+        /// 
+        /// <summary>
+        /// システムの「最近開いたファイル」から情報を取得して、最新の状態に
+        /// 更新します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void UpdateRecentFiles()
+        {
+            var recents = GetRecentFiles("*.pdf");
+
+            RecentFilesGalleryCategory.Items.Clear();
+            for (int i = 0; i < recents.Count; ++i)
+            {
+                var gallery = new RibbonGalleryItem();
+                gallery.Content = String.Format("{0} {1}", i + 1, System.IO.Path.GetFileName(recents[i]));
+                gallery.Tag = recents[i];
+                RecentFilesGalleryCategory.Items.Add(gallery);
+            }
+
+            NavigationCanvas.Clear();
+            NavigationCanvas.AddFiles(recents);
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// GetRecentFiles
+        /// 
+        /// <summary>
+        /// システムの「最近開いたファイル」から pattern に一致するファイル
+        /// 一覧を取得します（.lnk は自動的に付与されます）。
+        /// </summary>
+        /// 
+        /// <remarks>
+        /// 取得されるパスは、リンク先の最終的なファイルへのパスです。
+        /// 「最近開いたファイル」のうち、既に存在しないファイルは結果に
+        /// 含まれません。
+        /// </remarks>
+        ///
+        /* ----------------------------------------------------------------- */
+        private IList<string> GetRecentFiles(string pattern)
+        {
+            var dest = new List<string>();
+            var shell = new IWshShell_Class();
+            var folder = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Recent);
+            var links = System.IO.Directory.GetFiles(folder + "\\", pattern + ".lnk");
+
+            foreach (var link in links)
+            {
+                var shortcut = shell.CreateShortcut(link) as IWshShortcut_Class;
+                if (shortcut == null || !System.IO.File.Exists(shortcut.TargetPath)) continue;
+                dest.Add(shortcut.TargetPath);
+            }
+
+            return dest;
+        }
+
+        #endregion
+
+        #region Other private methods
 
         /* ----------------------------------------------------------------- */
         ///
@@ -1678,90 +1721,6 @@ namespace CubePdfUtility
                     break;
                 }
             }
-        }
-
-        /* ----------------------------------------------------------------- */
-        ///
-        /// AddRecentFile
-        /// 
-        /// <summary>
-        /// システムの「最近開いたファイル」に、指定された PDF ファイルを
-        /// 追加します。
-        /// </summary>
-        ///
-        /* ----------------------------------------------------------------- */
-        private void AddRecentFile(string path)
-        {
-            var dir      = Environment.GetFolderPath(System.Environment.SpecialFolder.Recent);
-            var link     = System.IO.Path.Combine(dir, System.IO.Path.GetFileName(path) + ".lnk");
-            var shell    = new IWshRuntimeLibrary.WshShell();
-            var shortcut = shell.CreateShortcut(link) as IWshRuntimeLibrary.IWshShortcut;
-            if (shortcut == null) return;
-
-            shortcut.TargetPath = path;
-            shortcut.WindowStyle = 1;
-            shortcut.Save();
-            System.Runtime.InteropServices.Marshal.ReleaseComObject(shortcut);
-        }
-
-        /* ----------------------------------------------------------------- */
-        ///
-        /// UpdateRecentFiles
-        /// 
-        /// <summary>
-        /// システムの「最近開いたファイル」から情報を取得して、最新の状態に
-        /// 更新します。
-        /// </summary>
-        ///
-        /* ----------------------------------------------------------------- */
-        private void UpdateRecentFiles()
-        {
-            var recents = GetRecentFiles("*.pdf");
-
-            RecentFilesGalleryCategory.Items.Clear();
-            for (int i = 0; i < recents.Count; ++i)
-            {
-                var gallery = new RibbonGalleryItem();
-                gallery.Content = String.Format("{0} {1}", i + 1, System.IO.Path.GetFileName(recents[i]));
-                gallery.Tag = recents[i];
-                RecentFilesGalleryCategory.Items.Add(gallery);
-            }
-
-            NavigationCanvas.Clear();
-            NavigationCanvas.AddFiles(recents);
-        }
-
-        /* ----------------------------------------------------------------- */
-        ///
-        /// GetRecentFiles
-        /// 
-        /// <summary>
-        /// システムの「最近開いたファイル」から pattern に一致するファイル
-        /// 一覧を取得します（.lnk は自動的に付与されます）。
-        /// </summary>
-        /// 
-        /// <remarks>
-        /// 取得されるパスは、リンク先の最終的なファイルへのパスです。
-        /// 「最近開いたファイル」のうち、既に存在しないファイルは結果に
-        /// 含まれません。
-        /// </remarks>
-        ///
-        /* ----------------------------------------------------------------- */
-        private IList<string> GetRecentFiles(string pattern)
-        {
-            var dest = new List<string>();
-            var shell = new IWshShell_Class();
-            var folder = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Recent);
-            var links = System.IO.Directory.GetFiles(folder + "\\", pattern + ".lnk");
-
-            foreach (var link in links)
-            {
-                var shortcut = shell.CreateShortcut(link) as IWshShortcut_Class;
-                if (shortcut == null || !System.IO.File.Exists(shortcut.TargetPath)) continue;
-                dest.Add(shortcut.TargetPath);
-            }
-
-            return dest;
         }
 
         /* ----------------------------------------------------------------- */
