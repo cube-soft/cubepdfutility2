@@ -36,6 +36,8 @@ namespace CubePdfUtility
     /* --------------------------------------------------------------------- */
     public partial class NavigationCanvas : Canvas
     {
+        #region Initializations and Terminations
+
         /* ----------------------------------------------------------------- */
         ///
         /// NavigationCanvas (constructor)
@@ -49,6 +51,27 @@ namespace CubePdfUtility
         {
             InitializeComponent();
         }
+
+        #endregion
+
+        #region Properties
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// FontFamily
+        /// 
+        /// <summary>
+        /// 使用するフォントの種類を取得、または設定します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        public System.Windows.Media.FontFamily FontFamily
+        {
+            get { return _font; }
+            set { _font = value; }
+        }
+
+        #endregion
 
         /* ----------------------------------------------------------------- */
         ///
@@ -68,18 +91,46 @@ namespace CubePdfUtility
         public void AddFiles(IList<string> paths)
         {
             var index = 0;
-            var limit = index + Math.Min(paths.Count, 7 - PrimaryFields.Children.Count);
+            var limit = Math.Min(paths.Count, index + 6 - PrimaryFields.Children.Count);
             for (; index < limit; ++index)
             {
                 PrimaryFields.Children.Add(CreatePdfMenuItem(paths[index]));
             }
             if (index >= paths.Count) return;
 
-            limit = index + Math.Min(paths.Count, 7 - SecondaryFields.Children.Count);
+            limit = Math.Min(paths.Count, index + 6 - SecondaryFields.Children.Count);
             for (; index < limit; ++index)
             {
                 SecondaryFields.Children.Add(CreatePdfMenuItem(paths[index]));
             }
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// Clear
+        /// 
+        /// <summary>
+        /// ナビゲーション画面に表示されている各メニュー項目をクリアします。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        public void Clear()
+        {
+            foreach (var obj in PrimaryFields.Children)
+            {
+                var control = obj as MenuItem;
+                if (control == null) continue;
+                if (MenuItemClick != null) control.Click -= MenuItemClick;
+            }
+            PrimaryFields.Children.Clear();
+
+            foreach (var obj in SecondaryFields.Children)
+            {
+                var control = obj as MenuItem;
+                if (control == null) continue;
+                if (MenuItemClick != null) control.Click -= MenuItemClick;
+            }
+            SecondaryFields.Children.Clear();
         }
 
         /* ----------------------------------------------------------------- */
@@ -108,11 +159,17 @@ namespace CubePdfUtility
             var dest = new MenuItem();
             dest.Header = System.IO.Path.GetFileName(path);
             dest.Tag = path;
+            dest.Margin = new Thickness(0, 2, 0, 3);
             dest.Icon = new System.Windows.Controls.Image {
                 Source = new BitmapImage(new Uri("Images/PdfFile.png", UriKind.Relative))
             };
+            if (_font != null) dest.FontFamily = _font;
             if (MenuItemClick != null) dest.Click += MenuItemClick;
             return dest;
         }
+
+        #region Variables
+        private System.Windows.Media.FontFamily _font = null;
+        #endregion
     }
 }
