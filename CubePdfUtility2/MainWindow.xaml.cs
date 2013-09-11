@@ -1717,6 +1717,7 @@ namespace CubePdfUtility
                     MainRibbon.FontFamily = new FontFamily(ff.Name);
                     Thumbnail.ContextMenu.FontFamily = new FontFamily(ff.Name);
                     FooterStatusBar.FontFamily = new FontFamily(ff.Name);
+                    NavigationCanvas.FontFamily = new FontFamily(ff.Name);
                     _font = ff.Name;
                     break;
                 }
