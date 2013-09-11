@@ -68,14 +68,14 @@ namespace CubePdfUtility
         public void AddFiles(IList<string> paths)
         {
             var index = 0;
-            var limit = index + Math.Min(paths.Count, 7 - PrimaryFields.Children.Count);
+            var limit = Math.Min(paths.Count, index + 7 - PrimaryFields.Children.Count);
             for (; index < limit; ++index)
             {
                 PrimaryFields.Children.Add(CreatePdfMenuItem(paths[index]));
             }
             if (index >= paths.Count) return;
 
-            limit = index + Math.Min(paths.Count, 7 - SecondaryFields.Children.Count);
+            limit = Math.Min(paths.Count, index + 7 - SecondaryFields.Children.Count);
             for (; index < limit; ++index)
             {
                 SecondaryFields.Children.Add(CreatePdfMenuItem(paths[index]));
