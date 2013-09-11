@@ -1410,7 +1410,11 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         private void OpenFile(CubePdf.Editing.DocumentReader reader)
         {
-            try { _viewmodel.Open(reader); }
+            try {
+                _viewmodel.Open(reader);
+                CreateRecentFileLink(reader.FilePath);
+                RefreshRecentFilesList();
+            }
             catch (Exception err)
             {
                 MessageBox.Show(Properties.Resources.OpenError, Properties.Resources.ErrorTitle,
@@ -1682,6 +1686,53 @@ namespace CubePdfUtility
                     break;
                 }
             }
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// CreateRecentFileLink
+        /// 
+        /// <summary>
+        /// 「最近開いたファイル」フォルダ内に、開こうとしている
+        ///  pdfファイルのリンクを作ります。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void CreateRecentFileLink(string path)
+        {
+            string shortcutpath = System.IO.Path.Combine(Environment.GetFolderPath(System.Environment.SpecialFolder.Recent), System.IO.Path.GetFileName(path) + ".lnk");
+            string targetpath = path;
+            var shell = new IWshRuntimeLibrary.WshShell();
+            var shortcut = (IWshRuntimeLibrary.IWshShortcut)shell.CreateShortcut(shortcutpath);
+
+            shortcut.TargetPath = targetpath;
+            shortcut.WindowStyle = 1;
+            shortcut.Save();
+            System.Runtime.InteropServices.Marshal.ReleaseComObject(shortcut);
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// RefreshRecentFilesList
+        /// 
+        /// <summary>
+        /// メニュー、ナビゲーション画面の「最近開いたファイル」の一覧を更新します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void RefreshRecentFilesList()
+        {
+            var recents = GetRecentFiles("*.pdf");
+            RecentFilesGalleryCategory.Items.Clear();
+            NavigationCanvas.Clear();
+            for (int i = 0; i < recents.Count; ++i)
+            {
+                var gallery = new RibbonGalleryItem();
+                gallery.Content = String.Format("{0} {1}", i + 1, System.IO.Path.GetFileName(recents[i]));
+                gallery.Tag = recents[i];
+                RecentFilesGalleryCategory.Items.Add(gallery);
+            }
+            NavigationCanvas.AddFiles(recents);
         }
 
         /* ----------------------------------------------------------------- */
