@@ -798,6 +798,7 @@ namespace CubePdfUtility
         {
             try
             {
+                if (ViewSizeGallery == null || ViewSizeGallery.SelectedItem == null) return;
                 var item = (KeyValuePair<int, string>)ViewSizeGallery.SelectedItem;
                 var index = _ViewSize.IndexOf(item);
                 e.CanExecute = index < _ViewSize.Count - 1;
@@ -834,6 +835,7 @@ namespace CubePdfUtility
         {
             try
             {
+                if (ViewSizeGallery == null || ViewSizeGallery.SelectedItem == null) return;
                 var item = (KeyValuePair<int, string>)ViewSizeGallery.SelectedItem;
                 var index = _ViewSize.IndexOf(item);
                 e.CanExecute = index > 0;
