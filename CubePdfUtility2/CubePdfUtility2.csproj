@@ -116,6 +116,9 @@
     <Compile Include="EncryptionWindow.xaml.cs">
       <DependentUpon>EncryptionWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="NavigationCanvas.xaml.cs">
+      <DependentUpon>NavigationCanvas.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserSetting.cs" />
     <Compile Include="VersionWindow.xaml.cs">
       <DependentUpon>VersionWindow.xaml</DependentUpon>
@@ -150,6 +153,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="EncryptionWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NavigationCanvas.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -369,6 +376,12 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\NavigationHeader.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\PdfFile.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

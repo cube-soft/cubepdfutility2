@@ -115,7 +115,7 @@ namespace CubePdfUtility.Properties {
         }
         
         /// <summary>
-        ///   {0} はパスワードで保護されています。パスワードを入力して下さい。 に類似しているローカライズされた文字列を検索します。
+        ///   {0} はパスワードで保護されています。編集するためにはオーナーパスワードを入力して下さい。 に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string PasswordPrompt {
             get {
@@ -147,6 +147,24 @@ namespace CubePdfUtility.Properties {
         internal static string SaveError {
             get {
                 return ResourceManager.GetString("SaveError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   このファイルはタグ付き PDF（構造化された PDF）です。保存すると一部の情報が失われる可能性があります。 に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string TaggedPdf {
+            get {
+                return ResourceManager.GetString("TaggedPdf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   CubePDF Utility に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string WarningTitle {
+            get {
+                return ResourceManager.GetString("WarningTitle", resourceCulture);
             }
         }
     }

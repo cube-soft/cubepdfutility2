@@ -54,13 +54,20 @@ namespace CubePdfUtility
             Width  = Properties.Resources.Splash.Width;
             Height = Properties.Resources.Splash.Height;
             InfoLabel.ForeColor = Color.FromArgb(0x333333);
+
+            var edition = (IntPtr.Size == 4) ? "x86" : "x64";
+            var dotnet = Environment.Version.ToString();
+            VersionLabel.Text = string.Format(Properties.Resources.Version, _launcher.Version, edition, dotnet);
+            VersionLabel.ForeColor = Color.FromArgb(0x333333);
             
             _modules = new List<string>() {
                 "System",
                 "System.Core",
                 "System.Data",
+                "System.Drawing",
                 "System.Windows.Forms",
                 "System.Windows.Interactivity",
+                "System.Web",
                 "System.Xml",
                 "Interop.IWshRuntimeLibrary",
                 "WindowBase",
