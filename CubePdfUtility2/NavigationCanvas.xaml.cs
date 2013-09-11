@@ -84,6 +84,34 @@ namespace CubePdfUtility
 
         /* ----------------------------------------------------------------- */
         ///
+        /// Clear
+        /// 
+        /// <summary>
+        /// ナビゲーション画面に表示されている各メニュー項目をクリアします。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        public void Clear()
+        {
+            foreach (var obj in PrimaryFields.Children)
+            {
+                var control = obj as MenuItem;
+                if (control == null) continue;
+                if (MenuItemClick != null) control.Click -= MenuItemClick;
+            }
+            PrimaryFields.Children.Clear();
+
+            foreach (var obj in SecondaryFields.Children)
+            {
+                var control = obj as MenuItem;
+                if (control == null) continue;
+                if (MenuItemClick != null) control.Click -= MenuItemClick;
+            }
+            SecondaryFields.Children.Clear();
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
         /// MenuItemClick
         /// 
         /// <summary>
