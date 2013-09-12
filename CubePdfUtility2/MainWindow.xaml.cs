@@ -37,7 +37,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using IWshRuntimeLibrary;
 using Microsoft.Windows.Controls.Ribbon;
 
 namespace CubePdfUtility
@@ -201,9 +200,6 @@ namespace CubePdfUtility
         /// 現在、開いている PDF ファイルを閉じます。
         /// パラメータ (e.Parameter) に "Exit" の文字列（を含む文字列）が
         /// 指定された場合はアプリケーション自体も終了します。
-        /// 
-        /// TODO: 内容が編集されている場合は、保存するかどうかを尋ねる
-        /// ダイアログを表示する。
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
@@ -494,8 +490,6 @@ namespace CubePdfUtility
         ///
         /// <summary>
         /// ページ順序を変更します。
-        /// 
-        /// TODO: パラメータ (e.Parameter) の整備
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
@@ -546,8 +540,6 @@ namespace CubePdfUtility
         ///
         /// <summary>
         /// 現在、選択されているページを回転します。
-        /// 
-        /// TODO: パラメータ (e.Parameter) の整備
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
@@ -1199,7 +1191,7 @@ namespace CubePdfUtility
         /// 
         /// <summary>
         /// メイン画面が表示された後に実行されるイベントハンドラです。
-        /// スプラッシュ画面の終了とアップデートの確認が行われます。
+        /// スプラッシュ画面の終了、およびアップデートの確認が行われます。
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
@@ -1212,27 +1204,13 @@ namespace CubePdfUtility
             try
             {
                 foreach (var ps in Process.GetProcessesByName("CubePdfUtilitySplash")) ps.Kill();
-
+                
                 if (string.IsNullOrEmpty(_setting.InstallDirectory) ||
                     DateTime.Now <= _setting.LastCheckUpdate.AddDays(1)) return;
                 var path = System.IO.Path.Combine(_setting.InstallDirectory, "UpdateChecker.exe");
                 Process.Start(path);
             }
             catch (Exception err) { Trace.TraceError(err.ToString()); }
-        }
-
-        /* ----------------------------------------------------------------- */
-        ///
-        /// ApplicationMenu_Loaded
-        /// 
-        /// <summary>
-        /// リボンアプリケーションが読み込まれた際に実行されます。
-        /// </summary>
-        ///
-        /* ----------------------------------------------------------------- */
-        private void ApplicationMenu_Loaded(object sender, RoutedEventArgs e)
-        {   
-            UpdateRecentFiles();
         }
 
         /* ----------------------------------------------------------------- */
@@ -1298,30 +1276,36 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         private void LoadSetting(object sender, EventArgs e)
         {
-            _setting.Load();
-
-            if (_setting.IsMaximized) WindowState = WindowState.Maximized;
-            else
+            try
             {
-                Width  = Math.Max(_setting.Size.Width, _MinSize);
-                Height = Math.Max(_setting.Size.Height, _MinSize);
-                Left   = Math.Max(Math.Min(_setting.Position.X, SystemParameters.WorkArea.Right - Width), 8);
-                Top    = Math.Max(Math.Min(_setting.Position.Y, SystemParameters.WorkArea.Bottom - Height), 0);
-            }
+                _setting.Load();
 
-            // NOTE: ItemWidth は、既に用意されている選択肢 (_ViewSize) のうち、
-            // ユーザ設定に保存されている値を超えない最大値を使用する。
-            ViewSizeGalleryCategory.ItemsSource = _ViewSize;
-            var size = _ViewSize[0];
-            foreach (var item in _ViewSize)
-            {
-                if (item.Key > _setting.ItemWidth) break;
-                size = item;
-            }
-            ViewSizeGallery.SelectedItem = size;
+                if (_setting.IsMaximized) WindowState = WindowState.Maximized;
+                else
+                {
+                    Width = Math.Max(_setting.Size.Width, _MinSize);
+                    Height = Math.Max(_setting.Size.Height, _MinSize);
+                    Left = Math.Max(Math.Min(_setting.Position.X, SystemParameters.WorkArea.Right - Width), 8);
+                    Top = Math.Max(Math.Min(_setting.Position.Y, SystemParameters.WorkArea.Bottom - Height), 0);
+                }
 
-            _viewmodel.ItemVisibility = _setting.ItemVisibility;
-            ViewModeCheckBox.IsChecked = (_setting.ItemVisibility == CubePdf.Wpf.ListViewItemVisibility.Minimum);
+                // NOTE: ItemWidth は、既に用意されている選択肢 (_ViewSize) のうち、
+                // ユーザ設定に保存されている値を超えない最大値を使用する。
+                ViewSizeGalleryCategory.ItemsSource = _ViewSize;
+                var size = _ViewSize[0];
+                foreach (var item in _ViewSize)
+                {
+                    if (item.Key > _setting.ItemWidth) break;
+                    size = item;
+                }
+                ViewSizeGallery.SelectedItem = size;
+
+                _viewmodel.ItemVisibility = _setting.ItemVisibility;
+                ViewModeCheckBox.IsChecked = (_setting.ItemVisibility == CubePdf.Wpf.ListViewItemVisibility.Minimum);
+
+                UpdateRecentFiles();
+            }
+            catch (Exception err) { Trace.WriteLine(err.ToString()); }
         }
 
         /* ----------------------------------------------------------------- */
@@ -1335,17 +1319,21 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         private void SaveSetting(object sender, EventArgs e)
         {
-            _setting.Position = new Point(Left, Top);
-            _setting.Size = new Size((int)Width, (int)Height);
-            _setting.IsMaximized = (WindowState == WindowState.Maximized);
-            _setting.ItemWidth = _viewmodel.ItemWidth;
-            _setting.ItemVisibility = _viewmodel.ItemVisibility;
-            _setting.Save();
+            try
+            {
+                _setting.Position = new Point(Left, Top);
+                _setting.Size = new Size((int)Width, (int)Height);
+                _setting.IsMaximized = (WindowState == WindowState.Maximized);
+                _setting.ItemWidth = _viewmodel.ItemWidth;
+                _setting.ItemVisibility = _viewmodel.ItemVisibility;
+                _setting.Save();
+            }
+            catch (Exception err) { Trace.WriteLine(err.ToString()); }
         }
 
         #endregion
 
-        #region Private methods for Open, Insert, and Close operations
+        #region Private methods for open, insert, and close operations
 
         /* ----------------------------------------------------------------- */
         ///
@@ -1361,7 +1349,7 @@ namespace CubePdfUtility
         {
             try {
                 _viewmodel.Open(reader);
-                AddRecentFile(reader.FilePath);
+                RecentFile.Add(reader.FilePath);
                 UpdateRecentFiles();
             }
             catch (Exception err)
@@ -1548,95 +1536,7 @@ namespace CubePdfUtility
 
         #endregion
 
-        #region Private methods for recent files
-
-        /* ----------------------------------------------------------------- */
-        ///
-        /// AddRecentFile
-        /// 
-        /// <summary>
-        /// システムの「最近開いたファイル」に、指定された PDF ファイルを
-        /// 追加します。
-        /// </summary>
-        ///
-        /* ----------------------------------------------------------------- */
-        private void AddRecentFile(string path)
-        {
-            var dir = Environment.GetFolderPath(System.Environment.SpecialFolder.Recent);
-            var link = System.IO.Path.Combine(dir, System.IO.Path.GetFileName(path) + ".lnk");
-            var shell = new IWshRuntimeLibrary.WshShell();
-            var shortcut = shell.CreateShortcut(link) as IWshRuntimeLibrary.IWshShortcut;
-            if (shortcut == null) return;
-
-            shortcut.TargetPath = path;
-            shortcut.WindowStyle = 1;
-            shortcut.Save();
-            System.Runtime.InteropServices.Marshal.ReleaseComObject(shortcut);
-        }
-
-        /* ----------------------------------------------------------------- */
-        ///
-        /// UpdateRecentFiles
-        /// 
-        /// <summary>
-        /// システムの「最近開いたファイル」から情報を取得して、最新の状態に
-        /// 更新します。
-        /// </summary>
-        ///
-        /* ----------------------------------------------------------------- */
-        private void UpdateRecentFiles()
-        {
-            var recents = GetRecentFiles("*.pdf");
-
-            RecentFilesGalleryCategory.Items.Clear();
-            for (int i = 0; i < recents.Count; ++i)
-            {
-                var gallery = new RibbonGalleryItem();
-                gallery.Content = String.Format("{0} {1}", i + 1, System.IO.Path.GetFileName(recents[i]));
-                gallery.Tag = recents[i];
-                RecentFilesGalleryCategory.Items.Add(gallery);
-            }
-
-            NavigationCanvas.Clear();
-            NavigationCanvas.AddFiles(recents);
-        }
-
-        /* ----------------------------------------------------------------- */
-        ///
-        /// GetRecentFiles
-        /// 
-        /// <summary>
-        /// システムの「最近開いたファイル」から pattern に一致するファイル
-        /// 一覧を取得します（.lnk は自動的に付与されます）。
-        /// </summary>
-        /// 
-        /// <remarks>
-        /// 取得されるパスは、リンク先の最終的なファイルへのパスです。
-        /// 「最近開いたファイル」のうち、既に存在しないファイルは結果に
-        /// 含まれません。
-        /// </remarks>
-        ///
-        /* ----------------------------------------------------------------- */
-        private IList<string> GetRecentFiles(string pattern)
-        {
-            var dest = new List<string>();
-            var shell = new IWshShell_Class();
-            var folder = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Recent);
-            var links = System.IO.Directory.GetFiles(folder + "\\", pattern + ".lnk");
-
-            foreach (var link in links)
-            {
-                var shortcut = shell.CreateShortcut(link) as IWshShortcut_Class;
-                if (shortcut == null || !System.IO.File.Exists(shortcut.TargetPath)) continue;
-                dest.Add(shortcut.TargetPath);
-            }
-
-            return dest;
-        }
-
-        #endregion
-
-        #region Other private methods
+        #region Private methods for others
 
         /* ----------------------------------------------------------------- */
         ///
@@ -1674,6 +1574,33 @@ namespace CubePdfUtility
             }
             Cursor = Cursors.Arrow;
             RecentFilesGallery.SelectedItem = null;
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// UpdateRecentFiles
+        /// 
+        /// <summary>
+        /// システムの「最近開いたファイル」から情報を取得して、最新の状態に
+        /// 更新します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void UpdateRecentFiles()
+        {
+            var recents = RecentFile.Find("*.pdf");
+            
+            RecentFilesGalleryCategory.Items.Clear();
+            for (int i = 0; i < recents.Length; ++i)
+            {
+                var gallery = new RibbonGalleryItem();
+                gallery.Content = String.Format("{0} {1}", i + 1, System.IO.Path.GetFileName(recents[i]));
+                gallery.Tag = recents[i];
+                RecentFilesGalleryCategory.Items.Add(gallery);
+            }
+
+            NavigationCanvas.Clear();
+            NavigationCanvas.AddFiles(recents);
         }
 
         /* ----------------------------------------------------------------- */
