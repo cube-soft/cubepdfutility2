@@ -260,9 +260,7 @@
             </r:Ribbon.TitleTemplate>
             
             <r:Ribbon.ApplicationMenu>
-                <r:RibbonApplicationMenu
-                    SmallImageSource="Images\Menu.png"
-                    Loaded="ApplicationMenu_Loaded">
+                <r:RibbonApplicationMenu SmallImageSource="Images\Menu.png">
 
                     <r:RibbonApplicationMenuItem Header="開く(_O)"
                         ToolTipTitle="開く"

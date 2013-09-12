@@ -93,7 +93,7 @@
     <Reference Include="System.Windows.Interactivity, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>.\System.Windows.Interactivity.dll</HintPath>
-	</Reference>
+    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.XML" />
     <Reference Include="WindowsBase" />
@@ -113,6 +113,7 @@
     <Compile Include="PreviewWindow.xaml.cs">
       <DependentUpon>PreviewWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="RecentFile.cs" />
     <Compile Include="RemoveWindow.xaml.cs">
       <DependentUpon>RemoveWindow.xaml</DependentUpon>
     </Compile>
