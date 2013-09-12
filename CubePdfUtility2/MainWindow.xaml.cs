@@ -1276,32 +1276,36 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         private void LoadSetting(object sender, EventArgs e)
         {
-            _setting.Load();
-
-            if (_setting.IsMaximized) WindowState = WindowState.Maximized;
-            else
+            try
             {
-                Width  = Math.Max(_setting.Size.Width, _MinSize);
-                Height = Math.Max(_setting.Size.Height, _MinSize);
-                Left   = Math.Max(Math.Min(_setting.Position.X, SystemParameters.WorkArea.Right - Width), 8);
-                Top    = Math.Max(Math.Min(_setting.Position.Y, SystemParameters.WorkArea.Bottom - Height), 0);
+                _setting.Load();
+
+                if (_setting.IsMaximized) WindowState = WindowState.Maximized;
+                else
+                {
+                    Width = Math.Max(_setting.Size.Width, _MinSize);
+                    Height = Math.Max(_setting.Size.Height, _MinSize);
+                    Left = Math.Max(Math.Min(_setting.Position.X, SystemParameters.WorkArea.Right - Width), 8);
+                    Top = Math.Max(Math.Min(_setting.Position.Y, SystemParameters.WorkArea.Bottom - Height), 0);
+                }
+
+                // NOTE: ItemWidth は、既に用意されている選択肢 (_ViewSize) のうち、
+                // ユーザ設定に保存されている値を超えない最大値を使用する。
+                ViewSizeGalleryCategory.ItemsSource = _ViewSize;
+                var size = _ViewSize[0];
+                foreach (var item in _ViewSize)
+                {
+                    if (item.Key > _setting.ItemWidth) break;
+                    size = item;
+                }
+                ViewSizeGallery.SelectedItem = size;
+
+                _viewmodel.ItemVisibility = _setting.ItemVisibility;
+                ViewModeCheckBox.IsChecked = (_setting.ItemVisibility == CubePdf.Wpf.ListViewItemVisibility.Minimum);
+
+                UpdateRecentFiles();
             }
-
-            // NOTE: ItemWidth は、既に用意されている選択肢 (_ViewSize) のうち、
-            // ユーザ設定に保存されている値を超えない最大値を使用する。
-            ViewSizeGalleryCategory.ItemsSource = _ViewSize;
-            var size = _ViewSize[0];
-            foreach (var item in _ViewSize)
-            {
-                if (item.Key > _setting.ItemWidth) break;
-                size = item;
-            }
-            ViewSizeGallery.SelectedItem = size;
-
-            _viewmodel.ItemVisibility = _setting.ItemVisibility;
-            ViewModeCheckBox.IsChecked = (_setting.ItemVisibility == CubePdf.Wpf.ListViewItemVisibility.Minimum);
-
-            UpdateRecentFiles();
+            catch (Exception err) { Trace.WriteLine(err.ToString()); }
         }
 
         /* ----------------------------------------------------------------- */
@@ -1315,12 +1319,16 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         private void SaveSetting(object sender, EventArgs e)
         {
-            _setting.Position = new Point(Left, Top);
-            _setting.Size = new Size((int)Width, (int)Height);
-            _setting.IsMaximized = (WindowState == WindowState.Maximized);
-            _setting.ItemWidth = _viewmodel.ItemWidth;
-            _setting.ItemVisibility = _viewmodel.ItemVisibility;
-            _setting.Save();
+            try
+            {
+                _setting.Position = new Point(Left, Top);
+                _setting.Size = new Size((int)Width, (int)Height);
+                _setting.IsMaximized = (WindowState == WindowState.Maximized);
+                _setting.ItemWidth = _viewmodel.ItemWidth;
+                _setting.ItemVisibility = _viewmodel.ItemVisibility;
+                _setting.Save();
+            }
+            catch (Exception err) { Trace.WriteLine(err.ToString()); }
         }
 
         #endregion
