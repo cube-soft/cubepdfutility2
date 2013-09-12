@@ -37,7 +37,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using IWshRuntimeLibrary;
 using Microsoft.Windows.Controls.Ribbon;
 
 namespace CubePdfUtility
@@ -1199,7 +1198,7 @@ namespace CubePdfUtility
         /// 
         /// <summary>
         /// メイン画面が表示された後に実行されるイベントハンドラです。
-        /// スプラッシュ画面の終了とアップデートの確認が行われます。
+        /// スプラッシュ画面の終了、およびアップデートの確認が行われます。
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
@@ -1212,28 +1211,13 @@ namespace CubePdfUtility
             try
             {
                 foreach (var ps in Process.GetProcessesByName("CubePdfUtilitySplash")) ps.Kill();
-
+                
                 if (string.IsNullOrEmpty(_setting.InstallDirectory) ||
                     DateTime.Now <= _setting.LastCheckUpdate.AddDays(1)) return;
                 var path = System.IO.Path.Combine(_setting.InstallDirectory, "UpdateChecker.exe");
                 Process.Start(path);
             }
             catch (Exception err) { Trace.TraceError(err.ToString()); }
-        }
-
-        /* ----------------------------------------------------------------- */
-        ///
-        /// ApplicationMenu_Loaded
-        /// 
-        /// <summary>
-        /// リボンアプリケーションが読み込まれた際に実行されます。
-        /// </summary>
-        ///
-        /* ----------------------------------------------------------------- */
-        private void ApplicationMenu_Loaded(object sender, RoutedEventArgs e)
-        {
-            try { UpdateRecentFiles(); }
-            catch (Exception err) { Trace.WriteLine(err.ToString()); }
         }
 
         /* ----------------------------------------------------------------- */
@@ -1323,6 +1307,8 @@ namespace CubePdfUtility
 
             _viewmodel.ItemVisibility = _setting.ItemVisibility;
             ViewModeCheckBox.IsChecked = (_setting.ItemVisibility == CubePdf.Wpf.ListViewItemVisibility.Minimum);
+
+            UpdateRecentFiles();
         }
 
         /* ----------------------------------------------------------------- */
@@ -1346,7 +1332,7 @@ namespace CubePdfUtility
 
         #endregion
 
-        #region Private methods for Open, Insert, and Close operations
+        #region Private methods for open, insert, and close operations
 
         /* ----------------------------------------------------------------- */
         ///
@@ -1549,7 +1535,7 @@ namespace CubePdfUtility
 
         #endregion
 
-        #region Other private methods
+        #region Private methods for others
 
         /* ----------------------------------------------------------------- */
         ///
