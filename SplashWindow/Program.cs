@@ -5,17 +5,17 @@
 /// Copyright (c) 2013 CubeSoft, Inc. All rights reserved.
 ///
 /// This program is free software: you can redistribute it and/or modify
-/// it under the terms of the GNU General Public License as published by
-/// the Free Software Foundation, either version 3 of the License, or
+/// it under the terms of the GNU Affero General Public License as published
+/// by the Free Software Foundation, either version 3 of the License, or
 /// (at your option) any later version.
 ///
 /// This program is distributed in the hope that it will be useful,
 /// but WITHOUT ANY WARRANTY; without even the implied warranty of
 /// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-/// GNU General Public License for more details.
+/// GNU Affero General Public License for more details.
 ///
-/// You should have received a copy of the GNU General Public License
-/// along with this program.  If not, see < http://www.gnu.org/licenses/ >.
+/// You should have received a copy of the GNU Affero General Public License
+/// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ///
 /* ------------------------------------------------------------------------- */
 using System;
@@ -37,15 +37,27 @@ namespace CubePdfUtility
         [STAThread]
         static void Main(string[] args)
         {
-            var created = true;
-            var mutex = new System.Threading.Mutex(true, "CubePdfUtilitySplash", out created);
-            if (!created) return;
+            try
+            {
+                var created = true;
+                var mutex = new System.Threading.Mutex(true, "CubePdfUtilitySplash", out created);
+                if (!created) return;
 
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainForm(args));
+                var processes = System.Diagnostics.Process.GetProcessesByName("CubePdfUtility");
+                if (processes != null && processes.Length > 0)
+                {
+                    var launcher = new Launcher(args);
+                    launcher.Run();
+                    return;
+                }
 
-            mutex.ReleaseMutex();
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                Application.Run(new MainForm(args));
+
+                mutex.ReleaseMutex();
+            }
+            catch (Exception err) { System.Diagnostics.Trace.WriteLine(err.ToString()); }
         }
     }
 }
