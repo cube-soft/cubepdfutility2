@@ -260,9 +260,7 @@
             </r:Ribbon.TitleTemplate>
             
             <r:Ribbon.ApplicationMenu>
-                <r:RibbonApplicationMenu
-                    SmallImageSource="Images\Menu.png"
-                    Loaded="ApplicationMenu_Loaded">
+                <r:RibbonApplicationMenu SmallImageSource="Images\Menu.png">
 
                     <r:RibbonApplicationMenuItem Header="開く(_O)"
                         ToolTipTitle="開く"
@@ -398,12 +396,13 @@
                                 Padding="5,3,0,3"/>
 
                             <r:RibbonGallery
+                                x:Name="RecentFilesGallery"
                                 Margin="0,1,0,1"
                                 Grid.Row="1"
                                 MaxColumnCount="1"
                                 Command="Open"
                                 CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=SelectedItem, Converter={StaticResource ControlToTagConverter}}">
-                                <r:RibbonGalleryCategory x:Name="RecentFilesGallery" />
+                                <r:RibbonGalleryCategory x:Name="RecentFilesGalleryCategory" />
                             </r:RibbonGallery>
                         </Grid>
                     </r:RibbonApplicationMenu.AuxiliaryPaneContent>
@@ -1228,6 +1227,9 @@
                 <cube:ListViewDragBehavior ViewModel="{Binding ElementName=RibbonWindow, Path=ViewModel}"/>
             </i:Interaction.Behaviors>
         </ListView>
+
+        <local:NavigationCanvas Grid.Row="1" Grid.ColumnSpan="2" x:Name="NavigationCanvas"
+            Margin="0,0,0,0" Width="550" MenuItemClick="NavigationCanvas_MenuItemClick" />
 
         <StatusBar Grid.Row="2" Grid.ColumnSpan="2" x:Name="FooterStatusBar" Height="23"
             Foreground="{StaticResource TabForegroundBrush}"

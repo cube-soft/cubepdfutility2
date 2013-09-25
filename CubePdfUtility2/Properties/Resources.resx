@@ -136,7 +136,7 @@
     <value>{0} を開いています...</value>
   </data>
   <data name="PasswordPrompt" xml:space="preserve">
-    <value>{0} はパスワードで保護されています。パスワードを入力して下さい。</value>
+    <value>{0} はパスワードで保護されています。編集するためにはオーナーパスワードを入力して下さい。</value>
   </data>
   <data name="PdfExtension" xml:space="preserve">
     <value>.pdf</value>
@@ -146,5 +146,11 @@
   </data>
   <data name="SaveError" xml:space="preserve">
     <value>PDFの保存に失敗しました。PDFファイルがセキュリティ機能によって保護されていないか確認して下さい。</value>
+  </data>
+  <data name="TaggedPdf" xml:space="preserve">
+    <value>このファイルはタグ付き PDF（構造化された PDF）です。保存すると一部の情報が失われる可能性があります。</value>
+  </data>
+  <data name="WarningTitle" xml:space="preserve">
+    <value>CubePDF Utility</value>
   </data>
 </root>

@@ -5,17 +5,17 @@
 /// Copyright (c) 2013 CubeSoft, Inc. All rights reserved.
 ///
 /// This program is free software: you can redistribute it and/or modify
-/// it under the terms of the GNU General Public License as published by
-/// the Free Software Foundation, either version 3 of the License, or
+/// it under the terms of the GNU Affero General Public License as published
+/// by the Free Software Foundation, either version 3 of the License, or
 /// (at your option) any later version.
 ///
 /// This program is distributed in the hope that it will be useful,
 /// but WITHOUT ANY WARRANTY; without even the implied warranty of
 /// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-/// GNU General Public License for more details.
+/// GNU Affero General Public License for more details.
 ///
-/// You should have received a copy of the GNU General Public License
-/// along with this program.  If not, see < http://www.gnu.org/licenses/ >.
+/// You should have received a copy of the GNU Affero General Public License
+/// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ///
 /* ------------------------------------------------------------------------- */
 using System;
@@ -37,7 +37,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using IWshRuntimeLibrary;
 using Microsoft.Windows.Controls.Ribbon;
 
 namespace CubePdfUtility
@@ -91,8 +90,6 @@ namespace CubePdfUtility
             _viewmodel.BackupFolder = System.IO.Path.Combine(appdata, @"CubeSoft\CubePdfUtility2");
             _viewmodel.BackupDays = 30;
             _viewmodel.RunCompleted += new EventHandler(ViewModel_RunCompleted);
-
-            //InitializeTrace(_viewmodel.BackupFolder);
         }
 
         /* ----------------------------------------------------------------- */
@@ -109,7 +106,7 @@ namespace CubePdfUtility
             : this()
         {
             Loaded += (sender, e) => {
-                try { if (!String.IsNullOrEmpty(path))  OpenFile(path, ""); }
+                try { if (!String.IsNullOrEmpty(path))  OpenFileAsync(path, ""); }
                 catch (Exception err) { Trace.TraceError(err.ToString()); }
             };
         }
@@ -146,7 +143,7 @@ namespace CubePdfUtility
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
-        public CubePdf.Wpf.IListViewModel ViewModel
+        public CubePdf.Wpf.ListViewModel ViewModel
         {
             get { return _viewmodel; }
         }
@@ -188,7 +185,7 @@ namespace CubePdfUtility
                     path = dialog.FileName;
                 }
                 if (!String.IsNullOrEmpty(_viewmodel.FilePath) && !CloseFile()) return;
-                OpenFile(path, "");
+                OpenFileAsync(path, "");
             }
             catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
@@ -203,9 +200,6 @@ namespace CubePdfUtility
         /// 現在、開いている PDF ファイルを閉じます。
         /// パラメータ (e.Parameter) に "Exit" の文字列（を含む文字列）が
         /// 指定された場合はアプリケーション自体も終了します。
-        /// 
-        /// TODO: 内容が編集されている場合は、保存するかどうかを尋ねる
-        /// ダイアログを表示する。
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
@@ -338,7 +332,7 @@ namespace CubePdfUtility
                 dialog.Filter = Properties.Resources.PdfFilter;
                 dialog.CheckFileExists = true;
                 if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
-                InsertFile(index, dialog.FileName, "", obj as string);
+                InsertFileAsync(index, dialog.FileName, "", obj as string);
             }
             catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
@@ -496,8 +490,6 @@ namespace CubePdfUtility
         ///
         /// <summary>
         /// ページ順序を変更します。
-        /// 
-        /// TODO: パラメータ (e.Parameter) の整備
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
@@ -548,8 +540,6 @@ namespace CubePdfUtility
         ///
         /// <summary>
         /// 現在、選択されているページを回転します。
-        /// 
-        /// TODO: パラメータ (e.Parameter) の整備
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
@@ -800,6 +790,7 @@ namespace CubePdfUtility
         {
             try
             {
+                if (ViewSizeGallery == null || ViewSizeGallery.SelectedItem == null) return;
                 var item = (KeyValuePair<int, string>)ViewSizeGallery.SelectedItem;
                 var index = _ViewSize.IndexOf(item);
                 e.CanExecute = index < _ViewSize.Count - 1;
@@ -836,6 +827,7 @@ namespace CubePdfUtility
         {
             try
             {
+                if (ViewSizeGallery == null || ViewSizeGallery.SelectedItem == null) return;
                 var item = (KeyValuePair<int, string>)ViewSizeGallery.SelectedItem;
                 var index = _ViewSize.IndexOf(item);
                 e.CanExecute = index > 0;
@@ -1078,7 +1070,7 @@ namespace CubePdfUtility
 
             var dialog = new PasswordWindow(path, _font);
             dialog.Owner = this;
-            if (dialog.ShowDialog() == true && CloseFile()) OpenFile(path, dialog.Password);
+            if (dialog.ShowDialog() == true && CloseFile()) OpenFileAsync(path, dialog.Password);
         }
 
         #endregion
@@ -1117,7 +1109,6 @@ namespace CubePdfUtility
         {
             base.OnClosed(e);
             _viewmodel.Dispose();
-            //TerminateTrace();
         }
 
         /* ----------------------------------------------------------------- */
@@ -1171,7 +1162,7 @@ namespace CubePdfUtility
             {
                 if (System.IO.Path.GetExtension(file) == Properties.Resources.PdfExtension)
                 {
-                    OpenFile(file, "");
+                    OpenFileAsync(file, "");
                     e.Handled = true;
                     return;
                 }
@@ -1200,7 +1191,7 @@ namespace CubePdfUtility
         /// 
         /// <summary>
         /// メイン画面が表示された後に実行されるイベントハンドラです。
-        /// スプラッシュ画面の終了とアップデートの確認が行われます。
+        /// スプラッシュ画面の終了、およびアップデートの確認が行われます。
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
@@ -1213,34 +1204,13 @@ namespace CubePdfUtility
             try
             {
                 foreach (var ps in Process.GetProcessesByName("CubePdfUtilitySplash")) ps.Kill();
-
+                
                 if (string.IsNullOrEmpty(_setting.InstallDirectory) ||
                     DateTime.Now <= _setting.LastCheckUpdate.AddDays(1)) return;
                 var path = System.IO.Path.Combine(_setting.InstallDirectory, "UpdateChecker.exe");
                 Process.Start(path);
             }
             catch (Exception err) { Trace.TraceError(err.ToString()); }
-        }
-
-        /* ----------------------------------------------------------------- */
-        ///
-        /// ApplicationMenu_Loaded
-        /// 
-        /// <summary>
-        /// リボンアプリケーションが読み込まれた際に実行されます。
-        /// </summary>
-        ///
-        /* ----------------------------------------------------------------- */
-        private void ApplicationMenu_Loaded(object sender, RoutedEventArgs e)
-        {   
-            var recents = GetRecentFiles("*.pdf");
-            for (int i = 0; i < recents.Count; ++i)
-            {
-                var gallery = new RibbonGalleryItem();
-                gallery.Content = String.Format("{0} {1}", i + 1, System.IO.Path.GetFileName(recents[i]));
-                gallery.Tag = recents[i];
-                RecentFilesGallery.Items.Add(gallery);
-            }
         }
 
         /* ----------------------------------------------------------------- */
@@ -1272,9 +1242,28 @@ namespace CubePdfUtility
             _viewmodel.Refresh();
         }
 
+        /* ----------------------------------------------------------------- */
+        ///
+        /// NavigationCanvas_MenuItemClick
+        /// 
+        /// <summary>
+        /// ナビゲーション画面に表示されている各メニュー項目がクリックされた
+        /// 時に実行されるイベントハンドラです。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void NavigationCanvas_MenuItemClick(object sender, RoutedEventArgs e)
+        {
+            var control = sender as MenuItem;
+            if (control != null && control.Tag != null)
+            {
+                OpenFileAsync(control.Tag as string, "");
+            }
+        }
+
         #endregion
 
-        #region Methods for UserSetting
+        #region Private methods for UserSetting
 
         /* ----------------------------------------------------------------- */
         ///
@@ -1287,30 +1276,36 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         private void LoadSetting(object sender, EventArgs e)
         {
-            _setting.Load();
-
-            if (_setting.IsMaximized) WindowState = WindowState.Maximized;
-            else
+            try
             {
-                Width  = Math.Max(_setting.Size.Width, _MinSize);
-                Height = Math.Max(_setting.Size.Height, _MinSize);
-                Left   = Math.Max(Math.Min(_setting.Position.X, SystemParameters.WorkArea.Right - Width), 8);
-                Top    = Math.Max(Math.Min(_setting.Position.Y, SystemParameters.WorkArea.Bottom - Height), 0);
-            }
+                _setting.Load();
 
-            // NOTE: ItemWidth は、既に用意されている選択肢 (_ViewSize) のうち、
-            // ユーザ設定に保存されている値を超えない最大値を使用する。
-            ViewSizeGalleryCategory.ItemsSource = _ViewSize;
-            var size = _ViewSize[0];
-            foreach (var item in _ViewSize)
-            {
-                if (item.Key > _setting.ItemWidth) break;
-                size = item;
-            }
-            ViewSizeGallery.SelectedItem = size;
+                if (_setting.IsMaximized) WindowState = WindowState.Maximized;
+                else
+                {
+                    Width = Math.Max(_setting.Size.Width, _MinSize);
+                    Height = Math.Max(_setting.Size.Height, _MinSize);
+                    Left = Math.Max(Math.Min(_setting.Position.X, SystemParameters.WorkArea.Right - Width), 8);
+                    Top = Math.Max(Math.Min(_setting.Position.Y, SystemParameters.WorkArea.Bottom - Height), 0);
+                }
 
-            _viewmodel.ItemVisibility = _setting.ItemVisibility;
-            ViewModeCheckBox.IsChecked = (_setting.ItemVisibility == CubePdf.Wpf.ListViewItemVisibility.Minimum);
+                // NOTE: ItemWidth は、既に用意されている選択肢 (_ViewSize) のうち、
+                // ユーザ設定に保存されている値を超えない最大値を使用する。
+                ViewSizeGalleryCategory.ItemsSource = _ViewSize;
+                var size = _ViewSize[0];
+                foreach (var item in _ViewSize)
+                {
+                    if (item.Key > _setting.ItemWidth) break;
+                    size = item;
+                }
+                ViewSizeGallery.SelectedItem = size;
+
+                _viewmodel.ItemVisibility = _setting.ItemVisibility;
+                ViewModeCheckBox.IsChecked = (_setting.ItemVisibility == CubePdf.Wpf.ListViewItemVisibility.Minimum);
+
+                UpdateRecentFiles();
+            }
+            catch (Exception err) { Trace.WriteLine(err.ToString()); }
         }
 
         /* ----------------------------------------------------------------- */
@@ -1324,103 +1319,179 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         private void SaveSetting(object sender, EventArgs e)
         {
-            _setting.Position = new Point(Left, Top);
-            _setting.Size = new Size((int)Width, (int)Height);
-            _setting.IsMaximized = (WindowState == WindowState.Maximized);
-            _setting.ItemWidth = _viewmodel.ItemWidth;
-            _setting.ItemVisibility = _viewmodel.ItemVisibility;
-            _setting.Save();
+            try
+            {
+                _setting.Position = new Point(Left, Top);
+                _setting.Size = new Size((int)Width, (int)Height);
+                _setting.IsMaximized = (WindowState == WindowState.Maximized);
+                _setting.ItemWidth = _viewmodel.ItemWidth;
+                _setting.ItemVisibility = _viewmodel.ItemVisibility;
+                _setting.Save();
+            }
+            catch (Exception err) { Trace.WriteLine(err.ToString()); }
         }
 
         #endregion
 
-        #region Methods for trace log
-
-        /* ----------------------------------------------------------------- */
-        ///
-        /// InitializeTrace
-        /// 
-        /// <summary>
-        /// Trace に対して必要な初期化処理を行います。
-        /// </summary>
-        ///
-        /* ----------------------------------------------------------------- */
-        private void InitializeTrace(string root)
-        {
-            var dir  = System.IO.Path.Combine(root, DateTime.Today.ToString("yyyyMMdd"));
-            if (!System.IO.Directory.Exists(dir)) System.IO.Directory.CreateDirectory(dir);
-
-            var path = System.IO.Path.Combine(dir, "CubePdfUtility.log");
-            Trace.Listeners.Remove("Default");
-            Trace.Listeners.Add(new TextWriterTraceListener(path));
-            Trace.AutoFlush = true;
-
-            Trace.TraceInformation(DateTime.Now.ToString());
-            Trace.TraceInformation("CubePDF Utility version {0} ({1})", _setting.Version, ((IntPtr.Size == 4) ? "x86" : "x64"));
-            Trace.TraceInformation("Windows {0}", Environment.OSVersion.ToString());
-        }
-
-        /* ----------------------------------------------------------------- */
-        ///
-        /// TerminateTrace
-        /// 
-        /// <summary>
-        /// Trace に対して必要な終了処理を行います。
-        /// </summary>
-        ///
-        /* ----------------------------------------------------------------- */
-        private void TerminateTrace()
-        {
-            Trace.Close();
-        }
-
-        #endregion
-
-        #region Other Methods
+        #region Private methods for open, insert, and close operations
 
         /* ----------------------------------------------------------------- */
         ///
         /// OpenFile
         /// 
         /// <summary>
-        /// 指定されたパスの PDF ファイルを開きます。パスワードが設定されて
-        /// いる場合は、パスワードを入力するためのダイアログを表示して
-        /// ユーザに入力してもらいます。入力されたパスワードが間違っていた
-        /// 場合は、正しいパスワードが入力されるか、またはキャンセルボタンが
-        /// 押下されるまでダイアログを表示し続けます。
+        /// 指定された IDocumentReader オブジェクトを用いて GUI 上に該当
+        /// ファイルの内容を表示します。
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
-        private void OpenFile(string path, string password)
+        private void OpenFile(CubePdf.Data.IDocumentReader reader)
+        {
+            try {
+                _viewmodel.Open(reader);
+                RecentFile.Add(reader.FilePath);
+                UpdateRecentFiles();
+            }
+            catch (Exception err)
+            {
+                MessageBox.Show(Properties.Resources.OpenError, Properties.Resources.ErrorTitle,
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                Trace.TraceError(err.ToString());
+                Refresh();
+            }
+            finally { reader.Dispose(); }
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// OpenFileAsync
+        /// 
+        /// <summary>
+        /// 指定されたパスの PDF ファイルを非同期で開きます。
+        /// </summary>
+        /// 
+        /// <remarks>
+        /// パスワードが設定されている場合は、パスワードを入力するための
+        /// ダイアログを表示してユーザに入力してもらいます。入力された
+        /// パスワードが間違っていた場合は、正しいパスワードが入力されるか、
+        /// またはキャンセルボタンが押下されるまでダイアログを表示し続けます。
+        /// 
+        /// ナビゲーション用の画面に関しては、非同期処理中にメニュー項目が
+        /// クリックされたと誤判断される事があるため、非同期処理に移る前に
+        /// 非表示に設定しています。
+        /// </remarks>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void OpenFileAsync(string path, string password)
         {
             Cursor = Cursors.Wait;
             var filename = System.IO.Path.GetFileName(path);
             var message = String.Format(Properties.Resources.OpenFile, filename);
             InfoStatusBarItem.Content = message;
 
+            NavigationCanvas.Visibility = Visibility.Collapsed;
             ThreadPool.QueueUserWorkItem(new WaitCallback((Object parameter) => {
                 var reader = new CubePdf.Editing.DocumentReader();
-                try { reader.Open(path, password); }
+                try
+                {
+                    reader.Open(path, password);
+                    if (NeedPassword(reader)) throw new CubePdf.Data.EncryptionException();
+                    else Dispatcher.BeginInvoke(new Action(() => {
+                        OpenFile(reader);
+                        if (reader.IsTaggedDocument)
+                        {
+                            MessageBox.Show(Properties.Resources.TaggedPdf, Properties.Resources.WarningTitle,
+                                MessageBoxButton.OK, MessageBoxImage.Warning);
+                        }
+                    }));
+                }
                 catch (CubePdf.Data.EncryptionException /* err */)
                 {
                     Dispatcher.BeginInvoke(new Action(() => {
                         var dialog = new PasswordWindow(path, _font);
                         dialog.Owner = this;
-                        if (dialog.ShowDialog() == true) OpenFile(path, dialog.Password);
+                        if (dialog.ShowDialog() == true) OpenFileAsync(path, dialog.Password);
                         else Refresh();
                     }));
                 }
+            }), null);
+        }
 
-                Dispatcher.BeginInvoke(new Action(() => {
-                    try { _viewmodel.Open(reader); }
-                    catch (Exception err)
-                    {
-                        MessageBox.Show(Properties.Resources.OpenError, Properties.Resources.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
-                        Trace.TraceError(err.ToString());
-                        Refresh();
-                    }
-                    finally { reader.Dispose(); }
-                }));
+        /* ----------------------------------------------------------------- */
+        ///
+        /// InsertFile
+        /// 
+        /// <summary>
+        /// 指定された IDocumentReader オブジェクトを用いて GUI 上に該当
+        /// ファイルの内容を追加表示します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void InsertFile(int index, CubePdf.Data.IDocumentReader reader, string history)
+        {
+            try
+            {
+                _viewmodel.Insert(index, reader);
+                _viewmodel.History[0].Text = history;
+            }
+            catch (ArgumentException err)
+            {
+                MessageBox.Show(err.Message, Properties.Resources.ErrorTitle,
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                Trace.TraceError(err.ToString());
+                Refresh();
+            }
+            catch (Exception err)
+            {
+                MessageBox.Show(Properties.Resources.InsertError, Properties.Resources.ErrorTitle,
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                Trace.TraceError(err.ToString());
+                Refresh();
+            }
+            finally { reader.Dispose(); }
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// InsertFileAsync
+        /// 
+        /// <summary>
+        /// index の位置に指定された PDF ファイルを挿入します。
+        /// </summary>
+        /// 
+        /// <remarks>
+        /// パスワードが設定されている場合は、パスワードを入力するための
+        /// ダイアログを表示してユーザに入力してもらいます。入力された
+        /// パスワードが間違っていた場合は、正しいパスワードが入力されるか、
+        /// またはキャンセルボタンが押下されるまでダイアログを表示し続けます。
+        /// </remarks>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void InsertFileAsync(int index, string path, string password, string history)
+        {
+            Cursor = Cursors.Wait;
+            var filename = System.IO.Path.GetFileName(path);
+            var message = String.Format(Properties.Resources.InsertFile, filename);
+            InfoStatusBarItem.Content = message;
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback((Object parameter) => {
+                var reader = new CubePdf.Editing.DocumentReader();
+                try
+                {
+                    reader.Open(path, password);
+                    if (NeedPassword(reader)) throw new CubePdf.Data.EncryptionException();
+                    Dispatcher.BeginInvoke(new Action(() => {
+                        InsertFile(index, reader, history);
+                    }));
+                }
+                catch (CubePdf.Data.EncryptionException /* err */)
+                {
+                    Dispatcher.BeginInvoke(new Action(() => {
+                        var dialog = new PasswordWindow(path, _font);
+                        dialog.Owner = this;
+                        if (dialog.ShowDialog() == true) InsertFileAsync(index, path, dialog.Password, history);
+                    }));
+                }
             }), null);
         }
 
@@ -1463,61 +1534,9 @@ namespace CubePdfUtility
             return true;
         }
 
-        /* ----------------------------------------------------------------- */
-        ///
-        /// InsertFile
-        /// 
-        /// <summary>
-        /// index の位置に指定された PDF ファイルを挿入します。パスワードが
-        /// 設定されている場合は、パスワードを入力するためのダイアログを表示
-        /// してユーザに入力してもらいます。入力されたパスワードが間違って
-        /// いた場合は、正しいパスワードが入力されるか、またはキャンセル
-        /// ボタンが押下されるまでダイアログを表示し続けます。
-        /// </summary>
-        ///
-        /* ----------------------------------------------------------------- */
-        private void InsertFile(int index, string path, string password, string history)
-        {
-            Cursor = Cursors.Wait;
-            var filename = System.IO.Path.GetFileName(path);
-            var message = String.Format(Properties.Resources.InsertFile, filename);
-            InfoStatusBarItem.Content = message;
+        #endregion
 
-            ThreadPool.QueueUserWorkItem(new WaitCallback((Object parameter) => {
-                var reader = new CubePdf.Editing.DocumentReader();
-                try { reader.Open(path, password); }
-                catch (CubePdf.Data.EncryptionException /* err */)
-                {
-                    Dispatcher.BeginInvoke(new Action(() => {
-                        var dialog = new PasswordWindow(path, _font);
-                        dialog.Owner = this;
-                        if (dialog.ShowDialog() == true) InsertFile(index, path, dialog.Password, history);
-                    }));
-                }
-
-                Dispatcher.BeginInvoke(new Action(() => {
-                    try
-                    {
-                        _viewmodel.Insert(index, reader);
-                        _viewmodel.History[0].Text = history;
-                    }
-                    catch (ArgumentException err)
-                    {
-                        MessageBox.Show(err.Message, Properties.Resources.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
-                        Trace.TraceError(err.ToString());
-                        Refresh();
-                    }
-                    catch (Exception err)
-                    {
-                        MessageBox.Show(Properties.Resources.InsertError, Properties.Resources.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
-                        Trace.TraceError(err.ToString());
-                        Refresh();
-                    }
-                    finally { reader.Dispose(); }
-                }));
-
-            }), null);
-        }
+        #region Private methods for others
 
         /* ----------------------------------------------------------------- */
         ///
@@ -1541,6 +1560,7 @@ namespace CubePdfUtility
                 var mstr = _viewmodel.IsModified ? "*" : "";
                 Title = String.Format("{0}{1}{2} - {3}", filename, mstr, rstr, ProductName);
 
+                NavigationCanvas.Visibility = Visibility.Collapsed;
                 InfoStatusBarItem.Content = String.Format("{0} ページ", _viewmodel.PageCount);
                 LockStatusBarItem.Visibility = restricted ? Visibility.Visible : Visibility.Collapsed;
                 Thumbnail.Focus();
@@ -1548,10 +1568,59 @@ namespace CubePdfUtility
             else
             {
                 Title = ProductName;
+                NavigationCanvas.Visibility = Visibility.Visible;
                 if (InfoStatusBarItem != null) InfoStatusBarItem.Content = string.Empty;
                 if (LockStatusBarItem != null) LockStatusBarItem.Visibility = Visibility.Collapsed;
             }
             Cursor = Cursors.Arrow;
+            RecentFilesGallery.SelectedItem = null;
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// UpdateRecentFiles
+        /// 
+        /// <summary>
+        /// システムの「最近開いたファイル」から情報を取得して、最新の状態に
+        /// 更新します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void UpdateRecentFiles()
+        {
+            var recents = RecentFile.Find("*.pdf");
+            
+            RecentFilesGalleryCategory.Items.Clear();
+            for (int i = 0; i < recents.Length; ++i)
+            {
+                var gallery = new RibbonGalleryItem();
+                gallery.Content = String.Format("{0} {1}", i + 1, System.IO.Path.GetFileName(recents[i]));
+                gallery.Tag = recents[i];
+                RecentFilesGalleryCategory.Items.Add(gallery);
+            }
+
+            NavigationCanvas.Clear();
+            NavigationCanvas.AddFiles(recents);
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// NeedPassword
+        /// 
+        /// <summary>
+        /// パスワードが必要かどうかを判断します。
+        /// </summary>
+        /// 
+        /// <remarks>
+        /// AES256 の場合は、オーナーパスワード無しでは表示できないため
+        /// （PDFLibNet の関係）パスワードを要求するようにしています。
+        /// </remarks>
+        ///
+        /* ----------------------------------------------------------------- */
+        private bool NeedPassword(CubePdf.Editing.DocumentReader reader)
+        {
+            return reader.EncryptionStatus == CubePdf.Data.EncryptionStatus.RestrictedAccess &&
+                   reader.Encryption.Method == CubePdf.Data.EncryptionMethod.Aes256;
         }
 
         /* ----------------------------------------------------------------- */
@@ -1577,43 +1646,11 @@ namespace CubePdfUtility
                     MainRibbon.FontFamily = new FontFamily(ff.Name);
                     Thumbnail.ContextMenu.FontFamily = new FontFamily(ff.Name);
                     FooterStatusBar.FontFamily = new FontFamily(ff.Name);
+                    NavigationCanvas.FontFamily = new FontFamily(ff.Name);
                     _font = ff.Name;
                     break;
                 }
             }
-        }
-
-        /* ----------------------------------------------------------------- */
-        ///
-        /// GetRecentFiles
-        /// 
-        /// <summary>
-        /// システムの「最近開いたファイル」から pattern に一致するファイル
-        /// 一覧を取得します（.lnk は自動的に付与されます）。
-        /// </summary>
-        /// 
-        /// <remarks>
-        /// 取得されるパスは、リンク先の最終的なファイルへのパスです。
-        /// 「最近開いたファイル」のうち、既に存在しないファイルは結果に
-        /// 含まれません。
-        /// </remarks>
-        ///
-        /* ----------------------------------------------------------------- */
-        private IList<string> GetRecentFiles(string pattern)
-        {
-            var dest = new List<string>();
-            var shell = new IWshShell_Class();
-            var folder = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Recent);
-            var links = System.IO.Directory.GetFiles(folder + "\\", pattern + ".lnk");
-
-            foreach (var link in links)
-            {
-                var shortcut = shell.CreateShortcut(link) as IWshShortcut_Class;
-                if (shortcut == null || !System.IO.File.Exists(shortcut.TargetPath)) continue;
-                dest.Add(shortcut.TargetPath);
-            }
-
-            return dest;
         }
 
         /* ----------------------------------------------------------------- */
