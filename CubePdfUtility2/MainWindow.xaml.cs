@@ -331,8 +331,10 @@ namespace CubePdfUtility
                 var dialog = new System.Windows.Forms.OpenFileDialog();
                 dialog.Filter = Properties.Resources.PdfFilter;
                 dialog.CheckFileExists = true;
+                dialog.Multiselect = true;
                 if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
-                InsertFileAsync(index, dialog.FileName, "", obj as string);
+                if (dialog.FileNames.Length == 1) InsertFileAsync(index, dialog.FileName, "", obj as string);
+                else InsertFiles(index, dialog.FileNames, obj as string);
             }
             catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
@@ -1453,7 +1455,7 @@ namespace CubePdfUtility
 
         /* ----------------------------------------------------------------- */
         ///
-        /// InsertFileAsync
+        /// InsertFile
         /// 
         /// <summary>
         /// index の位置に指定された PDF ファイルを挿入します。
@@ -1465,6 +1467,56 @@ namespace CubePdfUtility
         /// パスワードが間違っていた場合は、正しいパスワードが入力されるか、
         /// またはキャンセルボタンが押下されるまでダイアログを表示し続けます。
         /// </remarks>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void InsertFile(int index, string path, string password, string history)
+        {
+            Cursor = Cursors.Wait;
+            var filename = System.IO.Path.GetFileName(path);
+            var message = String.Format(Properties.Resources.InsertFile, filename);
+            InfoStatusBarItem.Content = message;
+
+            var reader = new CubePdf.Editing.DocumentReader();
+            try
+            {
+                reader.Open(path, password);
+                if (NeedPassword(reader)) throw new CubePdf.Data.EncryptionException();
+                InsertFile(index, reader, history);
+            }
+            catch (CubePdf.Data.EncryptionException /* err */)
+            {
+                var dialog = new PasswordWindow(path, _font);
+                dialog.Owner = this;
+                if (dialog.ShowDialog() == true) InsertFile(index, path, dialog.Password, history);
+            }
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// InsertFiles
+        /// 
+        /// <summary>
+        /// index の位置に指定された PDF ファイル群を挿入します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void InsertFiles(int index, string[] files, string history)
+        {
+            foreach (var path in files)
+            {
+                var count = _viewmodel.PageCount;
+                InsertFile(index, path, "", history);
+                index += _viewmodel.PageCount - count;
+            }
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// InsertFileAsync
+        /// 
+        /// <summary>
+        /// index の位置に指定された PDF ファイルを非同期で挿入します。
+        /// </summary>
         ///
         /* ----------------------------------------------------------------- */
         private void InsertFileAsync(int index, string path, string password, string history)
