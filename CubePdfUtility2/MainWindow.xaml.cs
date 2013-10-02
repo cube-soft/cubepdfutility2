@@ -288,6 +288,8 @@ namespace CubePdfUtility
                 dialog.OverwritePrompt = true;
                 if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
                 _viewmodel.Save(dialog.FileName);
+                RecentFile.Add(dialog.FileName);
+                UpdateRecentFiles();
             }
             catch (Exception err)
             {
