@@ -1529,6 +1529,9 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         private void InsertFiles()
         {
+            var dialog = new InsertWindow();
+            dialog.Owner = this;
+            if (dialog.ShowDialog() == false) return;
             throw new NotImplementedException();
         }
 
