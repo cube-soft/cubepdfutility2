@@ -327,6 +327,12 @@ namespace CubePdfUtility
         {
             try
             {
+                if (e.Parameter == null)
+                {
+                    InsertFiles();
+                    return;
+                }
+
                 var index = Math.Max(Math.Min((int)e.Parameter + 1, _viewmodel.PageCount), 0);
                 var obj = (index == 0) ? InsertHead.Header
                     : (index == _viewmodel.PageCount) ? InsertTail.Header
@@ -1509,6 +1515,21 @@ namespace CubePdfUtility
                 InsertFile(index, path, "", history);
                 index += _viewmodel.PageCount - count;
             }
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// InsertFiles
+        /// 
+        /// <summary>
+        /// 「詳細を設定して挿入」のためのダイアログを表示し、設定項目に
+        /// したがってファイルを挿入します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void InsertFiles()
+        {
+            throw new NotImplementedException();
         }
 
         /* ----------------------------------------------------------------- */

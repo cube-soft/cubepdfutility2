@@ -827,6 +827,25 @@
                                 </Style>
                             </r:RibbonMenuItem.Style>
                         </r:RibbonMenuItem>
+
+                        <r:RibbonMenuItem Header="詳細を設定して挿入"
+                            x:Name="InsertDetail"
+                            Command="{x:Static cube:ListViewCommands.Insert}">
+
+                            <r:RibbonMenuItem.Style>
+                                <Style TargetType="r:RibbonMenuItem">
+                                    <Style.Triggers>
+                                        <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="True">
+                                            <Setter Property="ImageSource" Value="Images\SmallIcons\Insert.png"/>
+                                        </Trigger>
+
+                                        <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="False">
+                                            <Setter Property="ImageSource" Value="Images\SmallIcons\InsertDisable.png"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </r:RibbonMenuItem.Style>
+                        </r:RibbonMenuItem>
                     </r:RibbonSplitButton>
 
                     <r:RibbonSplitButton Label="削除"
