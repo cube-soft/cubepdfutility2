@@ -305,10 +305,13 @@ namespace CubePdfUtility
         /// 
         /// <summary>
         /// 現在、開いている PDF ファイルに新しい PDF ファイルを挿入します。
-        /// パラメータ (e.Parameter) は、null、または挿入位置へのインデックス
-        /// です。挿入位置へのインデックスが指定された場合はその直後に、
-        /// null の場合は先頭に挿入します。パラメータが -1 の場合は、挿入位置
-        /// が指定されていない事を表します（ListView.SelectedIndex の挙動）。
+        /// パラメータ (e.Parameter) は、null、-2、または挿入位置への
+        /// インデックスです。挿入位置へのインデックスが指定された場合は
+        /// その直後に、-2 の場合は先頭に挿入します。
+        /// パラメータが -1 の場合は、挿入位置が指定されていない事を表します
+        /// （ListView.SelectedIndex の挙動）。
+        /// 
+        /// パラメータが null の場合は詳細設定用のダイアログを表示します。
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
@@ -317,24 +320,22 @@ namespace CubePdfUtility
         private void InsertCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             this.InsertButton.IsEnabled = _viewmodel.PageCount > 0;
-            e.CanExecute = (e.Parameter == null || (int)e.Parameter >= 0);
+            e.CanExecute = (e.Parameter == null || (int)e.Parameter != -1);
         }
 
         private void InsertCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             try
             {
-                var index = (e.Parameter != null) ? Math.Min((int)e.Parameter + 1, _viewmodel.PageCount) : 0;
+                var index = Math.Max(Math.Min((int)e.Parameter + 1, _viewmodel.PageCount), 0);
                 var obj = (index == 0) ? InsertHead.Header
                     : (index == _viewmodel.PageCount) ? InsertTail.Header
                     : InsertSelect.Header;
                 var dialog = new System.Windows.Forms.OpenFileDialog();
                 dialog.Filter = Properties.Resources.PdfFilter;
                 dialog.CheckFileExists = true;
-                dialog.Multiselect = true;
                 if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
-                if (dialog.FileNames.Length == 1) InsertFileAsync(index, dialog.FileName, "", obj as string);
-                else InsertFiles(index, dialog.FileNames, obj as string);
+                InsertFileAsync(index, dialog.FileName, "", obj as string);
             }
             catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
