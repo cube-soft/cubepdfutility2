@@ -220,6 +220,8 @@ namespace CubePdfUtility
             finally
             {
                 Refresh();
+                var scroll = CubePdf.Wpf.VisualHelper.FindVisualChild<ScrollViewer>(Thumbnail);
+                if (scroll != null) scroll.ScrollToVerticalOffset(0);
                 if (e.Handled)
                 {
                     var name = (e != null) ? e.Parameter as string : null;
