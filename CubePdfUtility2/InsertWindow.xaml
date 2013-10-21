@@ -47,12 +47,27 @@
 
             <Grid Grid.Column="0">
                 <ListView x:Name="FileListView" Margin="12,6,6,12">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
+
                     <ListView.View>
                         <GridView>
-                            <GridViewColumn Header="ファイル名" />
-                            <GridViewColumn Header="ページ数" />
-                            <GridViewColumn Header="サイズ" />
-                            <GridViewColumn Header="更新日時" />
+                            <GridViewColumn Header="名前" Width="180"
+                                DisplayMemberBinding="{Binding Path=Name}" />
+
+                            <GridViewColumn Header="更新日時" Width="150"
+                                DisplayMemberBinding="{Binding Path=LastWriteTime}"  />
+
+                            <GridViewColumn Header="サイズ" Width="100">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Path=Length}" HorizontalAlignment="Right"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
                         </GridView>
                     </ListView.View>
                 </ListView>

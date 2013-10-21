@@ -20,6 +20,7 @@
 /* ------------------------------------------------------------------------- */
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
@@ -52,6 +53,40 @@ namespace CubePdfUtility
         public InsertWindow()
         {
             InitializeComponent();
+            FileListView.ItemsSource = _files;
+        }
+
+        #endregion
+
+        #region Properties
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// FileList
+        /// 
+        /// <summary>
+        /// 挿入するファイル一覧を取得、または設定します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        public IList<System.IO.FileInfo> FileList
+        {
+            get { return _files; }
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// Index
+        /// 
+        /// <summary>
+        /// 挿入する位置を表すインデックスを取得、または設定します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        public int Index
+        {
+            get { return _index; }
+            set { _index = value; }
         }
 
         #endregion
@@ -72,11 +107,12 @@ namespace CubePdfUtility
 
         private void SaveCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = true;
+            e.CanExecute = (_files.Count > 0);
         }
 
         private void SaveCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
+            // TODO: ラジオボタンの状態を見て、Index の値を更新する。
             DialogResult = true;
             Close();
         }
@@ -129,7 +165,22 @@ namespace CubePdfUtility
 
         private void AddCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            // TODO: implementation
+            try
+            {
+                var path = e.Parameter as string;
+                if (path == null)
+                {
+                    var dialog = new System.Windows.Forms.OpenFileDialog();
+                    dialog.Filter = Properties.Resources.PdfFilter;
+                    dialog.CheckFileExists = true;
+                    if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
+                    path = dialog.FileName;
+                }
+                if (string.IsNullOrEmpty(path)) return;
+                _files.Add(new System.IO.FileInfo(path));
+                Trace.WriteLine(_files[0].Name);
+            }
+            catch (Exception err) { Trace.WriteLine(err.ToString()); }
         }
 
         #endregion
@@ -157,7 +208,7 @@ namespace CubePdfUtility
                     return;
                 }
                 var index = FileListView.SelectedIndex + (int)e.Parameter;
-                e.CanExecute = (0 <= index && index < FileListView.Items.Count);
+                e.CanExecute = (0 <= index && index < _files.Count);
             }
             catch (Exception err)
             {
@@ -211,7 +262,7 @@ namespace CubePdfUtility
 
         private void ClearCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = (FileListView != null && FileListView.Items.Count > 0);
+            e.CanExecute = (_files.Count > 0);
         }
 
         private void ClearCommand_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -221,6 +272,11 @@ namespace CubePdfUtility
 
         #endregion
 
+        #endregion
+
+        #region Variables
+        private ObservableCollection<System.IO.FileInfo> _files = new ObservableCollection<System.IO.FileInfo>();
+        private int _index = 0;
         #endregion
 
         /* ----------------------------------------------------------------- */
