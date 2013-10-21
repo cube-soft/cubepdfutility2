@@ -16,22 +16,15 @@
         </Grid.RowDefinitions>
 
         <GroupBox Grid.Row="0" Header="挿入位置" Margin="12,12,12,6">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <RadioButton Grid.Column="0" GroupName="insert-mode" Margin="5" IsChecked="True" FontSize="12">先頭</RadioButton>
-                <RadioButton Grid.Column="1" GroupName="insert-mode" Margin="5" FontSize="12">末尾</RadioButton>
-                <RadioButton Grid.Column="2" GroupName="insert-mode" Margin="5" FontSize="12">選択位置の後ろ</RadioButton>
-                <RadioButton Grid.Column="3" GroupName="insert-mode" Margin="5" FontSize="12">ページを指定</RadioButton>
-                <TextBox Grid.Column="4" Background="LightGray" Margin="10,0,10,0" IsEnabled="False" Width="20"></TextBox>
-                <TextBlock Grid.Column="5" Margin="5">/ 99ページ</TextBlock>
-            </Grid>
+            <StackPanel Orientation="Horizontal">
+                <RadioButton x:Name="HeadRadioButton"      GroupName="InsertPositionGroup" Margin="3,3,12,3" IsChecked="True">先頭</RadioButton>
+                <RadioButton x:Name="TailRadioButton"      GroupName="InsertPositionGroup" Margin="3,3,12,3">末尾</RadioButton>
+                <RadioButton x:Name="CurrentRadioButton"   GroupName="InsertPositionGroup" Margin="3,3,12,3">選択位置</RadioButton>
+                <RadioButton x:Name="UserInputRadioButton" GroupName="InsertPositionGroup" Margin="3,3,6,3">ページを指定</RadioButton>
+                <TextBox x:Name="PageNumberTextBox" Margin="3,0,3,0" Width="60"
+                    IsEnabled="{Binding ElementName=UserInputtedRadioButton, Path=IsChecked}" />
+                <TextBlock x:Name="TotalPageTextBlock" Margin="3">/ 99ページ</TextBlock>
+            </StackPanel>
         </GroupBox>
 
         <Grid Grid.Row="1">
@@ -53,21 +46,13 @@
                 </ListView>
             </Grid>
 
-            <Grid Grid.Column="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                </Grid.RowDefinitions>
-
-                <Button Grid.Row="0" Content="ファイルを追加" Margin="6,6,12,3" />
-                <Button Grid.Row="1" Content="上へ" Margin="6,3,12,3" />
-                <Button Grid.Row="2" Content="下へ" Margin="6,3,12,3" />
-                <Button Grid.Row="3" Content="削除" Margin="6,3,12,3" />
-                <Button Grid.Row="4" Content="全て削除" Margin="6,3,12,6" />
-            </Grid>
+            <StackPanel Grid.Column="1">
+                <Button Content="ファイルを追加..." Margin="6,6,12,3" />
+                <Button Content="上へ" Margin="6,3,12,3" />
+                <Button Content="下へ" Margin="6,3,12,3" />
+                <Button Content="削除" Margin="6,3,12,3" />
+                <Button Content="全て削除" Margin="6,3,12,6" />
+            </StackPanel>
         </Grid>
 
         <Grid Grid.Row="2" Background="{x:Static SystemColors.ControlBrush}">
