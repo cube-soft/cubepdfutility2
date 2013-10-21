@@ -56,6 +56,31 @@ namespace CubePdfUtility
             FileListView.ItemsSource = _files;
         }
 
+        /* ----------------------------------------------------------------- */
+        ///
+        /// InsertWindow (constructor)
+        /// 
+        /// <summary>
+        /// 引数に指定された現在の選択位置と総ページ数の値を用いて
+        /// オブジェクトを初期化します。
+        /// </summary>
+        /// 
+        /// <remarks>
+        /// TODO: index には SelectedIndex を指定するのでどのページも選択
+        /// されていない場合は -1 が指定される。その場合は、「現在の選択位置」
+        /// のラジオボタンを選択不可能の状態にし、ラジオボタンの選択状況の
+        /// 初期値を「先頭」に移す。
+        /// </remarks>
+        ///
+        /* ----------------------------------------------------------------- */
+        public InsertWindow(int index, int total)
+            : this()
+        {
+            _index = index;
+            _total = total;
+            TotalPageTextBlock.Text = string.Format("/ {0} ページ", _total);
+        }
+
         #endregion
 
         #region Properties
@@ -277,6 +302,7 @@ namespace CubePdfUtility
         #region Variables
         private ObservableCollection<System.IO.FileInfo> _files = new ObservableCollection<System.IO.FileInfo>();
         private int _index = 0;
+        private int _total = 0;
         #endregion
 
         /* ----------------------------------------------------------------- */

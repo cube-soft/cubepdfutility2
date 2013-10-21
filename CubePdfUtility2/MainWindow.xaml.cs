@@ -1529,7 +1529,7 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         private void InsertFiles()
         {
-            var dialog = new InsertWindow();
+            var dialog = new InsertWindow(Thumbnail.SelectedIndex, _viewmodel.PageCount);
             dialog.Owner = this;
             if (dialog.ShowDialog() == false) return;
             throw new NotImplementedException();
