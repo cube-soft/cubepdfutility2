@@ -33,8 +33,8 @@
 
         <GroupBox Header="挿入位置" Margin="12,12,12,6" Grid.ColumnSpan="2">
             <StackPanel Orientation="Horizontal">
-                <RadioButton x:Name="CurrentRadioButton"   GroupName="InsertPositionGroup" Margin="3,3,12,3" IsChecked="True">現在の選択位置</RadioButton>
-                <RadioButton x:Name="HeadRadioButton"      GroupName="InsertPositionGroup" Margin="3,3,12,3">先頭</RadioButton>
+                <RadioButton x:Name="CurrentRadioButton"   GroupName="InsertPositionGroup" Margin="3,3,12,3">現在の選択位置</RadioButton>
+                <RadioButton x:Name="HeadRadioButton"      GroupName="InsertPositionGroup" Margin="3,3,12,3" IsChecked="True">先頭</RadioButton>
                 <RadioButton x:Name="TailRadioButton"      GroupName="InsertPositionGroup" Margin="3,3,12,3">末尾</RadioButton>
                 <RadioButton x:Name="UserInputRadioButton" GroupName="InsertPositionGroup" Margin="3,3,6,3">ページを指定</RadioButton>
                 <TextBox x:Name="PageNumberTextBox" Margin="3,0,3,0" Width="60"
@@ -63,12 +63,12 @@
                                 DisplayMemberBinding="{Binding Path=Name}" />
 
                             <GridViewColumn Header="更新日時" Width="150"
-                                DisplayMemberBinding="{Binding Path=LastWriteTime}"  />
+                                DisplayMemberBinding="{Binding Path=LastWriteTime, StringFormat=yyyy年MM月dd日HH時mm分ss秒}"  />
 
                             <GridViewColumn Header="サイズ" Width="100">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Path=Length}" HorizontalAlignment="Right"/>
+                                        <TextBlock Text="{Binding Path=Length, StringFormat=0バイト}" HorizontalAlignment="Right"/>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>

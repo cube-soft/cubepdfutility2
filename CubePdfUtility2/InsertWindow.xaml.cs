@@ -79,6 +79,7 @@ namespace CubePdfUtility
             _index = index;
             _total = total;
             TotalPageTextBlock.Text = string.Format("/ {0} ページ", _total);
+            CurrentRadioButton.IsEnabled = (_index >= 0) ? true : false;
         }
 
         #endregion
@@ -309,6 +310,31 @@ namespace CubePdfUtility
         #endregion
 
         #endregion
+
+        //#region Events
+        ///* ----------------------------------------------------------------- */
+        ///
+        /// PageNumberTextBox_TextChanged
+        /// 
+        /// <summary>
+        /// テキストが変更されるたび、それが適切なページ番号か確認します
+        /// 
+        /// </summary>
+        /// <remarks> TextChangedイベントを迂闊に用いるとIMEとの絡みでバグが起こる様子。要検証。<remarks>
+        ///* ----------------------------------------------------------------- */
+        //private void PageNumberTextBox_TextChanged(Object sender, TextChangedEventArgs e)
+        //{
+        //    int pageNumber;
+        //    if (!int.TryParse(PageNumberTextBox.Text, out pageNumber)) {
+        //        PageNumberTextBox.Text = "0";
+        //        return;
+        //    }
+        //    else if (pageNumber < 0 | pageNumber > _files.Count)
+        //    {
+        //        PageNumberTextBox.Text = "0";
+        //    }
+        //}
+        //#endregion
 
         #region Variables
         private ObservableCollection<System.IO.FileInfo> _files = new ObservableCollection<System.IO.FileInfo>();
