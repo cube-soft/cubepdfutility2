@@ -215,7 +215,6 @@ namespace CubePdfUtility
                 {
                     _files.Add(new System.IO.FileInfo(path));
                 }
-                Trace.WriteLine(_files[0].Name);
             }
             catch (Exception err) { Trace.WriteLine(err.ToString()); }
         }

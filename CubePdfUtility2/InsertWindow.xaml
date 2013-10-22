@@ -18,6 +18,7 @@
     <Window.Resources>
         <system:Int32 x:Key="One">1</system:Int32>
         <system:Int32 x:Key="NegativeOne">-1</system:Int32>
+        <local:KiloByteConverter x:Key="KiloByteConverter" />
     </Window.Resources>
 
     <Grid>
@@ -63,12 +64,12 @@
                                 DisplayMemberBinding="{Binding Path=Name}" />
 
                             <GridViewColumn Header="更新日時" Width="150"
-                                DisplayMemberBinding="{Binding Path=LastWriteTime, StringFormat=yyyy年MM月dd日HH時mm分ss秒}"  />
+                                DisplayMemberBinding="{Binding Path=LastWriteTime, StringFormat=yyyy/MM/dd HH:mm:ss}"  />
 
                             <GridViewColumn Header="サイズ" Width="100">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Path=Length, StringFormat=0バイト}" HorizontalAlignment="Right"/>
+                                        <TextBlock Text="{Binding Path=Length, Converter={StaticResource KiloByteConverter}, StringFormat={}{0:N0} KB}" HorizontalAlignment="Right"/>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
