@@ -202,7 +202,18 @@ namespace CubePdfUtility
                     path = dialog.FileName;
                 }
                 if (string.IsNullOrEmpty(path)) return;
-                _files.Add(new System.IO.FileInfo(path));
+                bool double_file = false;
+                foreach (var item in _files)
+                {
+                    if (item.FullName.Equals(new System.IO.FileInfo(path).FullName))
+                    {
+                        double_file = true;
+                    }
+                }
+                if (!double_file)
+                {
+                    _files.Add(new System.IO.FileInfo(path));
+                }
                 Trace.WriteLine(_files[0].Name);
             }
             catch (Exception err) { Trace.WriteLine(err.ToString()); }
