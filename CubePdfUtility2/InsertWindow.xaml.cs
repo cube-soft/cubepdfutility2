@@ -79,7 +79,11 @@ namespace CubePdfUtility
             _index = index;
             _total = total;
             TotalPageTextBlock.Text = string.Format("/ {0} ページ", _total);
-            CurrentRadioButton.IsEnabled = (_index >= 0) ? true : false;
+            if (_index < 0)
+            {
+                CurrentRadioButton.IsEnabled = false;
+                HeadRadioButton.IsChecked = true;
+            }
         }
 
         #endregion
@@ -256,6 +260,7 @@ namespace CubePdfUtility
         private void MoveCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             // TODO: implementation
+            _files.Move(FileListView.SelectedIndex, FileListView.SelectedIndex + (int)e.Parameter);
         }
 
         #endregion
@@ -280,6 +285,7 @@ namespace CubePdfUtility
         private void RemoveCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             // TODO: implementation
+            _files.RemoveAt(FileListView.SelectedIndex);
         }
 
         #endregion
@@ -304,13 +310,14 @@ namespace CubePdfUtility
         private void ClearCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             // TODO: implementation
+            _files.Clear();
         }
 
         #endregion
 
         #endregion
 
-        //#region Events
+        #region Events
         ///* ----------------------------------------------------------------- */
         ///
         /// PageNumberTextBox_TextChanged
@@ -319,21 +326,21 @@ namespace CubePdfUtility
         /// テキストが変更されるたび、それが適切なページ番号か確認します
         /// 
         /// </summary>
-        /// <remarks> TextChangedイベントを迂闊に用いるとIMEとの絡みでバグが起こる様子。要検証。<remarks>
+        /// <remarks> TextChangedイベントを迂闊に用いるとIMEとの絡みでバグが起こる様子。要検証。(IMEをオフにしたのでおそらく問題なし)<remarks>
         ///* ----------------------------------------------------------------- */
-        //private void PageNumberTextBox_TextChanged(Object sender, TextChangedEventArgs e)
-        //{
-        //    int pageNumber;
-        //    if (!int.TryParse(PageNumberTextBox.Text, out pageNumber)) {
-        //        PageNumberTextBox.Text = "0";
-        //        return;
-        //    }
-        //    else if (pageNumber < 0 | pageNumber > _files.Count)
-        //    {
-        //        PageNumberTextBox.Text = "0";
-        //    }
-        //}
-        //#endregion
+        private void PageNumberTextBox_TextChanged(Object sender, TextChangedEventArgs e)
+        {
+            int pageNumber;
+            if (!int.TryParse(PageNumberTextBox.Text, out pageNumber))
+            {
+                PageNumberTextBox.Text = "";
+            }
+            else if (pageNumber > _total)
+            {
+                PageNumberTextBox.Text = "";
+            }
+        }
+        #endregion
 
         #region Variables
         private ObservableCollection<System.IO.FileInfo> _files = new ObservableCollection<System.IO.FileInfo>();
