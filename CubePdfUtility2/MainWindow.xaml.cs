@@ -1532,7 +1532,22 @@ namespace CubePdfUtility
             var dialog = new InsertWindow(Thumbnail.SelectedIndex, _viewmodel.PageCount);
             dialog.Owner = this;
             if (dialog.ShowDialog() == false) return;
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            if (dialog.FileList.Count > 0)
+            {
+                var index = dialog.Index;
+                var obj = (index == 0) ? InsertHead.Header
+                    : (index == _viewmodel.PageCount) ? InsertTail.Header
+                    : InsertSelect.Header;
+                var files = new string[dialog.FileList.Count];
+                var i = 0;
+                foreach (var info in dialog.FileList)
+                {
+                    files[i] = info.FullName;
+                    i++;
+                }
+                InsertFiles(index, files, obj as string);
+            }
         }
 
         /* ----------------------------------------------------------------- */

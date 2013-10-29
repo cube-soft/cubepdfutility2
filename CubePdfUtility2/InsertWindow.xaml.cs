@@ -25,6 +25,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Runtime.InteropServices;
 
 namespace CubePdfUtility
 {
@@ -52,6 +53,7 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         public InsertWindow()
         {
+            this.SourceInitialized += (x, y) => this.HideMinimizeButtons();
             InitializeComponent();
             FileListView.ItemsSource = _files;
         }
@@ -143,6 +145,17 @@ namespace CubePdfUtility
         private void SaveCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             // TODO: ラジオボタンの状態を見て、Index の値を更新する。
+            if (HeadRadioButton.IsChecked.HasValue ? HeadRadioButton.IsChecked.Value : false) {
+                Index = 0;
+            }
+            else if (TailRadioButton.IsChecked.HasValue ? TailRadioButton.IsChecked.Value : false)
+            {
+                Index = _total;
+            }
+            else if (UserInputRadioButton.IsChecked.HasValue ? UserInputRadioButton.IsChecked.Value : false)
+            {
+                Index = int.Parse(PageNumberTextBox.Text);
+            }
             DialogResult = true;
             Close();
         }
@@ -363,5 +376,44 @@ namespace CubePdfUtility
         public static readonly ICommand Remove = new RoutedCommand("Remove", typeof(InsertWindow));
         public static readonly ICommand Clear  = new RoutedCommand("Clear",  typeof(InsertWindow));
         #endregion
+    }
+
+    /* --------------------------------------------------------------------- */
+    ///
+    /// WindowExtensions
+    /// 
+    /// <summary>
+    /// Windowクラスの拡張メソッド（最小化・最大化ボタン無効）用クラス
+    /// </summary>
+    ///
+    /* --------------------------------------------------------------------- */
+    public static class WindowExtensions
+    {
+        // from winuser.h
+        private const int GWL_STYLE = -16,
+                          WS_MAXIMIZEBOX = 0x10000,
+                          WS_MINIMIZEBOX = 0x20000;
+
+        [DllImport("user32.dll")]
+        extern private static int GetWindowLong(IntPtr hwnd, int index);
+
+        [DllImport("user32.dll")]
+        extern private static int SetWindowLong(IntPtr hwnd, int index, int value);
+
+        public static void HideMinimizeButtons(this Window window)
+        {
+            IntPtr hwnd = new System.Windows.Interop.WindowInteropHelper(window).Handle;
+            var currentStyle = GetWindowLong(hwnd, GWL_STYLE);
+
+            SetWindowLong(hwnd, GWL_STYLE, (currentStyle & ~WS_MINIMIZEBOX));
+        }
+
+        public static void HideMaximizeButtons(this Window window)
+        {
+            IntPtr hwnd = new System.Windows.Interop.WindowInteropHelper(window).Handle;
+            var currentStyle = GetWindowLong(hwnd, GWL_STYLE);
+
+            SetWindowLong(hwnd, GWL_STYLE, (currentStyle & ~WS_MAXIMIZEBOX));
+        }
     }
 }
