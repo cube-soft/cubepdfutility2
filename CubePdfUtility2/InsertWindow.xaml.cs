@@ -218,16 +218,7 @@ namespace CubePdfUtility
                     if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
                     path = dialog.FileName;
                 }
-                if (string.IsNullOrEmpty(path)) return;
-                bool double_file = false;
-                foreach (var item in _files)
-                {
-                    if (item.FullName.Equals(new System.IO.FileInfo(path).FullName))
-                    {
-                        double_file = true;
-                    }
-                }
-                if (!double_file)
+                if (isOpenable(path))
                 {
                     _files.Add(new System.IO.FileInfo(path));
                 }
@@ -347,6 +338,57 @@ namespace CubePdfUtility
             {
                 PageNumberTextBox.Text = "";
             }
+        }
+        private void FileListView_PreviewDragOver(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop, true))
+            {
+                e.Effects = DragDropEffects.Copy;
+            }
+            else
+            {
+                e.Effects = DragDropEffects.None;
+            }
+            e.Handled = true;
+        }
+
+        private void FileListView_Drop(object sender, DragEventArgs e)
+        {
+            //ファイルをpdfで開くことができるかどうか確かめる必要がある？
+            string[] draggedFiles = e.Data.GetData(DataFormats.FileDrop) as string[];
+            if (draggedFiles != null)
+            {
+                ListView listview = (ListView)this.FindName("FileListView");
+
+                foreach (var fileName in draggedFiles)
+                {
+                    try
+                    {
+                        if (!fileName.Substring(fileName.Length - 4).ToLower().Equals(".pdf")) continue;
+                        if (isOpenable(fileName))
+                        {
+                            _files.Add(new System.IO.FileInfo(fileName));
+                        }
+                    }
+                    catch (Exception err) { Trace.WriteLine(err.ToString()); continue; }
+                }
+            }
+        }
+
+        #endregion
+
+        #region Other_Methods
+        private bool isOpenable(String path)
+        {
+            if (string.IsNullOrEmpty(path)) return false;
+            foreach (var item in _files)
+            {
+                if (item.FullName.Equals(new System.IO.FileInfo(path).FullName))
+                {
+                    return false;
+                }
+            }
+            return true;
         }
         #endregion
 

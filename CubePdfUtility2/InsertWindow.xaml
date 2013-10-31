@@ -51,7 +51,7 @@
             </Grid.ColumnDefinitions>
 
             <Grid Grid.Column="0">
-                <ListView x:Name="FileListView" Margin="12,6,6,12">
+                <ListView x:Name="FileListView" Margin="12,6,6,12" AllowDrop="True" DragOver="FileListView_PreviewDragOver" Drop="FileListView_Drop">
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem">
                             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
