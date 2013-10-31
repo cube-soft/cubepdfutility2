@@ -144,17 +144,16 @@ namespace CubePdfUtility
 
         private void SaveCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            // TODO: ラジオボタンの状態を見て、Index の値を更新する。
-            if (HeadRadioButton.IsChecked.HasValue ? HeadRadioButton.IsChecked.Value : false) {
+            if (HeadRadioButton.IsChecked ?? false) {
                 Index = 0;
             }
-            else if (TailRadioButton.IsChecked.HasValue ? TailRadioButton.IsChecked.Value : false)
+            else if (TailRadioButton.IsChecked ?? false)
             {
                 Index = _total;
             }
-            else if (UserInputRadioButton.IsChecked.HasValue ? UserInputRadioButton.IsChecked.Value : false)
+            else if (UserInputRadioButton.IsChecked ?? false)
             {
-                Index = int.Parse(PageNumberTextBox.Text);
+                Index = int.Parse(PageNumberTextBox.Text) - 1;
             }
             DialogResult = true;
             Close();
@@ -272,7 +271,6 @@ namespace CubePdfUtility
 
         private void MoveCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            // TODO: implementation
             _files.Move(FileListView.SelectedIndex, FileListView.SelectedIndex + (int)e.Parameter);
         }
 
@@ -297,7 +295,6 @@ namespace CubePdfUtility
 
         private void RemoveCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            // TODO: implementation
             _files.RemoveAt(FileListView.SelectedIndex);
         }
 
@@ -322,7 +319,6 @@ namespace CubePdfUtility
 
         private void ClearCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            // TODO: implementation
             _files.Clear();
         }
 
@@ -339,7 +335,6 @@ namespace CubePdfUtility
         /// テキストが変更されるたび、それが適切なページ番号か確認します
         /// 
         /// </summary>
-        /// <remarks> TextChangedイベントを迂闊に用いるとIMEとの絡みでバグが起こる様子。要検証。(IMEをオフにしたのでおそらく問題なし)<remarks>
         ///* ----------------------------------------------------------------- */
         private void PageNumberTextBox_TextChanged(Object sender, TextChangedEventArgs e)
         {
@@ -389,7 +384,6 @@ namespace CubePdfUtility
     /* --------------------------------------------------------------------- */
     public static class WindowExtensions
     {
-        // from winuser.h
         private const int GWL_STYLE = -16,
                           WS_MAXIMIZEBOX = 0x10000,
                           WS_MINIMIZEBOX = 0x20000;
