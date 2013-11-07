@@ -401,24 +401,20 @@ namespace CubePdfUtility
             }
             else if (sender is ListView)
             {
-                var dropPos = e.GetPosition(FileListView);
-                var lbi = e.Data.GetData(typeof(ListViewItem)) as ListViewItem;
-                var o = lbi.DataContext as System.IO.FileInfo;
-                var index = _files.IndexOf(o);
+                var drop = e.GetPosition(FileListView);
+                var item = e.Data.GetData(typeof(ListViewItem)) as ListViewItem;
+                var index = _files.IndexOf(item.DataContext as System.IO.FileInfo);
                 for (int i = 0; i < _files.Count; i++)
                 {
-                    var item = FileListView.ItemContainerGenerator.ContainerFromIndex(i) as ListViewItem;
-                    var pos = FileListView.PointFromScreen(item.PointToScreen(new Point(0, item.ActualHeight / 2)));
-                    if (dropPos.Y < pos.Y)
+                    var t = FileListView.ItemContainerGenerator.ContainerFromIndex(i) as ListViewItem;
+                    var p = FileListView.PointFromScreen(t.PointToScreen(new Point(0, item.ActualHeight / 2)));
+                    if (drop.Y < p.Y)
                     {
-                        // i が入れ換え先のインデックス
                         _files.Move(index, (index < i) ? i - 1 : i);
                         return;
                     }
                 }
-                // 最後にもっていく
-                int last = _files.Count - 1;
-                _files.Move(index, last);
+                _files.Move(index, _files.Count - 1);
             }
         }
 
@@ -435,10 +431,8 @@ namespace CubePdfUtility
         {
             if (sender is ListViewItem)
             {
-                // マウスダウンされたアイテムを記憶
-                _dragItem = sender as ListViewItem;
-                // マウスダウン時の座標を取得
-                _dragStartPos = e.GetPosition(_dragItem);
+                _dragTarget = sender as ListViewItem;
+                _dragStart = e.GetPosition(_dragTarget);
             }
         }
 
@@ -456,15 +450,15 @@ namespace CubePdfUtility
         {
             if (sender is ListViewItem)
             {
-                var lbi = sender as ListViewItem;
-                if (e.LeftButton == MouseButtonState.Pressed && _dragItem == lbi)
+                var item = sender as ListViewItem;
+                if (e.LeftButton == MouseButtonState.Pressed && _dragTarget == item)
                 {
-                    var nowPos = e.GetPosition(lbi);
-                    if (Math.Abs(nowPos.X - _dragStartPos.X) > SystemParameters.MinimumHorizontalDragDistance ||
-                        Math.Abs(nowPos.Y - _dragStartPos.Y) > SystemParameters.MinimumVerticalDragDistance)
+                    var now = e.GetPosition(item);
+                    if (Math.Abs(now.X - _dragStart.X) > SystemParameters.MinimumHorizontalDragDistance ||
+                        Math.Abs(now.Y - _dragStart.Y) > SystemParameters.MinimumVerticalDragDistance)
                     {
-                        DragDrop.DoDragDrop(lbi, lbi, DragDropEffects.Move);
-                        _dragItem = null;
+                        DragDrop.DoDragDrop(item, item, DragDropEffects.Move);
+                        _dragTarget = null;
                     }
                 }
             }
@@ -500,8 +494,8 @@ namespace CubePdfUtility
         private ObservableCollection<System.IO.FileInfo> _files = new ObservableCollection<System.IO.FileInfo>();
         private int _index = 0;
         private int _total = 0;
-        private ListViewItem _dragItem;
-        private Point _dragStartPos;
+        private ListViewItem _dragTarget;
+        private Point _dragStart;
         #endregion
 
         /* ----------------------------------------------------------------- */
