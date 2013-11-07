@@ -344,7 +344,7 @@ namespace CubePdfUtility
         /// FileListView_PreviewDragOver
         /// 
         /// <summary>
-        /// ファイルをDragしたら、DragDropEffectsをCopyに設定します。
+        /// DragDropEffectsを設定します。
         /// </summary>
         /// 
         ///* ----------------------------------------------------------------- */
@@ -370,7 +370,8 @@ namespace CubePdfUtility
         /// FileListView_Drop
         /// 
         /// <summary>
-        /// ファイルをDropしたら、指定されたファイルをFileListに追加します。
+        /// 外部Drag＆Drop：OpenできるファイルならOpenしてFileListViewに追加
+        /// 内部Drag＆Drop：Drop位置にDrag元のItemを移動する。
         /// </summary>
         /// 
         ///* ----------------------------------------------------------------- */
@@ -421,6 +422,15 @@ namespace CubePdfUtility
             }
         }
 
+        ///* ----------------------------------------------------------------- */
+        ///
+        /// FileListView_PreviewMouseLeftButtonDown
+        /// 
+        /// <summary>
+        /// 内部Drag＆Drop：Drag元のItemとその座標を取得する。
+        /// </summary>
+        /// 
+        ///* ----------------------------------------------------------------- */
         private void FileListView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (sender is ListViewItem)
@@ -432,6 +442,16 @@ namespace CubePdfUtility
             }
         }
 
+        ///* ----------------------------------------------------------------- */
+        ///
+        /// FileListView_PreviewMouseLeftButtonDown
+        /// 
+        /// <summary>
+        /// 内部Drag＆Drop：Drag先のItemとその座標を取得し、その差が一定以上なら
+        /// DoDragDropを呼び出してItemを移動させる。
+        /// </summary>
+        /// 
+        ///* ----------------------------------------------------------------- */
         private void FileListView_PreviewMouseMove(object sender, MouseEventArgs e)
         {
             if (sender is ListViewItem)
