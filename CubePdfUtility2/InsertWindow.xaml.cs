@@ -323,8 +323,7 @@ namespace CubePdfUtility
         /// PageNumberTextBox_TextChanged
         /// 
         /// <summary>
-        /// テキストが変更されるたび、それが適切なページ番号か確認します
-        /// 
+        /// テキストが変更されるたび、それが適切なページ番号か確認します。
         /// </summary>
         ///* ----------------------------------------------------------------- */
         private void PageNumberTextBox_TextChanged(Object sender, TextChangedEventArgs e)
@@ -339,6 +338,16 @@ namespace CubePdfUtility
                 PageNumberTextBox.Text = "";
             }
         }
+
+        ///* ----------------------------------------------------------------- */
+        ///
+        /// FileListView_PreviewDragOver
+        /// 
+        /// <summary>
+        /// ファイルをDragしたら、DragDropEffectsをCopyに設定します。
+        /// </summary>
+        /// 
+        ///* ----------------------------------------------------------------- */
         private void FileListView_PreviewDragOver(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop, true))
@@ -352,6 +361,15 @@ namespace CubePdfUtility
             e.Handled = true;
         }
 
+        ///* ----------------------------------------------------------------- */
+        ///
+        /// FileListView_Drop
+        /// 
+        /// <summary>
+        /// ファイルをDropしたら、指定されたファイルをFileListに追加します。
+        /// </summary>
+        /// 
+        ///* ----------------------------------------------------------------- */
         private void FileListView_Drop(object sender, DragEventArgs e)
         {
             //ファイルをpdfで開くことができるかどうか確かめる必要がある？
@@ -377,7 +395,16 @@ namespace CubePdfUtility
 
         #endregion
 
-        #region Other_Methods
+        #region isOpenable
+        ///* ----------------------------------------------------------------- */
+        ///
+        /// FileListView_Drop
+        /// 
+        /// <summary>
+        /// pathで指定されたファイルがOpen可能か判定します。
+        /// </summary>
+        /// 
+        ///* ----------------------------------------------------------------- */
         private bool isOpenable(String path)
         {
             if (string.IsNullOrEmpty(path)) return false;
