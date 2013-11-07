@@ -354,6 +354,10 @@ namespace CubePdfUtility
             {
                 e.Effects = DragDropEffects.Copy;
             }
+            else if (e.Data.GetDataPresent(typeof(ListViewItem)))
+            {
+                e.Effects = DragDropEffects.Move;
+            }
             else
             {
                 e.Effects = DragDropEffects.None;
@@ -372,27 +376,80 @@ namespace CubePdfUtility
         ///* ----------------------------------------------------------------- */
         private void FileListView_Drop(object sender, DragEventArgs e)
         {
-            //ファイルをpdfで開くことができるかどうか確かめる必要がある？
-            string[] draggedFiles = e.Data.GetData(DataFormats.FileDrop) as string[];
-            if (draggedFiles != null)
+            if (e.Data.GetDataPresent(DataFormats.FileDrop, true))
             {
-                ListView listview = (ListView)this.FindName("FileListView");
-
-                foreach (var fileName in draggedFiles)
+                //ファイルをpdfで開くことができるかどうか確かめる必要がある？
+                string[] draggedFiles = e.Data.GetData(DataFormats.FileDrop) as string[];
+                if (draggedFiles != null)
                 {
-                    try
+                    ListView listview = (ListView)this.FindName("FileListView");
+
+                    foreach (var fileName in draggedFiles)
                     {
-                        if (!fileName.Substring(fileName.Length - 4).ToLower().Equals(".pdf")) continue;
-                        if (isOpenable(fileName))
+                        try
                         {
-                            _files.Add(new System.IO.FileInfo(fileName));
+                            if (!fileName.Substring(fileName.Length - 4).ToLower().Equals(".pdf")) continue;
+                            if (isOpenable(fileName))
+                            {
+                                _files.Add(new System.IO.FileInfo(fileName));
+                            }
                         }
+                        catch (Exception err) { Trace.WriteLine(err.ToString()); continue; }
                     }
-                    catch (Exception err) { Trace.WriteLine(err.ToString()); continue; }
                 }
+            }
+            else if (sender is ListView)
+            {
+                var dropPos = e.GetPosition(FileListView);
+                var lbi = e.Data.GetData(typeof(ListViewItem)) as ListViewItem;
+                var o = lbi.DataContext as System.IO.FileInfo;
+                var index = _files.IndexOf(o);
+                for (int i = 0; i < _files.Count; i++)
+                {
+                    var item = FileListView.ItemContainerGenerator.ContainerFromIndex(i) as ListViewItem;
+                    var pos = FileListView.PointFromScreen(item.PointToScreen(new Point(0, item.ActualHeight / 2)));
+                    if (dropPos.Y < pos.Y)
+                    {
+                        // i が入れ換え先のインデックス
+                        _files.Move(index, (index < i) ? i - 1 : i);
+                        return;
+                    }
+                }
+                // 最後にもっていく
+                int last = _files.Count - 1;
+                _files.Move(index, last);
             }
         }
 
+        private void FileListView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is ListViewItem)
+            {
+                // マウスダウンされたアイテムを記憶
+                _dragItem = sender as ListViewItem;
+                // マウスダウン時の座標を取得
+                _dragStartPos = e.GetPosition(_dragItem);
+            }
+        }
+
+        private void FileListView_PreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            if (sender is ListViewItem)
+            {
+                var lbi = sender as ListViewItem;
+                if (e.LeftButton == MouseButtonState.Pressed && _dragItem == lbi)
+                {
+                    var nowPos = e.GetPosition(lbi);
+                    if (Math.Abs(nowPos.X - _dragStartPos.X) > SystemParameters.MinimumHorizontalDragDistance ||
+                        Math.Abs(nowPos.Y - _dragStartPos.Y) > SystemParameters.MinimumVerticalDragDistance)
+                    {
+                        DragDrop.DoDragDrop(lbi, lbi, DragDropEffects.Move);
+                        _dragItem = null;
+                    }
+                }
+            }
+        }
+       
         #endregion
 
         #region isOpenable
@@ -423,6 +480,8 @@ namespace CubePdfUtility
         private ObservableCollection<System.IO.FileInfo> _files = new ObservableCollection<System.IO.FileInfo>();
         private int _index = 0;
         private int _total = 0;
+        private ListViewItem _dragItem;
+        private Point _dragStartPos;
         #endregion
 
         /* ----------------------------------------------------------------- */
