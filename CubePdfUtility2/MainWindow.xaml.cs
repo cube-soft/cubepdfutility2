@@ -220,8 +220,6 @@ namespace CubePdfUtility
             finally
             {
                 Refresh();
-                var scroll = CubePdf.Wpf.VisualHelper.FindVisualChild<ScrollViewer>(Thumbnail);
-                if (scroll != null) scroll.ScrollToVerticalOffset(0);
                 if (e.Handled)
                 {
                     var name = (e != null) ? e.Parameter as string : null;
@@ -1621,6 +1619,9 @@ namespace CubePdfUtility
             {
                 Win32Api.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
             }
+            var scroll = CubePdf.Wpf.VisualHelper.FindVisualChild<ScrollViewer>(Thumbnail);
+            if (scroll != null) scroll.ScrollToVerticalOffset(0);
+
             return true;
         }
 
