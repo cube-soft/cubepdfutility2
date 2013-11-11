@@ -132,7 +132,6 @@
     <Compile Include="VersionWindow.xaml.cs">
       <DependentUpon>VersionWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WindowExtensions.cs" />
     <Page Include="InsertWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
