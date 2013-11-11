@@ -25,7 +25,6 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Runtime.InteropServices;
 
 namespace CubePdfUtility
 {
@@ -53,7 +52,7 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         public InsertWindow()
         {
-            this.SourceInitialized += (x, y) => this.HideMinimizeButtons();
+            this.SourceInitialized += (x, y) => this.HideMinimizeButton();
             InitializeComponent();
             FileListView.ItemsSource = _files;
         }
@@ -66,13 +65,6 @@ namespace CubePdfUtility
         /// 引数に指定された現在の選択位置と総ページ数の値を用いて
         /// オブジェクトを初期化します。
         /// </summary>
-        /// 
-        /// <remarks>
-        /// TODO: index には SelectedIndex を指定するのでどのページも選択
-        /// されていない場合は -1 が指定される。その場合は、「現在の選択位置」
-        /// のラジオボタンを選択不可能の状態にし、ラジオボタンの選択状況の
-        /// 初期値を「先頭」に移す。
-        /// </remarks>
         ///
         /* ----------------------------------------------------------------- */
         public InsertWindow(int index, int total)
@@ -205,23 +197,15 @@ namespace CubePdfUtility
             try
             {
                 var path = e.Parameter as string;
-                if (path == null)
+                if (path != null) AddFile(path);
+                else
                 {
                     var dialog = new System.Windows.Forms.OpenFileDialog();
                     dialog.Filter = Properties.Resources.PdfFilter;
                     dialog.CheckFileExists = true;
                     dialog.Multiselect = true;
                     if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
-                    foreach (var file in dialog.FileNames)
-                    {
-                        var info = new System.IO.FileInfo(file);
-                        if (IsRegisterable(info)) _files.Add(info);
-                    }
-                }
-                else
-                {
-                    var info = new System.IO.FileInfo(path);
-                    if (IsRegisterable(info)) _files.Add(info);
+                    AddFiles(dialog.FileNames);
                 }
             }
             catch (Exception err) { Trace.WriteLine(err.ToString()); }
@@ -320,15 +304,16 @@ namespace CubePdfUtility
 
         #region Events handlers
 
-        ///* ----------------------------------------------------------------- */
+        /* ----------------------------------------------------------------- */
         ///
         /// PageNumberTextBox_TextChanged
         /// 
         /// <summary>
-        /// テキストが変更されるたび、それが適切なページ番号か確認します。
+        /// テキストが変更された時に実行されるイベントハンドラです。数値
+        /// 以外の文字の入力をキャンセルします。
         /// </summary>
         /// 
-        ///* ----------------------------------------------------------------- */
+        /* ----------------------------------------------------------------- */
         private void PageNumberTextBox_TextChanged(Object sender, TextChangedEventArgs e)
         {
             var control = sender as TextBox;
@@ -344,70 +329,52 @@ namespace CubePdfUtility
             }
         }
 
-        ///* ----------------------------------------------------------------- */
+        /* ----------------------------------------------------------------- */
         ///
         /// FileListView_PreviewDragOver
         /// 
         /// <summary>
-        /// DragDropEffects を設定します。
+        /// ファイルリストにオブジェクトがドラッグされた時に実行される
+        /// イベントハンドラです。オブジェクトの種類に応じた DragDropEffects
+        /// を設定します。
         /// </summary>
         /// 
-        ///* ----------------------------------------------------------------- */
+        /* ----------------------------------------------------------------- */
         private void FileListView_PreviewDragOver(object sender, DragEventArgs e)
         {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop, true))
-            {
-                e.Effects = DragDropEffects.Copy;
-            }
-            else if (e.Data.GetDataPresent(typeof(ListViewItem)))
-            {
-                e.Effects = DragDropEffects.Move;
-            }
-            else
-            {
-                e.Effects = DragDropEffects.None;
-            }
+            if (e.Data.GetDataPresent(DataFormats.FileDrop, true)) e.Effects = DragDropEffects.Copy;
+            else if (e.Data.GetDataPresent(typeof(ListViewItem))) e.Effects = DragDropEffects.Move;
+            else e.Effects = DragDropEffects.None;
             e.Handled = true;
         }
 
-        ///* ----------------------------------------------------------------- */
+        /* ----------------------------------------------------------------- */
         ///
         /// FileListView_Drop
         /// 
         /// <summary>
-        /// 外部Drag＆Drop：OpenできるファイルならOpenしてFileListViewに追加
-        /// 内部Drag＆Drop：Drop位置にDrag元のItemを移動する。
+        /// ドロップ時に実行されるイベントハンドラです。
         /// </summary>
         /// 
-        ///* ----------------------------------------------------------------- */
+        /// <remarks>
+        /// 外部Drag＆Drop：OpenできるファイルならOpenしてFileListViewに追加
+        /// 内部Drag＆Drop：Drop位置にDrag元のItemを移動する。
+        /// </remarks>
+        /// 
+        /* ----------------------------------------------------------------- */
         private void FileListView_Drop(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop, true))
             {
-                //ファイルをpdfで開くことができるかどうか確かめる必要がある？
-                string[] draggedFiles = e.Data.GetData(DataFormats.FileDrop) as string[];
-                if (draggedFiles != null)
-                {
-                    ListView listview = (ListView)this.FindName("FileListView");
-
-                    foreach (var fileName in draggedFiles)
-                    {
-                        try
-                        {
-                            if (System.IO.Path.GetExtension(fileName) != ".pdf") continue;
-                            var info = new System.IO.FileInfo(fileName);
-                            if (IsRegisterable(info)) _files.Add(info);
-                        }
-                        catch (Exception err) { Trace.WriteLine(err.ToString()); continue; }
-                    }
-                }
+                var files = e.Data.GetData(DataFormats.FileDrop) as string[];
+                AddFiles(files);
             }
             else if (sender is ListView)
             {
                 var drop = e.GetPosition(FileListView);
                 var item = e.Data.GetData(typeof(ListViewItem)) as ListViewItem;
                 var index = _files.IndexOf(item.DataContext as System.IO.FileInfo);
-                for (int i = 0; i < _files.Count; i++)
+                for (int i = 0; i < _files.Count; ++i)
                 {
                     var t = FileListView.ItemContainerGenerator.ContainerFromIndex(i) as ListViewItem;
                     var p = FileListView.PointFromScreen(t.PointToScreen(new Point(0, item.ActualHeight / 2)));
@@ -421,48 +388,49 @@ namespace CubePdfUtility
             }
         }
 
-        ///* ----------------------------------------------------------------- */
+        /* ----------------------------------------------------------------- */
         ///
         /// FileListView_PreviewMouseLeftButtonDown
         /// 
         /// <summary>
-        /// 内部Drag＆Drop：Drag元のItemとその座標を取得する。
+        /// マウス押下時にに実行されるイベントハンドラです。押下された項目と
+        /// その座標を取得します。
         /// </summary>
         /// 
-        ///* ----------------------------------------------------------------- */
+        /* ----------------------------------------------------------------- */
         private void FileListView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (sender is ListViewItem)
-            {
-                _dragTarget = sender as ListViewItem;
-                _dragStart = e.GetPosition(_dragTarget);
-            }
+            var item = sender as ListViewItem;
+            if (item == null) return;
+
+            _target = item;
+            _start = e.GetPosition(_target);
         }
 
-        ///* ----------------------------------------------------------------- */
+        /* ----------------------------------------------------------------- */
         ///
-        /// FileListView_PreviewMouseLeftButtonDown
+        /// FileListView_PreviewMouseMove
         /// 
         /// <summary>
-        /// 内部Drag＆Drop：Drag先のItemとその座標を取得し、その差が一定以上なら
-        /// DoDragDropを呼び出してItemを移動させる。
+        /// マウスが動いた際に実行されるイベントハンドラです。Drag 先の
+        /// Item とその座標を取得し、その差が一定以上なら Item を移動
+        /// させます。
         /// </summary>
         /// 
-        ///* ----------------------------------------------------------------- */
+        /* ----------------------------------------------------------------- */
         private void FileListView_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            if (sender is ListViewItem)
+            var item = sender as ListViewItem;
+            if (item == null) return;
+
+            if (e.LeftButton == MouseButtonState.Pressed && _target == item)
             {
-                var item = sender as ListViewItem;
-                if (e.LeftButton == MouseButtonState.Pressed && _dragTarget == item)
+                var now = e.GetPosition(item);
+                if (Math.Abs(now.X - _start.X) > SystemParameters.MinimumHorizontalDragDistance ||
+                    Math.Abs(now.Y - _start.Y) > SystemParameters.MinimumVerticalDragDistance)
                 {
-                    var now = e.GetPosition(item);
-                    if (Math.Abs(now.X - _dragStart.X) > SystemParameters.MinimumHorizontalDragDistance ||
-                        Math.Abs(now.Y - _dragStart.Y) > SystemParameters.MinimumVerticalDragDistance)
-                    {
-                        DragDrop.DoDragDrop(item, item, DragDropEffects.Move);
-                        _dragTarget = null;
-                    }
+                    DragDrop.DoDragDrop(item, item, DragDropEffects.Move);
+                    _target = null;
                 }
             }
         }
@@ -471,17 +439,17 @@ namespace CubePdfUtility
 
         #region Other methods
 
-        ///* ----------------------------------------------------------------- */
+        /* ----------------------------------------------------------------- */
         ///
-        /// IsRegisterable
+        /// IsValidFile
         /// 
         /// <summary>
         /// 引数に指定されたファイルがリストに追加しても良いものかどうかを
         /// 判定します。
         /// </summary>
         /// 
-        ///* ----------------------------------------------------------------- */
-        private bool IsRegisterable(System.IO.FileInfo info)
+        /* ----------------------------------------------------------------- */
+        private bool IsValidFile(System.IO.FileInfo info)
         {
             foreach (var item in _files)
             {
@@ -489,14 +457,52 @@ namespace CubePdfUtility
             }
             return true;
         }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// AddFile
+        /// 
+        /// <summary>
+        /// 引数に指定されたファイルを一覧に追加します。
+        /// </summary>
+        /// 
+        /* ----------------------------------------------------------------- */
+        private void AddFile(string file)
+        {
+            if (string.IsNullOrEmpty(file)) return;
+            if (!System.IO.File.Exists(file) || System.IO.Path.GetExtension(file) != ".pdf") return; 
+
+            try
+            {
+                var info = new System.IO.FileInfo(file);
+                if (IsValidFile(info)) _files.Add(info);
+            }
+            catch (Exception err) { Trace.WriteLine(err.ToString()); }
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// AddFiles
+        /// 
+        /// <summary>
+        /// 引数に指定されたファイルを一覧に追加します。
+        /// </summary>
+        /// 
+        /* ----------------------------------------------------------------- */
+        private void AddFiles(string[] files)
+        {
+            if (files == null) return;
+            foreach (var file in files) AddFile(file);
+        }
+
         #endregion
 
         #region Variables
         private ObservableCollection<System.IO.FileInfo> _files = new ObservableCollection<System.IO.FileInfo>();
         private int _index = 0;
         private int _total = 0;
-        private ListViewItem _dragTarget;
-        private Point _dragStart;
+        private ListViewItem _target = null;
+        private Point _start;
         #endregion
 
         /* ----------------------------------------------------------------- */
@@ -514,43 +520,5 @@ namespace CubePdfUtility
         public static readonly ICommand Remove = new RoutedCommand("Remove", typeof(InsertWindow));
         public static readonly ICommand Clear  = new RoutedCommand("Clear",  typeof(InsertWindow));
         #endregion
-    }
-
-    /* --------------------------------------------------------------------- */
-    ///
-    /// WindowExtensions
-    /// 
-    /// <summary>
-    /// Windowクラスの拡張メソッド（最小化・最大化ボタン無効）用クラス
-    /// </summary>
-    ///
-    /* --------------------------------------------------------------------- */
-    public static class WindowExtensions
-    {
-        private const int GWL_STYLE = -16,
-                          WS_MAXIMIZEBOX = 0x10000,
-                          WS_MINIMIZEBOX = 0x20000;
-
-        [DllImport("user32.dll")]
-        extern private static int GetWindowLong(IntPtr hwnd, int index);
-
-        [DllImport("user32.dll")]
-        extern private static int SetWindowLong(IntPtr hwnd, int index, int value);
-
-        public static void HideMinimizeButtons(this Window window)
-        {
-            IntPtr hwnd = new System.Windows.Interop.WindowInteropHelper(window).Handle;
-            var currentStyle = GetWindowLong(hwnd, GWL_STYLE);
-
-            SetWindowLong(hwnd, GWL_STYLE, (currentStyle & ~WS_MINIMIZEBOX));
-        }
-
-        public static void HideMaximizeButtons(this Window window)
-        {
-            IntPtr hwnd = new System.Windows.Interop.WindowInteropHelper(window).Handle;
-            var currentStyle = GetWindowLong(hwnd, GWL_STYLE);
-
-            SetWindowLong(hwnd, GWL_STYLE, (currentStyle & ~WS_MAXIMIZEBOX));
-        }
     }
 }

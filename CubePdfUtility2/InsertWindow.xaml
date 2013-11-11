@@ -4,7 +4,7 @@
     xmlns:system="clr-namespace:System;assembly=mscorlib"
     xmlns:local="clr-namespace:CubePdfUtility"
     Title="詳細を設定して挿入" Height="350" MinHeight="320" Width="600" MinWidth="520" Icon="/CubePdfUtility;component/app.ico"
-    WindowStartupLocation="CenterOwner" WindowStyle="SingleBorderWindow">
+    WindowStartupLocation="CenterOwner" WindowStyle="SingleBorderWindow" ShowInTaskbar="False">
     <Window.CommandBindings>
         <CommandBinding Command="Save"   CanExecute="SaveCommand_CanExecute"   Executed="SaveCommand_Executed"/>
         <CommandBinding Command="Close"  CanExecute="CloseCommand_CanExecute"  Executed="CloseCommand_Executed"/>
