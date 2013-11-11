@@ -144,18 +144,12 @@ namespace CubePdfUtility
 
         private void SaveCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            if (HeadRadioButton.IsChecked ?? false) {
-                Index = 0;
-            }
-            else if (TailRadioButton.IsChecked ?? false)
-            {
-                Index = _total;
-            }
-            else if (UserInputRadioButton.IsChecked ?? false)
-            {
-                Index = int.Parse(PageNumberTextBox.Text);
-            }
-            else ++Index;
+            var index = Index + 1;
+            if (HeadRadioButton.IsChecked != false) index = 0;
+            else if (TailRadioButton.IsChecked != false) index = _total;
+            else if (UserInputRadioButton.IsChecked != false) index = int.Parse(PageNumberTextBox.Text);
+            Index = Math.Min(Math.Max(index, 0), _total);
+
             DialogResult = true;
             Close();
         }
@@ -216,12 +210,18 @@ namespace CubePdfUtility
                     var dialog = new System.Windows.Forms.OpenFileDialog();
                     dialog.Filter = Properties.Resources.PdfFilter;
                     dialog.CheckFileExists = true;
+                    dialog.Multiselect = true;
                     if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
-                    path = dialog.FileName;
+                    foreach (var file in dialog.FileNames)
+                    {
+                        var info = new System.IO.FileInfo(file);
+                        if (IsRegisterable(info)) _files.Add(info);
+                    }
                 }
-                if (isOpenable(path))
+                else
                 {
-                    _files.Add(new System.IO.FileInfo(path));
+                    var info = new System.IO.FileInfo(path);
+                    if (IsRegisterable(info)) _files.Add(info);
                 }
             }
             catch (Exception err) { Trace.WriteLine(err.ToString()); }
@@ -331,14 +331,16 @@ namespace CubePdfUtility
         ///* ----------------------------------------------------------------- */
         private void PageNumberTextBox_TextChanged(Object sender, TextChangedEventArgs e)
         {
-            int pageNumber;
-            if (!int.TryParse(PageNumberTextBox.Text, out pageNumber))
+            var control = sender as TextBox;
+            if (control == null) return;
+
+            var page = 0;
+            if (control.Text.Length > 0 && !int.TryParse(control.Text, out page))
             {
-                PageNumberTextBox.Text = "";
-            }
-            else if (pageNumber > _total)
-            {
-                PageNumberTextBox.Text = "";
+                var pos = control.SelectionStart;
+                var index = Math.Max(PageNumberTextBox.Text.Length - 1, 0);
+                control.Text = control.Text.Remove(index);
+                control.SelectionStart = Math.Max(pos - 1, 0);
             }
         }
 
@@ -392,11 +394,9 @@ namespace CubePdfUtility
                     {
                         try
                         {
-                            if (!fileName.Substring(fileName.Length - 4).ToLower().Equals(".pdf")) continue;
-                            if (isOpenable(fileName))
-                            {
-                                _files.Add(new System.IO.FileInfo(fileName));
-                            }
+                            if (System.IO.Path.GetExtension(fileName) != ".pdf") continue;
+                            var info = new System.IO.FileInfo(fileName);
+                            if (IsRegisterable(info)) _files.Add(info);
                         }
                         catch (Exception err) { Trace.WriteLine(err.ToString()); continue; }
                     }
@@ -469,25 +469,23 @@ namespace CubePdfUtility
        
         #endregion
 
-        #region isOpenable
+        #region Other methods
+
         ///* ----------------------------------------------------------------- */
         ///
-        /// FileListView_Drop
+        /// IsRegisterable
         /// 
         /// <summary>
-        /// pathで指定されたファイルがOpen可能か判定します。
+        /// 引数に指定されたファイルがリストに追加しても良いものかどうかを
+        /// 判定します。
         /// </summary>
         /// 
         ///* ----------------------------------------------------------------- */
-        private bool isOpenable(String path)
+        private bool IsRegisterable(System.IO.FileInfo info)
         {
-            if (string.IsNullOrEmpty(path)) return false;
             foreach (var item in _files)
             {
-                if (item.FullName.Equals(new System.IO.FileInfo(path).FullName))
-                {
-                    return false;
-                }
+                if (info.FullName == item.FullName) return false;
             }
             return true;
         }
