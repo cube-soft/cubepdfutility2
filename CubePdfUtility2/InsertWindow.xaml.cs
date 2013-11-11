@@ -441,25 +441,6 @@ namespace CubePdfUtility
 
         /* ----------------------------------------------------------------- */
         ///
-        /// IsValidFile
-        /// 
-        /// <summary>
-        /// 引数に指定されたファイルがリストに追加しても良いものかどうかを
-        /// 判定します。
-        /// </summary>
-        /// 
-        /* ----------------------------------------------------------------- */
-        private bool IsValidFile(System.IO.FileInfo info)
-        {
-            foreach (var item in _files)
-            {
-                if (info.FullName == item.FullName) return false;
-            }
-            return true;
-        }
-
-        /* ----------------------------------------------------------------- */
-        ///
         /// AddFile
         /// 
         /// <summary>
@@ -475,7 +456,11 @@ namespace CubePdfUtility
             try
             {
                 var info = new System.IO.FileInfo(file);
-                if (IsValidFile(info)) _files.Add(info);
+                foreach (var item in _files)
+                {
+                    if (info.FullName == item.FullName) return;
+                }
+                _files.Add(info);
             }
             catch (Exception err) { Trace.WriteLine(err.ToString()); }
         }

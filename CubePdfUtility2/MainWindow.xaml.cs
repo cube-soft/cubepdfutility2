@@ -1539,9 +1539,7 @@ namespace CubePdfUtility
                     : (index == _viewmodel.PageCount) ? InsertTail.Header
                     : InsertSelect.Header;
                 var files = new List<string>();
-                foreach (var info in dialog.FileList) {
-                    files.Add(info.FullName);
-                }
+                foreach (var info in dialog.FileList) files.Add(info.FullName);
                 InsertFiles(index, files.ToArray(), obj as string);
             }
         }
