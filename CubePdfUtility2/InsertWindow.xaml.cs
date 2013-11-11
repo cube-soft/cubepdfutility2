@@ -80,7 +80,7 @@ namespace CubePdfUtility
         {
             _index = index;
             _total = total;
-            TotalPageTextBlock.Text = string.Format("/ {0} ページ", _total);
+            TotalPageTextBlock.Text = string.Format("/ {0} ページの後ろ", _total);
             if (_index < 0)
             {
                 CurrentRadioButton.IsEnabled = false;
@@ -153,8 +153,9 @@ namespace CubePdfUtility
             }
             else if (UserInputRadioButton.IsChecked ?? false)
             {
-                Index = int.Parse(PageNumberTextBox.Text) - 1;
+                Index = int.Parse(PageNumberTextBox.Text);
             }
+            else ++Index;
             DialogResult = true;
             Close();
         }
@@ -317,7 +318,8 @@ namespace CubePdfUtility
 
         #endregion
 
-        #region Events
+        #region Events handlers
+
         ///* ----------------------------------------------------------------- */
         ///
         /// PageNumberTextBox_TextChanged
@@ -325,6 +327,7 @@ namespace CubePdfUtility
         /// <summary>
         /// テキストが変更されるたび、それが適切なページ番号か確認します。
         /// </summary>
+        /// 
         ///* ----------------------------------------------------------------- */
         private void PageNumberTextBox_TextChanged(Object sender, TextChangedEventArgs e)
         {
@@ -344,7 +347,7 @@ namespace CubePdfUtility
         /// FileListView_PreviewDragOver
         /// 
         /// <summary>
-        /// DragDropEffectsを設定します。
+        /// DragDropEffects を設定します。
         /// </summary>
         /// 
         ///* ----------------------------------------------------------------- */

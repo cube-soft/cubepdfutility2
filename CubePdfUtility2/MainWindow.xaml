@@ -139,7 +139,7 @@
             <Separator/>
 
             <MenuItem Header="挿入">
-                <MenuItem Header="選択位置に挿入"
+                <MenuItem Header="選択位置の後ろに挿入"
                     Command="{x:Static cube:ListViewCommands.Insert}"
                     CommandParameter="{Binding PlacementTarget.SelectedIndex, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"/>
                 <MenuItem Header="先頭に挿入"
@@ -747,7 +747,7 @@
 
                 <r:RibbonGroup Header="ページ操作" x:Name="PagingGroup">
                     <r:RibbonSplitButton Label="挿入"
-                        ToolTipTitle="選択位置に新しいPDFファイルを挿入"
+                        ToolTipTitle="選択位置の後ろに新しいPDFファイルを挿入"
                         x:Name="InsertButton"
                         Command="{x:Static cube:ListViewCommands.Insert}"
                         CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedIndex}">
@@ -768,7 +768,7 @@
                             </Style>
                         </r:RibbonSplitButton.Style>
 
-                        <r:RibbonMenuItem Header="選択位置に挿入"
+                        <r:RibbonMenuItem Header="選択位置の後ろに挿入"
                             x:Name="InsertSelect"
                             Command="{x:Static cube:ListViewCommands.Insert}"
                             CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedIndex}">
