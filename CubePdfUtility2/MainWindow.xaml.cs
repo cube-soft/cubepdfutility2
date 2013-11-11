@@ -307,10 +307,13 @@ namespace CubePdfUtility
         /// 
         /// <summary>
         /// 現在、開いている PDF ファイルに新しい PDF ファイルを挿入します。
-        /// パラメータ (e.Parameter) は、null、または挿入位置へのインデックス
-        /// です。挿入位置へのインデックスが指定された場合はその直後に、
-        /// null の場合は先頭に挿入します。パラメータが -1 の場合は、挿入位置
-        /// が指定されていない事を表します（ListView.SelectedIndex の挙動）。
+        /// パラメータ (e.Parameter) は、null、-2、または挿入位置への
+        /// インデックスです。挿入位置へのインデックスが指定された場合は
+        /// その直後に、-2 の場合は先頭に挿入します。
+        /// パラメータが -1 の場合は、挿入位置が指定されていない事を表します
+        /// （ListView.SelectedIndex の挙動）。
+        /// 
+        /// パラメータが null の場合は詳細設定用のダイアログを表示します。
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
@@ -319,14 +322,20 @@ namespace CubePdfUtility
         private void InsertCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             this.InsertButton.IsEnabled = _viewmodel.PageCount > 0;
-            e.CanExecute = (e.Parameter == null || (int)e.Parameter >= 0);
+            e.CanExecute = (e.Parameter == null || (int)e.Parameter != -1);
         }
 
         private void InsertCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             try
             {
-                var index = (e.Parameter != null) ? Math.Min((int)e.Parameter + 1, _viewmodel.PageCount) : 0;
+                if (e.Parameter == null)
+                {
+                    InsertFiles();
+                    return;
+                }
+
+                var index = Math.Max(Math.Min((int)e.Parameter + 1, _viewmodel.PageCount), 0);
                 var obj = (index == 0) ? InsertHead.Header
                     : (index == _viewmodel.PageCount) ? InsertTail.Header
                     : InsertSelect.Header;
@@ -1455,7 +1464,7 @@ namespace CubePdfUtility
 
         /* ----------------------------------------------------------------- */
         ///
-        /// InsertFileAsync
+        /// InsertFile
         /// 
         /// <summary>
         /// index の位置に指定された PDF ファイルを挿入します。
@@ -1467,6 +1476,83 @@ namespace CubePdfUtility
         /// パスワードが間違っていた場合は、正しいパスワードが入力されるか、
         /// またはキャンセルボタンが押下されるまでダイアログを表示し続けます。
         /// </remarks>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void InsertFile(int index, string path, string password, string history)
+        {
+            Cursor = Cursors.Wait;
+            var filename = System.IO.Path.GetFileName(path);
+            var message = String.Format(Properties.Resources.InsertFile, filename);
+            InfoStatusBarItem.Content = message;
+
+            var reader = new CubePdf.Editing.DocumentReader();
+            try
+            {
+                reader.Open(path, password);
+                if (NeedPassword(reader)) throw new CubePdf.Data.EncryptionException();
+                InsertFile(index, reader, history);
+            }
+            catch (CubePdf.Data.EncryptionException /* err */)
+            {
+                var dialog = new PasswordWindow(path, _font);
+                dialog.Owner = this;
+                if (dialog.ShowDialog() == true) InsertFile(index, path, dialog.Password, history);
+            }
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// InsertFiles
+        /// 
+        /// <summary>
+        /// index の位置に指定された PDF ファイル群を挿入します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void InsertFiles(int index, string[] files, string history)
+        {
+            foreach (var path in files)
+            {
+                var count = _viewmodel.PageCount;
+                InsertFile(index, path, "", history);
+                index += _viewmodel.PageCount - count;
+            }
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// InsertFiles
+        /// 
+        /// <summary>
+        /// 「詳細を設定して挿入」のためのダイアログを表示し、設定項目に
+        /// したがってファイルを挿入します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void InsertFiles()
+        {
+            var dialog = new InsertWindow(Thumbnail.SelectedIndex, _viewmodel.PageCount);
+            dialog.Owner = this;
+            if (dialog.ShowDialog() == false) return;
+            if (dialog.FileList.Count > 0)
+            {
+                var index = dialog.Index;
+                var obj = (index == 0) ? InsertHead.Header
+                    : (index == _viewmodel.PageCount) ? InsertTail.Header
+                    : InsertSelect.Header;
+                var files = new List<string>();
+                foreach (var info in dialog.FileList) files.Add(info.FullName);
+                InsertFiles(index, files.ToArray(), obj as string);
+            }
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// InsertFileAsync
+        /// 
+        /// <summary>
+        /// index の位置に指定された PDF ファイルを非同期で挿入します。
+        /// </summary>
         ///
         /* ----------------------------------------------------------------- */
         private void InsertFileAsync(int index, string path, string password, string history)
@@ -1533,6 +1619,9 @@ namespace CubePdfUtility
             {
                 Win32Api.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
             }
+            var scroll = CubePdf.Wpf.VisualHelper.FindVisualChild<ScrollViewer>(Thumbnail);
+            if (scroll != null) scroll.ScrollToVerticalOffset(0);
+
             return true;
         }
 

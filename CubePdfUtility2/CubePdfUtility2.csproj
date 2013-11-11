@@ -107,7 +107,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="InsertWindow.xaml.cs">
+      <DependentUpon>InsertWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ItemHeightConverter.cs" />
+    <Compile Include="KiloByteConverter.cs" />
     <Compile Include="PasswordWindow.xaml.cs">
       <DependentUpon>PasswordWindow.xaml</DependentUpon>
     </Compile>
@@ -128,6 +132,11 @@
     <Compile Include="VersionWindow.xaml.cs">
       <DependentUpon>VersionWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WindowExtensions.cs" />
+    <Page Include="InsertWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
