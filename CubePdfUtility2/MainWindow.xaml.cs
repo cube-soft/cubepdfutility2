@@ -1445,13 +1445,6 @@ namespace CubePdfUtility
                 _viewmodel.Insert(index, reader);
                 _viewmodel.History[0].Text = history;
             }
-            catch (ArgumentException err)
-            {
-                MessageBox.Show(err.Message, Properties.Resources.ErrorTitle,
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-                Trace.TraceError(err.ToString());
-                Refresh();
-            }
             catch (Exception err)
             {
                 MessageBox.Show(Properties.Resources.InsertError, Properties.Resources.ErrorTitle,
