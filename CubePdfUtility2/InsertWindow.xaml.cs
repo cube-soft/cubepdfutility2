@@ -78,6 +78,7 @@ namespace CubePdfUtility
                 CurrentRadioButton.IsEnabled = false;
                 HeadRadioButton.IsChecked = true;
             }
+            else PageNumberTextBox.Text = (_index + 1).ToString();
         }
 
         #endregion
