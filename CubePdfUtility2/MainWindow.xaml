@@ -3,6 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
     xmlns:r="clr-namespace:Microsoft.Windows.Controls.Ribbon;assembly=RibbonControlsLibrary"
+    xmlns:system="clr-namespace:System;assembly=mscorlib"
     xmlns:cube="clr-namespace:CubePdf.Wpf;assembly=CubePdf.Wpf"
     xmlns:local="clr-namespace:CubePdfUtility"
     x:Name="RibbonWindow" Title="CubePDF Utility"
@@ -41,6 +42,7 @@
     </Window.CommandBindings>
 
     <Window.Resources>
+        <system:Int32 x:Key="NegativeTwo">-2</system:Int32>
         <cube:DataResource x:Key="SelectedItems" BindingTarget="{Binding ElementName=Thumbnail, Path=SelectedItems}" />
         <cube:DataResource x:Key="SelectedIndex" BindingTarget="{Binding ElementName=Thumbnail, Path=SelectedIndex}" />
         <cube:ControlToTagConverter x:Key="ControlToTagConverter"/>
@@ -137,7 +139,7 @@
             <Separator/>
 
             <MenuItem Header="挿入">
-                <MenuItem Header="選択位置に挿入"
+                <MenuItem Header="選択位置の後ろに挿入"
                     Command="{x:Static cube:ListViewCommands.Insert}"
                     CommandParameter="{Binding PlacementTarget.SelectedIndex, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"/>
                 <MenuItem Header="先頭に挿入"
@@ -745,7 +747,7 @@
 
                 <r:RibbonGroup Header="ページ操作" x:Name="PagingGroup">
                     <r:RibbonSplitButton Label="挿入"
-                        ToolTipTitle="選択位置に新しいPDFファイルを挿入"
+                        ToolTipTitle="選択位置の後ろに新しいPDFファイルを挿入"
                         x:Name="InsertButton"
                         Command="{x:Static cube:ListViewCommands.Insert}"
                         CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedIndex}">
@@ -766,7 +768,7 @@
                             </Style>
                         </r:RibbonSplitButton.Style>
 
-                        <r:RibbonMenuItem Header="選択位置に挿入"
+                        <r:RibbonMenuItem Header="選択位置の後ろに挿入"
                             x:Name="InsertSelect"
                             Command="{x:Static cube:ListViewCommands.Insert}"
                             CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedIndex}">
@@ -788,8 +790,8 @@
 
                         <r:RibbonMenuItem Header="先頭に挿入"
                             x:Name="InsertHead"
-                            Command="{x:Static cube:ListViewCommands.Insert}">
-
+                            Command="{x:Static cube:ListViewCommands.Insert}"
+                            CommandParameter="{StaticResource NegativeTwo}">
 
                             <r:RibbonMenuItem.Style>
                                 <Style TargetType="r:RibbonMenuItem">
@@ -811,6 +813,24 @@
                             Command="{x:Static cube:ListViewCommands.Insert}"
                             CommandParameter="{Binding ElementName=Thumbnail, Path=Items.Count}">
 
+                            <r:RibbonMenuItem.Style>
+                                <Style TargetType="r:RibbonMenuItem">
+                                    <Style.Triggers>
+                                        <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="True">
+                                            <Setter Property="ImageSource" Value="Images\SmallIcons\Insert.png"/>
+                                        </Trigger>
+
+                                        <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="False">
+                                            <Setter Property="ImageSource" Value="Images\SmallIcons\InsertDisable.png"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </r:RibbonMenuItem.Style>
+                        </r:RibbonMenuItem>
+
+                        <r:RibbonMenuItem Header="詳細を設定して挿入"
+                            x:Name="InsertDetail"
+                            Command="{x:Static cube:ListViewCommands.Insert}">
 
                             <r:RibbonMenuItem.Style>
                                 <Style TargetType="r:RibbonMenuItem">
