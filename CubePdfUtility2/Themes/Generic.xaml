@@ -34,7 +34,7 @@
                 <DataTemplate>
                     <StackPanel Orientation="Vertical">
                         <Border BorderThickness="1" BorderBrush="White">
-                            <Image Source="{Binding Path=Image, Converter={StaticResource ImageConverter}}"/>
+                            <Image Source="{Binding Path=Image, Converter={StaticResource ImageConverter}}" Stretch="Uniform" StretchDirection="DownOnly"/>
                         </Border>
                         <TextBlock Text="{Binding Path=Text}" HorizontalAlignment="Right" Foreground="White"/>
                     </StackPanel>
