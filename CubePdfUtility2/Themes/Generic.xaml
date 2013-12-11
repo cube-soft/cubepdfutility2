@@ -4,7 +4,7 @@
                     xmlns:local="clr-namespace:CubePdfUtility">
 
     <cube:ImageConverter x:Key="ImageConverter"/>
-
+    
     <Style x:Key="{ComponentResourceKey TypeInTargetAssembly={x:Type local:ImageView}, ResourceId=ImageView}"
         TargetType="{x:Type ListView}" BasedOn="{StaticResource {x:Type ListBox}}">
         <Setter Property="Template">
@@ -34,7 +34,11 @@
                 <DataTemplate>
                     <StackPanel Orientation="Vertical">
                         <Border BorderThickness="1" BorderBrush="White">
-                            <Image Source="{Binding Path=Image, Converter={StaticResource ImageConverter}}" Stretch="Uniform" StretchDirection="DownOnly"/>
+                            <Viewbox Stretch="Uniform"
+                                Height="{Binding (ListView.View).ItemHeight, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                Width="{Binding (ListView.View).ItemWidth, RelativeSource={RelativeSource AncestorType=ListView}}">
+                                <Image Source="{Binding Path=Image, Converter={StaticResource ImageConverter}}"/>
+                            </Viewbox>
                         </Border>
                         <TextBlock Text="{Binding Path=Text}" HorizontalAlignment="Right" Foreground="White"/>
                     </StackPanel>
