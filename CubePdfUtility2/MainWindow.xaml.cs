@@ -251,6 +251,10 @@ namespace CubePdfUtility
         private void SaveCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             try { _viewmodel.Save(); }
+            catch (System.IO.IOException err)
+            {
+                Trace.TraceError(err.ToString());
+            }
             catch (Exception err)
             {
                 MessageBox.Show(Properties.Resources.SaveError, Properties.Resources.ErrorTitle,
