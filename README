@@ -62,8 +62,9 @@ CubePDF Utility は、以下のライブラリを利用しています。
    GNU General Public License ( http://www.gnu.org/licenses/gpl.html )
 
 ■バージョン履歴
-2013/12/12 version 0.3.0β
+2013/12/18 version 0.3.0β
  - ウィンドウ間のドラッグ&ドロップ操作でページを挿入できるように修正
+ - ドラッグ&ドロップによる最後尾への移動/挿入操作を修正
  
 2013/11/11 version 0.2.3β
  - 複数ファイルを挿入する機能を追加
