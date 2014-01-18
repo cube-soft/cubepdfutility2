@@ -184,27 +184,7 @@ namespace CubePdfUtility
                     if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
                     path = dialog.FileName;
                 }
-                if (existsSameFile(path)) return;
-                if (!String.IsNullOrEmpty(_viewmodel.FilePath))
-                {
-                    ProcessStartInfo psi = new ProcessStartInfo(System.Windows.Forms.Application.ExecutablePath);
-                    psi.Arguments = "\"" + path + "\"";
-                    Process np = Process.Start(psi);
-
-                    byte[] data = System.Text.Encoding.UTF8.GetBytes(_viewmodel.FilePath);
-                    System.Security.Cryptography.MD5CryptoServiceProvider md5 = new System.Security.Cryptography.MD5CryptoServiceProvider();
-                    byte[] mByte = md5.ComputeHash(data);
-                    md5.Clear();
-                    string name = BitConverter.ToString(mByte).ToLower().Replace("-", "");
-
-                    System.IO.StreamWriter sw = new System.IO.StreamWriter(_md5path);
-                    sw.WriteLine(np.Id);
-                    sw.Close();
-
-                    return;
-                }
-                else if (!CloseFile()) return;
-                else OpenFileAsync(path, "");
+                OpenWithNewProcess(path);
             }
             catch (System.IO.FileNotFoundException fne) { Trace.WriteLine("FILE NOT FOUND:"+fne.ToString()); }
             catch (Exception err) { Trace.TraceError(err.ToString()); }
@@ -1460,7 +1440,6 @@ namespace CubePdfUtility
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
-
         private bool existsSameFile(string path)
         {
             byte[] data = System.Text.Encoding.UTF8.GetBytes(path);
@@ -1488,6 +1467,57 @@ namespace CubePdfUtility
             else
             {
                 return false;
+            }
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// CreateMd5
+        /// 
+        /// <summary>
+        /// pdfファイルを開く際に、そのプロセス番号を一時ファイルとして保存します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void CreateMd5Hash(Process process)
+        {
+            byte[] data = System.Text.Encoding.UTF8.GetBytes(_viewmodel.FilePath);
+            System.Security.Cryptography.MD5CryptoServiceProvider md5 = new System.Security.Cryptography.MD5CryptoServiceProvider();
+            byte[] mByte = md5.ComputeHash(data);
+            md5.Clear();
+            string name = BitConverter.ToString(mByte).ToLower().Replace("-", "");
+
+            System.IO.StreamWriter sw = new System.IO.StreamWriter(_md5path);
+            sw.WriteLine(process.Id);
+            sw.Close();
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// OpenWithNewProcess
+        /// 
+        /// <summary>
+        /// pdfファイルを新しいプロセスで開きます。（仮）
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void OpenWithNewProcess(string path)
+        {
+            if (existsSameFile(path)) return;
+            if (!String.IsNullOrEmpty(_viewmodel.FilePath))
+            {
+                var psi = new ProcessStartInfo(System.Windows.Forms.Application.ExecutablePath);
+                psi.Arguments = "\"" + path + "\"";
+                var np = Process.Start(psi);
+
+                CreateMd5Hash(np);
+                return;
+            }
+            else if (!CloseFile()) return;
+            else
+            {
+                CreateMd5Hash(Process.GetCurrentProcess());
+                OpenFileAsync(path, "");
             }
         }
 
