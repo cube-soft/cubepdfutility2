@@ -175,7 +175,7 @@ namespace CubePdfUtility
         {
             try
             {
-                var path = e.Parameter as string;                
+                var path = e.Parameter as string;
                 if (path == null)
                 {
                     var dialog = new System.Windows.Forms.OpenFileDialog();
@@ -184,14 +184,33 @@ namespace CubePdfUtility
                     if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
                     path = dialog.FileName;
                 }
-                if (!String.IsNullOrEmpty(_viewmodel.FilePath) && !CloseFile()) return;
-                OpenFileAsync(path, "");
+                if (existsSameFile(path)) return;
+                if (!String.IsNullOrEmpty(_viewmodel.FilePath))
+                {
+                    ProcessStartInfo psi = new ProcessStartInfo(System.Windows.Forms.Application.ExecutablePath);
+                    psi.Arguments = "\"" + path + "\"";
+                    Process np = Process.Start(psi);
+
+                    byte[] data = System.Text.Encoding.UTF8.GetBytes(_viewmodel.FilePath);
+                    System.Security.Cryptography.MD5CryptoServiceProvider md5 = new System.Security.Cryptography.MD5CryptoServiceProvider();
+                    byte[] mByte = md5.ComputeHash(data);
+                    md5.Clear();
+                    string name = BitConverter.ToString(mByte).ToLower().Replace("-", "");
+
+                    System.IO.StreamWriter sw = new System.IO.StreamWriter(_md5path);
+                    sw.WriteLine(np.Id);
+                    sw.Close();
+
+                    return;
+                }
+                else if (!CloseFile()) return;
+                else OpenFileAsync(path, "");
             }
+            catch (System.IO.FileNotFoundException fne) { Trace.WriteLine("FILE NOT FOUND:"+fne.ToString()); }
             catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
 
         #endregion
-
         /* ----------------------------------------------------------------- */
         ///
         /// Close
@@ -214,6 +233,7 @@ namespace CubePdfUtility
         {
             try
             {
+                if (System.IO.File.Exists(_md5path)) System.IO.File.Delete(_md5path);
                 e.Handled = CloseFile();
             }
             catch (Exception err) { Trace.TraceError(err.ToString()); }
@@ -1118,6 +1138,7 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         protected override void OnClosed(EventArgs e)
         {
+            if (System.IO.File.Exists(_md5path)) System.IO.File.Delete(_md5path);
             base.OnClosed(e);
             _viewmodel.Dispose();
         }
@@ -1426,6 +1447,48 @@ namespace CubePdfUtility
                     }));
                 }
             }), null);
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// existsSameFile
+        /// 
+        /// <summary>
+        /// 同一のファイルをすでに開いていないかどうか判定します
+        /// 開いている場合はtrueを、そうでない場合はfalseを返します
+        /// 開いている場合はさらに、そのウィンドウをアクティブにします
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+
+        private bool existsSameFile(string path)
+        {
+            byte[] data = System.Text.Encoding.UTF8.GetBytes(path);
+            System.Security.Cryptography.MD5CryptoServiceProvider md5 = new System.Security.Cryptography.MD5CryptoServiceProvider();
+            byte[] mByte = md5.ComputeHash(data);
+            md5.Clear();
+            string name = BitConverter.ToString(mByte).ToLower().Replace("-", "");
+
+            string dirpath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\CubeSoft\CubePdfUtility2\processes";
+            lock (typeof(Application))
+            {
+                if (!System.IO.Directory.Exists(dirpath)) System.IO.Directory.CreateDirectory(dirpath);
+            }
+            _md5path = dirpath + @"\" + name;
+            if (System.IO.File.Exists(_md5path))
+            {
+                var file = new System.IO.StreamReader(_md5path);
+                string rd = file.ReadLine();
+                Trace.WriteLine("ID is " + rd);
+                int id = Int32.Parse(rd);
+                Microsoft.VisualBasic.Interaction.AppActivate(id);
+                file.Close();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         /* ----------------------------------------------------------------- */
@@ -1787,6 +1850,7 @@ namespace CubePdfUtility
         private string _font = string.Empty;
         private CubePdf.Wpf.ListViewModel _viewmodel = new CubePdf.Wpf.ListViewModel();
         private bool _shown = false;
+        private string _md5path = null;
         #endregion
 
         #region Static variables
