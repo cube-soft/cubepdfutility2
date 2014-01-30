@@ -52,6 +52,7 @@ namespace CubePdfUtility
     /* --------------------------------------------------------------------- */
     public partial class MainWindow : RibbonWindow
     {
+
         #region Initialization and Termination
 
         /* ----------------------------------------------------------------- */
@@ -1101,6 +1102,7 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
+            if (System.IO.File.Exists(_md5path)) System.IO.File.Delete(_md5path); 
             var result = CloseFile();
             e.Cancel = !result;
             if (!e.Cancel) SaveSetting(this, e);
@@ -1118,7 +1120,7 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         protected override void OnClosed(EventArgs e)
         {
-            if (System.IO.File.Exists(_md5path)) System.IO.File.Delete(_md5path);
+
             base.OnClosed(e);
             _viewmodel.Dispose();
         }
@@ -1398,6 +1400,8 @@ namespace CubePdfUtility
         {
             Cursor = Cursors.Wait;
             var filename = System.IO.Path.GetFileName(path);
+            if (existsSameFile(path)) return;
+            CreateMd5Hash(Process.GetCurrentProcess());
             var message = String.Format(Properties.Resources.OpenFile, filename);
             InfoStatusBarItem.Content = message;
 
@@ -1429,7 +1433,7 @@ namespace CubePdfUtility
             }), null);
         }
 
-        /* ----------------------------------------------------------------- */
+       /* ----------------------------------------------------------------- */
         ///
         /// existsSameFile
         /// 
@@ -1440,6 +1444,10 @@ namespace CubePdfUtility
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
+        [DllImport("user32.dll", EntryPoint = "BringWindowToTop")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool BringWindowToTop(IntPtr hWnd);
+
         private bool existsSameFile(string path)
         {
             byte[] data = System.Text.Encoding.UTF8.GetBytes(path);
@@ -1453,26 +1461,36 @@ namespace CubePdfUtility
             {
                 if (!System.IO.Directory.Exists(dirpath)) System.IO.Directory.CreateDirectory(dirpath);
             }
-            _md5path = dirpath + @"\" + name;
-            if (System.IO.File.Exists(_md5path))
+            string currentmd5 = dirpath + @"\" + name;
+            CheckMD5Alive();
+            if (System.IO.File.Exists(currentmd5))
             {
-                var file = new System.IO.StreamReader(_md5path);
-                string rd = file.ReadLine();
-                Trace.WriteLine("ID is " + rd);
-                int id = Int32.Parse(rd);
-                Microsoft.VisualBasic.Interaction.AppActivate(id);
-                file.Close();
+                using (var file = new System.IO.StreamReader(currentmd5))
+                {
+                    string rd = file.ReadLine();
+                    Trace.WriteLine("ID is " + rd);
+                    int id = Int32.Parse(rd);
+                    foreach (Process p in Process.GetProcesses())
+                    {
+                        if (p.Id == id)
+                        {
+                            BringWindowToTop(p.MainWindowHandle);
+                            break;
+                        }
+                    }
+                }
                 return true;
             }
             else
             {
+                if (_md5path == null) _md5path = currentmd5;
                 return false;
             }
         }
 
         /* ----------------------------------------------------------------- */
         ///
-        /// CreateMd5
+        /// CreateMd5Hash
         /// 
         /// <summary>
         /// pdfファイルを開く際に、そのプロセス番号を一時ファイルとして保存します。
@@ -1487,9 +1505,10 @@ namespace CubePdfUtility
             md5.Clear();
             string name = BitConverter.ToString(mByte).ToLower().Replace("-", "");
 
-            System.IO.StreamWriter sw = new System.IO.StreamWriter(_md5path);
-            sw.WriteLine(process.Id);
-            sw.Close();
+            using (var sw = new System.IO.StreamWriter(_md5path))
+            {
+                sw.WriteLine(process.Id);
+            }
         }
 
         /* ----------------------------------------------------------------- */
@@ -1509,15 +1528,44 @@ namespace CubePdfUtility
                 var psi = new ProcessStartInfo(System.Windows.Forms.Application.ExecutablePath);
                 psi.Arguments = "\"" + path + "\"";
                 var np = Process.Start(psi);
-
-                CreateMd5Hash(np);
                 return;
             }
             else if (!CloseFile()) return;
             else
             {
-                CreateMd5Hash(Process.GetCurrentProcess());
                 OpenFileAsync(path, "");
+            }
+        }
+        /* ----------------------------------------------------------------- */
+        ///
+        /// CheckMD5Alive
+        /// 
+        /// <summary>
+        /// MD5ファイルが指すプロセスが現在存在しているかどうか確認します。
+        /// 対象のプロセスが存在しない場合にはMD5ファイルを削除します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+
+        public void CheckMD5Alive()
+        {
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\CubeSoft\CubePdfUtility2\processes";
+            string[] names = System.IO.Directory.GetFiles(path);
+            Process[] processes = Process.GetProcesses();
+            List<int> pid = new List<int>();
+            int rd;
+            foreach (var p in processes)
+            {
+                pid.Add(p.Id);
+            }
+            foreach (var name in names)
+            {
+                using (var f = new System.IO.StreamReader(name))
+                {
+                    rd = Int32.Parse(f.ReadLine());
+                } 
+                if (!pid.Contains(rd)) System.IO.File.Delete(name);
+
             }
         }
 
