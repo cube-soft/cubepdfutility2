@@ -1173,6 +1173,7 @@ namespace CubePdfUtility
             {
                 if (System.IO.Path.GetExtension(file) == Properties.Resources.PdfExtension)
                 {
+                    if (!String.IsNullOrEmpty(_viewmodel.FilePath) && !CloseFile()) return;
                     OpenFileAsync(file, "");
                     e.Handled = true;
                     return;
