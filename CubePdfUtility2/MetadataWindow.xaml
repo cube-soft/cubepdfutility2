@@ -59,6 +59,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
                 <Grid.ColumnDefinitions>
@@ -78,20 +79,30 @@
                     <ComboBoxItem>1.7</ComboBoxItem>
                 </ComboBox>
 
-                <Label Content="アプリケーション：" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" />
-                <TextBox Grid.Row="1" Grid.Column="1" Margin="5" VerticalAlignment="Center" Text="{Binding Creator}" x:Name="ApplicationTextBox"/>
+                <Label Content="ページレイアウト：" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                <ComboBox x:Name="ViewerPreferences" Grid.Row="1" Grid.Column="1" Margin="5" VerticalAlignment="Center">
+                    <ComboBoxItem>単一ページ</ComboBoxItem>
+                    <ComboBoxItem>連続ページ</ComboBoxItem>
+                    <ComboBoxItem>連続見開きページ（左綴じ）</ComboBoxItem>
+                    <ComboBoxItem>連続見開きページ（右綴じ）</ComboBoxItem>
+                    <ComboBoxItem>見開きページ（左綴じ）</ComboBoxItem>
+                    <ComboBoxItem>見開きページ（右綴じ）</ComboBoxItem>
+                </ComboBox>
 
-                <Label Content="PDF変換：" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" />
-                <TextBlock Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Text="{Binding Producer}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"/>
+                <Label Content="アプリケーション：" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                <TextBox Grid.Row="2" Grid.Column="1" Margin="5" VerticalAlignment="Center" Text="{Binding Creator}" x:Name="ApplicationTextBox"/>
 
-                <Label Content="ファイルサイズ：" Grid.Row="3" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" />
-                <Label x:Name="FileSize" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Content="1.23MB" />
+                <Label Content="PDF変換：" Grid.Row="3" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                <TextBlock Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Text="{Binding Producer}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"/>
 
-                <Label Content="作成日：" Grid.Row="4" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" />
-                <Label x:Name="CreationTime" Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Content="1970/01/01 00:00:00" />
+                <Label Content="ファイルサイズ：" Grid.Row="4" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                <Label x:Name="FileSize" Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Content="1.23MB" />
 
-                <Label Content="更新日：" Grid.Row="5" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" />
-                <Label x:Name="UpdateTime" Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" Content="1970/01/01 00:00:00" />
+                <Label Content="作成日：" Grid.Row="5" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                <Label x:Name="CreationTime" Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" Content="1970/01/01 00:00:00" />
+
+                <Label Content="更新日：" Grid.Row="6" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                <Label x:Name="UpdateTime" Grid.Row="7" Grid.Column="1" VerticalAlignment="Center" Content="1970/01/01 00:00:00" />
             </Grid>
         </GroupBox>
 
