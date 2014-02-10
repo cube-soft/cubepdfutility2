@@ -72,8 +72,16 @@ namespace CubePdfUtility
             // Version.Minor は読み取り専用なので Binding ではなくコード側で対応
             PdfVersion.SelectedIndex = _metadata.Version.Minor;
 
+            // ViewerPreferences の SelectedIndex は単純には捌けなさそうなのでコード側で対応
+            ViewerPreferences.SelectedIndex = -1;
+            for (int i = 0; i <= 6; ++i)
+            {
+                if ((_metadata.ViewerPreferences & (int)Math.Pow(2, i)) != 0)
+                {
+                    ViewerPreferences.SelectedIndex = i;
+                }
+            }
             ReplaceFont(font);
-
         }
 
         #endregion
@@ -111,6 +119,16 @@ namespace CubePdfUtility
             {
                 _metadata.Version = new Version(1, PdfVersion.SelectedIndex, 0, 0);
             }
+
+            // ViewerPreferences
+            if ((_metadata.ViewerPreferences & (int)Math.Pow(2, ViewerPreferences.SelectedIndex)) == 0)
+            {
+                // 元のフラグを消す
+                _metadata.ViewerPreferences = (_metadata.ViewerPreferences & ~((int)Math.Pow(2, 6) - 1));
+
+                _metadata.ViewerPreferences = (_metadata.ViewerPreferences | (int)Math.Pow(2, ViewerPreferences.SelectedIndex));
+            }
+
             DialogResult = true;
             Close();
         }
