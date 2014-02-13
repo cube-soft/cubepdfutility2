@@ -87,8 +87,11 @@ namespace CubePdfUtility
             SourceInitialized += new EventHandler(LoadSetting);
 
             var appdata = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            var root = System.IO.Path.Combine(appdata, _AppDataRoot);
+            _checker = new ProcessChecker(root);
+
             _viewmodel.View = Thumbnail;
-            _viewmodel.BackupFolder = System.IO.Path.Combine(appdata, @"CubeSoft\CubePdfUtility2");
+            _viewmodel.BackupFolder = root;
             _viewmodel.BackupDays = 30;
             _viewmodel.RunCompleted += new EventHandler(ViewModel_RunCompleted);
         }
@@ -107,7 +110,7 @@ namespace CubePdfUtility
             : this()
         {
             Loaded += (sender, e) => {
-                try { if (!String.IsNullOrEmpty(path))  OpenFileAsync(path, ""); }
+                try { if (!String.IsNullOrEmpty(path)) OpenFileAsync(path, ""); }
                 catch (Exception err) { Trace.TraceError(err.ToString()); }
             };
         }
@@ -185,13 +188,17 @@ namespace CubePdfUtility
                     if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
                     path = dialog.FileName;
                 }
-                OpenWithNewProcess(path);
+                OpenFileAsyncOrNewProcess(path);
             }
-            catch (System.IO.FileNotFoundException fne) { Trace.WriteLine("FILE NOT FOUND:"+fne.ToString()); }
-            catch (Exception err) { Trace.TraceError(err.ToString()); }
+            catch (Exception err)
+            {
+                Trace.TraceError(err.ToString());
+                MessageBox.Show(err.Message, Properties.Resources.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         #endregion
+
         /* ----------------------------------------------------------------- */
         ///
         /// Close
@@ -214,7 +221,6 @@ namespace CubePdfUtility
         {
             try
             {
-                if (System.IO.File.Exists(_md5path)) System.IO.File.Delete(_md5path);
                 e.Handled = CloseFile();
             }
             catch (Exception err) { Trace.TraceError(err.ToString()); }
@@ -1102,7 +1108,6 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
-            if (System.IO.File.Exists(_md5path)) System.IO.File.Delete(_md5path); 
             var result = CloseFile();
             e.Cancel = !result;
             if (!e.Cancel) SaveSetting(this, e);
@@ -1176,7 +1181,7 @@ namespace CubePdfUtility
             {
                 if (System.IO.Path.GetExtension(file) == Properties.Resources.PdfExtension)
                 {
-                    OpenFileAsync(file, "");
+                    OpenFileAsyncOrNewProcess(file);
                     e.Handled = true;
                     return;
                 }
@@ -1398,13 +1403,19 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         private void OpenFileAsync(string path, string password)
         {
+            var process = _checker.GetProcess(path);
+            if (process != null)
+            {
+                Win32Api.BringWindowToTop(process.MainWindowHandle);
+                return;
+            }
+
             Cursor = Cursors.Wait;
             var filename = System.IO.Path.GetFileName(path);
-            if (existsSameFile(path)) return;
-            CreateMd5Hash(Process.GetCurrentProcess());
             var message = String.Format(Properties.Resources.OpenFile, filename);
             InfoStatusBarItem.Content = message;
 
+            _checker.Register(path, Process.GetCurrentProcess());
             NavigationCanvas.Visibility = Visibility.Collapsed;
             ThreadPool.QueueUserWorkItem(new WaitCallback((Object parameter) => {
                 var reader = new CubePdf.Editing.DocumentReader();
@@ -1433,96 +1444,29 @@ namespace CubePdfUtility
             }), null);
         }
 
-       /* ----------------------------------------------------------------- */
+        /* ----------------------------------------------------------------- */
         ///
-        /// existsSameFile
+        /// OpenFileAsyncOrNewProcess
         /// 
         /// <summary>
-        /// 同一のファイルをすでに開いていないかどうか判定します
-        /// 開いている場合はtrueを、そうでない場合はfalseを返します
-        /// 開いている場合はさらに、そのウィンドウをアクティブにします
+        /// 指定されたパスの PDF ファイルを非同期で開きます。
         /// </summary>
-        ///
-        /* ----------------------------------------------------------------- */
-        [DllImport("user32.dll", EntryPoint = "BringWindowToTop")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool BringWindowToTop(IntPtr hWnd);
-
-        private bool existsSameFile(string path)
-        {
-            byte[] data = System.Text.Encoding.UTF8.GetBytes(path);
-            System.Security.Cryptography.MD5CryptoServiceProvider md5 = new System.Security.Cryptography.MD5CryptoServiceProvider();
-            byte[] mByte = md5.ComputeHash(data);
-            md5.Clear();
-            string name = BitConverter.ToString(mByte).ToLower().Replace("-", "");
-
-            string dirpath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\CubeSoft\CubePdfUtility2\processes";
-            lock (typeof(Application))
-            {
-                if (!System.IO.Directory.Exists(dirpath)) System.IO.Directory.CreateDirectory(dirpath);
-            }
-            string currentmd5 = dirpath + @"\" + name;
-            CheckMD5Alive();
-            if (System.IO.File.Exists(currentmd5))
-            {
-                using (var file = new System.IO.StreamReader(currentmd5))
-                {
-                    string rd = file.ReadLine();
-                    Trace.WriteLine("ID is " + rd);
-                    int id = Int32.Parse(rd);
-                    foreach (Process p in Process.GetProcesses())
-                    {
-                        if (p.Id == id)
-                        {
-                            BringWindowToTop(p.MainWindowHandle);
-                            break;
-                        }
-                    }
-                }
-                return true;
-            }
-            else
-            {
-                if (_md5path == null) _md5path = currentmd5;
-                return false;
-            }
-        }
-
-        /* ----------------------------------------------------------------- */
-        ///
-        /// CreateMd5Hash
         /// 
-        /// <summary>
-        /// pdfファイルを開く際に、そのプロセス番号を一時ファイルとして保存します。
-        /// </summary>
+        /// <remarks>
+        /// 現在のウィンドウで既に何らかの PDF ファイルが開かれている場合、
+        /// 新しいプロセスを生成して、その画面で開きます。
+        /// </remarks>
         ///
         /* ----------------------------------------------------------------- */
-        private void CreateMd5Hash(Process process)
+        private void OpenFileAsyncOrNewProcess(string path)
         {
-            byte[] data = System.Text.Encoding.UTF8.GetBytes(_viewmodel.FilePath);
-            System.Security.Cryptography.MD5CryptoServiceProvider md5 = new System.Security.Cryptography.MD5CryptoServiceProvider();
-            byte[] mByte = md5.ComputeHash(data);
-            md5.Clear();
-            string name = BitConverter.ToString(mByte).ToLower().Replace("-", "");
-
-            using (var sw = new System.IO.StreamWriter(_md5path))
+            var process = _checker.GetProcess(path);
+            if (process != null)
             {
-                sw.WriteLine(process.Id);
+                Win32Api.BringWindowToTop(process.MainWindowHandle);
+                return;
             }
-        }
 
-        /* ----------------------------------------------------------------- */
-        ///
-        /// OpenWithNewProcess
-        /// 
-        /// <summary>
-        /// pdfファイルを新しいプロセスで開きます。（仮）
-        /// </summary>
-        ///
-        /* ----------------------------------------------------------------- */
-        private void OpenWithNewProcess(string path)
-        {
-            if (existsSameFile(path)) return;
             if (!String.IsNullOrEmpty(_viewmodel.FilePath))
             {
                 var psi = new ProcessStartInfo(System.Windows.Forms.Application.ExecutablePath);
@@ -1531,42 +1475,7 @@ namespace CubePdfUtility
                 return;
             }
             else if (!CloseFile()) return;
-            else
-            {
-                OpenFileAsync(path, "");
-            }
-        }
-        /* ----------------------------------------------------------------- */
-        ///
-        /// CheckMD5Alive
-        /// 
-        /// <summary>
-        /// MD5ファイルが指すプロセスが現在存在しているかどうか確認します。
-        /// 対象のプロセスが存在しない場合にはMD5ファイルを削除します。
-        /// </summary>
-        ///
-        /* ----------------------------------------------------------------- */
-
-        public void CheckMD5Alive()
-        {
-            string path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\CubeSoft\CubePdfUtility2\processes";
-            string[] names = System.IO.Directory.GetFiles(path);
-            Process[] processes = Process.GetProcesses();
-            List<int> pid = new List<int>();
-            int rd;
-            foreach (var p in processes)
-            {
-                pid.Add(p.Id);
-            }
-            foreach (var name in names)
-            {
-                using (var f = new System.IO.StreamReader(name))
-                {
-                    rd = Int32.Parse(f.ReadLine());
-                } 
-                if (!pid.Contains(rd)) System.IO.File.Delete(name);
-
-            }
+            else OpenFileAsync(path, "");
         }
 
         /* ----------------------------------------------------------------- */
@@ -1747,6 +1656,7 @@ namespace CubePdfUtility
                     }
                 }
             }
+            _checker.Remove(_viewmodel.FilePath);
             _viewmodel.Close();
 
             if (Environment.OSVersion.Platform == PlatformID.Win32NT)
@@ -1928,12 +1838,13 @@ namespace CubePdfUtility
         private string _font = string.Empty;
         private CubePdf.Wpf.ListViewModel _viewmodel = new CubePdf.Wpf.ListViewModel();
         private bool _shown = false;
-        private string _md5path = null;
+        private ProcessChecker _checker = null;
         #endregion
 
         #region Static variables
         private static readonly IList<KeyValuePair<int, string>> _ViewSize;
         private static readonly int _MinSize = 400;
+        private static readonly string _AppDataRoot = @"CubeSoft\CubePdfUtility2";
         #endregion
 
         #region Win32 APIs
@@ -1942,6 +1853,9 @@ namespace CubePdfUtility
         {
             [DllImport("kernel32.dll")]
             public static extern bool SetProcessWorkingSetSize(IntPtr procHandle, int min, int max);
+
+            [DllImport("user32.dll", SetLastError = true)]
+            public static extern bool BringWindowToTop(IntPtr hWnd);
         }
 
         #endregion
