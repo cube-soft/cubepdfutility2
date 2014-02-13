@@ -120,13 +120,10 @@ namespace CubePdfUtility
                 _metadata.Version = new Version(1, PdfVersion.SelectedIndex, 0, 0);
             }
 
-            // ViewerPreferences
             if ((_metadata.ViewerPreferences & (int)Math.Pow(2, ViewerPreferences.SelectedIndex)) == 0)
             {
-                // 元のフラグを消す
-                _metadata.ViewerPreferences = (_metadata.ViewerPreferences & ~((int)Math.Pow(2, 6) - 1));
-
-                _metadata.ViewerPreferences = (_metadata.ViewerPreferences | (int)Math.Pow(2, ViewerPreferences.SelectedIndex));
+                _metadata.ViewerPreferences &= ~((int)Math.Pow(2, 6) - 1);
+                _metadata.ViewerPreferences |= (int)Math.Pow(2, ViewerPreferences.SelectedIndex);
             }
 
             DialogResult = true;
