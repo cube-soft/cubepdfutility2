@@ -5,7 +5,7 @@
 
     <cube:ImageConverter x:Key="ImageConverter"/>
     <local:BorderThicknessConverter x:Key="BorderThicknessConverter"/>
-    <local:MarginAndPaddingConverter x:Key="MarginAndPaddingConverter"/>
+    <local:MarginConverter x:Key="MarginConverter"/>
     
     <Style x:Key="{ComponentResourceKey TypeInTargetAssembly={x:Type local:ImageView}, ResourceId=ImageView}"
         TargetType="{x:Type ListView}" BasedOn="{StaticResource {x:Type ListBox}}">
@@ -37,7 +37,7 @@
                     <StackPanel Orientation="Vertical">
                         <Viewbox Stretch="Uniform" Name="ThumbnailViewBox">
                             <Viewbox.Height>
-                                <MultiBinding Converter="{StaticResource MarginAndPaddingConverter}">
+                                <MultiBinding Converter="{StaticResource MarginConverter}">
                                     <MultiBinding.Bindings>
                                         <Binding Path="(ListView.View).ItemHeight" RelativeSource="{RelativeSource AncestorType=ListView}"/>
                                         <!--<TemplateBinding Property="Margin"/>
@@ -46,7 +46,7 @@
                                 </MultiBinding>
                             </Viewbox.Height>
                             <Viewbox.Width>
-                                <MultiBinding Converter="{StaticResource MarginAndPaddingConverter}">
+                                <MultiBinding Converter="{StaticResource MarginConverter}">
                                     <MultiBinding.Bindings>
                                         <Binding Path="(ListView.View).ItemWidth" RelativeSource="{RelativeSource AncestorType=ListView}"/>
                                         <!--<Binding Property="Margin"/>

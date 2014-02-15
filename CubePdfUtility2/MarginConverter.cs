@@ -1,6 +1,6 @@
 ﻿/* ------------------------------------------------------------------------- */
 ///
-/// ItemHeightConverter.cs
+/// MarginConverter.cs
 ///
 /// Copyright (c) 2013 CubeSoft, Inc. All rights reserved.
 ///
@@ -25,7 +25,7 @@ using System.Collections.Generic;
 
 namespace CubePdfUtility
 {
-    class MarginAndPaddingConverter : IMultiValueConverter
+    public class MarginConverter : IMultiValueConverter
     {
         /* ----------------------------------------------------------------- */
         ///

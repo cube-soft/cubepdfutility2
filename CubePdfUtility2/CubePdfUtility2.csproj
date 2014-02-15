@@ -106,11 +106,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="BorderThicknessConverter.cs" />
     <Compile Include="InsertWindow.xaml.cs">
       <DependentUpon>InsertWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="ItemHeightConverter.cs" />
     <Compile Include="KiloByteConverter.cs" />
+    <Compile Include="MarginConverter.cs" />
     <Compile Include="PasswordWindow.xaml.cs">
       <DependentUpon>PasswordWindow.xaml</DependentUpon>
     </Compile>
