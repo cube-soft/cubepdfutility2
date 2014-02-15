@@ -1240,7 +1240,7 @@
             <ListView.View>
                 <local:ImageView x:Name="ThumbnailImageView"
                     ItemWidth="{Binding ElementName=RibbonWindow, Path=ViewModel.ItemWidth}"
-                    ItemHeight="{Binding ElementName=RibbonWindow, Path=ViewModel.MaxItemHeight, Converter={StaticResource ItemHeightConverter}}"/>
+                    ItemHeight="{Binding ElementName=RibbonWindow, Path=ViewModel.ItemHeight, Converter={StaticResource ItemHeightConverter}}"/>
             </ListView.View>
 
             <i:Interaction.Behaviors>
