@@ -52,6 +52,7 @@ namespace CubePdfUtility
     /* --------------------------------------------------------------------- */
     public partial class MainWindow : RibbonWindow
     {
+
         #region Initialization and Termination
 
         /* ----------------------------------------------------------------- */
@@ -86,8 +87,11 @@ namespace CubePdfUtility
             SourceInitialized += new EventHandler(LoadSetting);
 
             var appdata = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            var root = System.IO.Path.Combine(appdata, _AppDataRoot);
+            _checker = new ProcessChecker(root);
+
             _viewmodel.View = Thumbnail;
-            _viewmodel.BackupFolder = System.IO.Path.Combine(appdata, @"CubeSoft\CubePdfUtility2");
+            _viewmodel.BackupFolder = root;
             _viewmodel.BackupDays = 30;
             _viewmodel.RunCompleted += new EventHandler(ViewModel_RunCompleted);
         }
@@ -106,7 +110,7 @@ namespace CubePdfUtility
             : this()
         {
             Loaded += (sender, e) => {
-                try { if (!String.IsNullOrEmpty(path))  OpenFileAsync(path, ""); }
+                try { if (!String.IsNullOrEmpty(path)) OpenFileAsync(path, ""); }
                 catch (Exception err) { Trace.TraceError(err.ToString()); }
             };
         }
@@ -175,7 +179,7 @@ namespace CubePdfUtility
         {
             try
             {
-                var path = e.Parameter as string;                
+                var path = e.Parameter as string;
                 if (path == null)
                 {
                     var dialog = new System.Windows.Forms.OpenFileDialog();
@@ -184,10 +188,13 @@ namespace CubePdfUtility
                     if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
                     path = dialog.FileName;
                 }
-                if (!String.IsNullOrEmpty(_viewmodel.FilePath) && !CloseFile()) return;
-                OpenFileAsync(path, "");
+                OpenFileAsyncOrNewProcess(path);
             }
-            catch (Exception err) { Trace.TraceError(err.ToString()); }
+            catch (Exception err)
+            {
+                Trace.TraceError(err.ToString());
+                MessageBox.Show(err.Message, Properties.Resources.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         #endregion
@@ -1122,6 +1129,7 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         protected override void OnClosed(EventArgs e)
         {
+
             base.OnClosed(e);
             _viewmodel.Dispose();
         }
@@ -1177,8 +1185,7 @@ namespace CubePdfUtility
             {
                 if (System.IO.Path.GetExtension(file) == Properties.Resources.PdfExtension)
                 {
-                    if (!String.IsNullOrEmpty(_viewmodel.FilePath) && !CloseFile()) return;
-                    OpenFileAsync(file, "");
+                    OpenFileAsyncOrNewProcess(file);
                     e.Handled = true;
                     return;
                 }
@@ -1400,11 +1407,19 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         private void OpenFileAsync(string path, string password)
         {
+            var process = _checker.GetProcess(path);
+            if (process != null)
+            {
+                Win32Api.BringWindowToTop(process.MainWindowHandle);
+                return;
+            }
+
             Cursor = Cursors.Wait;
             var filename = System.IO.Path.GetFileName(path);
             var message = String.Format(Properties.Resources.OpenFile, filename);
             InfoStatusBarItem.Content = message;
 
+            _checker.Register(path, Process.GetCurrentProcess());
             NavigationCanvas.Visibility = Visibility.Collapsed;
             ThreadPool.QueueUserWorkItem(new WaitCallback((Object parameter) => {
                 var reader = new CubePdf.Editing.DocumentReader();
@@ -1431,6 +1446,40 @@ namespace CubePdfUtility
                     }));
                 }
             }), null);
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// OpenFileAsyncOrNewProcess
+        /// 
+        /// <summary>
+        /// 指定されたパスの PDF ファイルを非同期で開きます。
+        /// </summary>
+        /// 
+        /// <remarks>
+        /// 現在のウィンドウで既に何らかの PDF ファイルが開かれている場合、
+        /// 新しいプロセスを生成して、その画面で開きます。
+        /// </remarks>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void OpenFileAsyncOrNewProcess(string path)
+        {
+            var process = _checker.GetProcess(path);
+            if (process != null)
+            {
+                Win32Api.BringWindowToTop(process.MainWindowHandle);
+                return;
+            }
+
+            if (!String.IsNullOrEmpty(_viewmodel.FilePath))
+            {
+                var psi = new ProcessStartInfo(System.Windows.Forms.Application.ExecutablePath);
+                psi.Arguments = "\"" + path + "\"";
+                var np = Process.Start(psi);
+                return;
+            }
+            else if (!CloseFile()) return;
+            else OpenFileAsync(path, "");
         }
 
         /* ----------------------------------------------------------------- */
@@ -1611,6 +1660,7 @@ namespace CubePdfUtility
                     }
                 }
             }
+            _checker.Remove(_viewmodel.FilePath);
             _viewmodel.Close();
 
             if (Environment.OSVersion.Platform == PlatformID.Win32NT)
@@ -1792,11 +1842,13 @@ namespace CubePdfUtility
         private string _font = string.Empty;
         private CubePdf.Wpf.ListViewModel _viewmodel = new CubePdf.Wpf.ListViewModel();
         private bool _shown = false;
+        private ProcessChecker _checker = null;
         #endregion
 
         #region Static variables
         private static readonly IList<KeyValuePair<int, string>> _ViewSize;
         private static readonly int _MinSize = 400;
+        private static readonly string _AppDataRoot = @"CubeSoft\CubePdfUtility2";
         #endregion
 
         #region Win32 APIs
@@ -1805,6 +1857,9 @@ namespace CubePdfUtility
         {
             [DllImport("kernel32.dll")]
             public static extern bool SetProcessWorkingSetSize(IntPtr procHandle, int min, int max);
+
+            [DllImport("user32.dll", SetLastError = true)]
+            public static extern bool BringWindowToTop(IntPtr hWnd);
         }
 
         #endregion
