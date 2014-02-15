@@ -47,8 +47,9 @@
         <cube:DataResource x:Key="SelectedIndex" BindingTarget="{Binding ElementName=Thumbnail, Path=SelectedIndex}" />
         <cube:ControlToTagConverter x:Key="ControlToTagConverter"/>
         <cube:IsEnabledToVisibilityConverter x:Key="IsEnabledToVisibilityConverter" />
-        <local:ItemHeightConverter x:Key="ItemHeightConverter"/>
 
+        <local:ItemHeightConverter x:Key="ItemHeightConverter"/>
+        
         <Color x:Key="{x:Static SystemColors.GrayTextColorKey}">#FF595959</Color>
         <SolidColorBrush x:Key="MainBorderBrush" Color="#FF000000"/>
         <SolidColorBrush x:Key="MainBackgroundBrush" Color="#FF555555"/>

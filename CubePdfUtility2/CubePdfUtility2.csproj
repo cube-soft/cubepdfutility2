@@ -112,7 +112,6 @@
     </Compile>
     <Compile Include="ItemHeightConverter.cs" />
     <Compile Include="KiloByteConverter.cs" />
-    <Compile Include="MarginConverter.cs" />
     <Compile Include="PasswordWindow.xaml.cs">
       <DependentUpon>PasswordWindow.xaml</DependentUpon>
     </Compile>

@@ -63,10 +63,12 @@ namespace CubePdfUtility
                 new KeyValuePair<int, string>(64,   "64px"),
                 new KeyValuePair<int, string>(128, "128px"),
                 new KeyValuePair<int, string>(150, "150px"),
+                new KeyValuePair<int, string>(200, "200px"),
                 new KeyValuePair<int, string>(256, "256px"),
                 new KeyValuePair<int, string>(300, "300px"),
                 new KeyValuePair<int, string>(512, "512px"),
                 new KeyValuePair<int, string>(600, "600px"),
+                new KeyValuePair<int, string>(900, "900px"),
             };
         }
 
@@ -880,8 +882,8 @@ namespace CubePdfUtility
         {
             try
             {
-                var width = (int)e.Parameter;
-                if (_viewmodel.ItemWidth != width) _viewmodel.ItemWidth = width;
+                var size = (int)e.Parameter;
+                if (_viewmodel.BaseSize != size) _viewmodel.BaseSize = size;
             }
             catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
