@@ -882,8 +882,8 @@ namespace CubePdfUtility
         {
             try
             {
-                var size = (int)e.Parameter;
-                if (_viewmodel.BaseSize != size) _viewmodel.BaseSize = size;
+                var viewsize = (int)e.Parameter;
+                if (_viewmodel.ViewSize != viewsize) _viewmodel.ViewSize = viewsize;
             }
             catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
@@ -1337,7 +1337,7 @@ namespace CubePdfUtility
                 _setting.Position = new Point(Left, Top);
                 _setting.Size = new Size((int)Width, (int)Height);
                 _setting.IsMaximized = (WindowState == WindowState.Maximized);
-                _setting.ViewSize = _viewmodel.BaseSize;
+                _setting.ViewSize = _viewmodel.ViewSize;
                 _setting.ItemVisibility = _viewmodel.ItemVisibility;
                 _setting.Save();
             }
