@@ -61,13 +61,15 @@ namespace CubePdfUtility
         static MainWindow()
         {
             _ViewSize = new List<KeyValuePair<int, string>>() {
-                new KeyValuePair<int, string>(64,   "64px"),
-                new KeyValuePair<int, string>(128, "128px"),
+                new KeyValuePair<int, string>(128, "100px"),
                 new KeyValuePair<int, string>(150, "150px"),
-                new KeyValuePair<int, string>(256, "256px"),
+                new KeyValuePair<int, string>(200, "200px"),
+                new KeyValuePair<int, string>(250, "250px"),
                 new KeyValuePair<int, string>(300, "300px"),
-                new KeyValuePair<int, string>(512, "512px"),
+                new KeyValuePair<int, string>(400, "400px"),
+                new KeyValuePair<int, string>(500, "500px"),
                 new KeyValuePair<int, string>(600, "600px"),
+                new KeyValuePair<int, string>(900, "900px"),
             };
         }
 
@@ -891,8 +893,8 @@ namespace CubePdfUtility
         {
             try
             {
-                var width = (int)e.Parameter;
-                if (_viewmodel.ItemWidth != width) _viewmodel.ItemWidth = width;
+                var viewsize = (int)e.Parameter;
+                if (_viewmodel.ViewSize != viewsize) _viewmodel.ViewSize = viewsize;
             }
             catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
@@ -1312,13 +1314,13 @@ namespace CubePdfUtility
                     Top = Math.Max(Math.Min(_setting.Position.Y, SystemParameters.WorkArea.Bottom - Height), 0);
                 }
 
-                // NOTE: ItemWidth は、既に用意されている選択肢 (_ViewSize) のうち、
+                // NOTE: サムネイルのサイズには、既に用意されている選択肢 (_ViewSize) のうち、
                 // ユーザ設定に保存されている値を超えない最大値を使用する。
                 ViewSizeGalleryCategory.ItemsSource = _ViewSize;
                 var size = _ViewSize[0];
                 foreach (var item in _ViewSize)
                 {
-                    if (item.Key > _setting.ItemWidth) break;
+                    if (item.Key > _setting.ViewSize) break;
                     size = item;
                 }
                 ViewSizeGallery.SelectedItem = size;
@@ -1347,7 +1349,7 @@ namespace CubePdfUtility
                 _setting.Position = new Point(Left, Top);
                 _setting.Size = new Size((int)Width, (int)Height);
                 _setting.IsMaximized = (WindowState == WindowState.Maximized);
-                _setting.ItemWidth = _viewmodel.ItemWidth;
+                _setting.ViewSize = _viewmodel.ViewSize;
                 _setting.ItemVisibility = _viewmodel.ItemVisibility;
                 _setting.Save();
             }

@@ -106,6 +106,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="BorderThicknessConverter.cs" />
     <Compile Include="InsertWindow.xaml.cs">
       <DependentUpon>InsertWindow.xaml</DependentUpon>
     </Compile>

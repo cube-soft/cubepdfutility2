@@ -47,8 +47,9 @@
         <cube:DataResource x:Key="SelectedIndex" BindingTarget="{Binding ElementName=Thumbnail, Path=SelectedIndex}" />
         <cube:ControlToTagConverter x:Key="ControlToTagConverter"/>
         <cube:IsEnabledToVisibilityConverter x:Key="IsEnabledToVisibilityConverter" />
-        <local:ItemHeightConverter x:Key="ItemHeightConverter"/>
 
+        <local:ItemHeightConverter x:Key="ItemHeightConverter"/>
+        
         <Color x:Key="{x:Static SystemColors.GrayTextColorKey}">#FF595959</Color>
         <SolidColorBrush x:Key="MainBorderBrush" Color="#FF000000"/>
         <SolidColorBrush x:Key="MainBackgroundBrush" Color="#FF555555"/>
@@ -1240,7 +1241,7 @@
             <ListView.View>
                 <local:ImageView x:Name="ThumbnailImageView"
                     ItemWidth="{Binding ElementName=RibbonWindow, Path=ViewModel.ItemWidth}"
-                    ItemHeight="{Binding ElementName=RibbonWindow, Path=ViewModel.MaxItemHeight, Converter={StaticResource ItemHeightConverter}}"/>
+                    ItemHeight="{Binding ElementName=RibbonWindow, Path=ViewModel.ItemHeight, Converter={StaticResource ItemHeightConverter}}"/>
             </ListView.View>
 
             <i:Interaction.Behaviors>
