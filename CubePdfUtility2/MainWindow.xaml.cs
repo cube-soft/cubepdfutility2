@@ -1302,7 +1302,7 @@ namespace CubePdfUtility
                     Top = Math.Max(Math.Min(_setting.Position.Y, SystemParameters.WorkArea.Bottom - Height), 0);
                 }
 
-                // NOTE: ItemWidth は、既に用意されている選択肢 (_ViewSize) のうち、
+                // NOTE: サムネイルのサイズには、既に用意されている選択肢 (_ViewSize) のうち、
                 // ユーザ設定に保存されている値を超えない最大値を使用する。
                 ViewSizeGalleryCategory.ItemsSource = _ViewSize;
                 var size = _ViewSize[0];
