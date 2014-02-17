@@ -1,6 +1,6 @@
 ﻿/* ------------------------------------------------------------------------- */
 ///
-/// ItemHeightConverter.cs
+/// BorderThicknessConverter.cs
 ///
 /// Copyright (c) 2013 CubeSoft, Inc. All rights reserved.
 ///
@@ -21,38 +21,50 @@
 using System;
 using System.Windows.Data;
 using System.Globalization;
+using System.Collections.Generic;
 
 namespace CubePdfUtility
 {
     /* --------------------------------------------------------------------- */
     ///
-    /// ItemHeightConverter
+    /// BorderThicknessConverter
     /// 
     /// <summary>
-    /// サムネイルの高さの値を調節するためのコンバータクラスです。
+    /// サムネイルの枠線の太さを調節するためのコンバータクラスです。
     /// </summary>
     ///
     /* --------------------------------------------------------------------- */
-    public class ItemHeightConverter : IValueConverter
+    class BorderThicknessConverter : IMultiValueConverter
     {
         /* ----------------------------------------------------------------- */
         ///
         /// Convert
         /// 
         /// <summary>
-        /// ListViewModel から渡された値をもとに、サムネイルの高さを調節
-        /// します。
+        /// 項目の幅/高さ、および表示サイズとして指定されている幅/高さ
+        /// の値を元に枠線の太さを決定します。
         /// </summary>
+        /// 
+        /// <remarks>
+        /// 引数 values には 4 つの値を指定する必要がある。順に項目の幅、
+        /// 表示サイズとして指定されている幅、項目の高さ、表示サイズとして
+        /// 指定されている高さとなる。
+        /// </remarks>
         ///
         /* ----------------------------------------------------------------- */
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             try
             {
-                var height = (double)value;
-                return height - _TextHeight;
+                var width      = (double)values[0];
+                var widthview  = (double)values[1];
+                var height     = (double)values[2];
+                var heightview = (double)values[3];
+                var horizontal = width / widthview;
+                var vertical   = height / heightview;
+                return new System.Windows.Thickness(horizontal > vertical ? horizontal : vertical);
             }
-            catch (Exception /* err */) { return default(double); }
+            catch (Exception /* err */) { return new System.Windows.Thickness(1.0); }
         }
 
         /* ----------------------------------------------------------------- */
@@ -60,22 +72,13 @@ namespace CubePdfUtility
         /// ConvertBack
         /// 
         /// <summary>
-        /// 調節した高さを元の値に戻します。
+        /// 未実装です。
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
-            try
-            {
-                var height = (double)value;
-                return height + _TextHeight;
-            }
-            catch (Exception /* err */) { return default(double); }
+            return null;
         }
-
-        #region Static variables
-        private static readonly int _TextHeight = 26;
-        #endregion
     }
 }

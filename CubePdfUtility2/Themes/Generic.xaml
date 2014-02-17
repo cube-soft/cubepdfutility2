@@ -4,7 +4,9 @@
                     xmlns:local="clr-namespace:CubePdfUtility">
 
     <cube:ImageConverter x:Key="ImageConverter"/>
-
+    <local:ItemHeightConverter x:Key="ItemHeightConverter" />
+    <local:BorderThicknessConverter x:Key="BorderThicknessConverter"/>
+    
     <Style x:Key="{ComponentResourceKey TypeInTargetAssembly={x:Type local:ImageView}, ResourceId=ImageView}"
         TargetType="{x:Type ListView}" BasedOn="{StaticResource {x:Type ListBox}}">
         <Setter Property="Template">
@@ -33,9 +35,22 @@
             <Setter.Value>
                 <DataTemplate>
                     <StackPanel Orientation="Vertical">
-                        <Border BorderThickness="1" BorderBrush="White">
-                            <Image Source="{Binding Path=Image, Converter={StaticResource ImageConverter}}"/>
-                        </Border>
+                        <Viewbox Stretch="Uniform" Name="ThumbnailViewBox"
+                            Height="{Binding Path=(ListView.View).ItemHeight, RelativeSource={RelativeSource AncestorType=ListView}, Converter={StaticResource ItemHeightConverter}}">
+                            <Border BorderBrush="White">
+                                <Border.BorderThickness>
+                                    <MultiBinding Converter="{StaticResource BorderThicknessConverter}">
+                                        <MultiBinding.Bindings>
+                                            <Binding ElementName="ThumbnailImage" Path="ActualWidth"/>
+                                            <Binding Path="(ListView.View).ItemWidth" RelativeSource="{RelativeSource AncestorType=ListView}"/>
+                                            <Binding ElementName="ThumbnailImage" Path="ActualHeight"/>
+                                            <Binding Path="(ListView.View).ItemHeight" RelativeSource="{RelativeSource AncestorType=ListView}"/>
+                                        </MultiBinding.Bindings>
+                                    </MultiBinding>
+                                </Border.BorderThickness>
+                                <Image Source="{Binding Path=Image, Converter={StaticResource ImageConverter}}" Name="ThumbnailImage" Stretch="Uniform" />
+                            </Border>
+                        </Viewbox>
                         <TextBlock Text="{Binding Path=Text}" HorizontalAlignment="Right" Foreground="White"/>
                     </StackPanel>
                 </DataTemplate>

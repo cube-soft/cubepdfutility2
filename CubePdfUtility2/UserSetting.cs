@@ -145,10 +145,10 @@ namespace CubePdfUtility
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
-        public int ItemWidth
+        public int ViewSize
         {
-            get { return _itemwidth; }
-            set { _itemwidth = value; }
+            get { return _viewsize; }
+            set { _viewsize = value; }
         }
 
         /* ----------------------------------------------------------------- */
@@ -214,8 +214,8 @@ namespace CubePdfUtility
                 var maximize = setting.Root.Find(_RegMaximize);
                 if (maximize != null) _maximize = maximize.GetValue(_maximize);
 
-                var item = setting.Root.Find(_RegItemWidth);
-                if (item != null) _itemwidth = item.GetValue(_itemwidth);
+                var item = setting.Root.Find(_RegViewSize);
+                if (item != null) _viewsize = item.GetValue(_viewsize);
 
                 var visibility = setting.Root.Find(_RegVisibility);
                 if (visibility != null) _visibility = (CubePdf.Wpf.ListViewItemVisibility)visibility.Value;
@@ -248,7 +248,7 @@ namespace CubePdfUtility
                 setting.Root.Add(new CubePdf.Settings.Node(_RegWidth, (int)_size.Width));
                 setting.Root.Add(new CubePdf.Settings.Node(_RegHeight, (int)_size.Height));
                 setting.Root.Add(new CubePdf.Settings.Node(_RegMaximize, _maximize));
-                setting.Root.Add(new CubePdf.Settings.Node(_RegItemWidth, _itemwidth));
+                setting.Root.Add(new CubePdf.Settings.Node(_RegViewSize, (int)_viewsize));
                 setting.Root.Add(new CubePdf.Settings.Node(_RegVisibility, (int)_visibility));
 
                 setting.Write(root);
@@ -265,7 +265,7 @@ namespace CubePdfUtility
         private Size _size = new Size(800, 600);
         private bool _maximize = false;
         private CubePdf.Wpf.ListViewItemVisibility _visibility = CubePdf.Wpf.ListViewItemVisibility.Normal;
-        private int _itemwidth = 150;
+        private int _viewsize = 250;
         private DateTime _last = new DateTime();
         #endregion
 
@@ -279,7 +279,7 @@ namespace CubePdfUtility
         private static readonly string _RegHeight     = "Height";
         private static readonly string _RegMaximize   = "IsMaximized";
         private static readonly string _RegVisibility = "ItemVisibility";
-        private static readonly string _RegItemWidth  = "ItemWidth";
+        private static readonly string _RegViewSize  = "ViewSize";
         private static readonly string _RegLastCheck  = "LastCheckUpdate";
         #endregion
     }

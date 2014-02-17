@@ -107,6 +107,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="BorderThicknessConverter.cs" />
     <Compile Include="InsertWindow.xaml.cs">
       <DependentUpon>InsertWindow.xaml</DependentUpon>
     </Compile>
@@ -118,6 +119,7 @@
     <Compile Include="PreviewWindow.xaml.cs">
       <DependentUpon>PreviewWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ProcessChecker.cs" />
     <Compile Include="RecentFile.cs" />
     <Compile Include="RemoveWindow.xaml.cs">
       <DependentUpon>RemoveWindow.xaml</DependentUpon>
