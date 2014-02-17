@@ -4,6 +4,7 @@
                     xmlns:local="clr-namespace:CubePdfUtility">
 
     <cube:ImageConverter x:Key="ImageConverter"/>
+    <local:ItemHeightConverter x:Key="ItemHeightConverter" />
     <local:BorderThicknessConverter x:Key="BorderThicknessConverter"/>
     
     <Style x:Key="{ComponentResourceKey TypeInTargetAssembly={x:Type local:ImageView}, ResourceId=ImageView}"
@@ -34,7 +35,8 @@
             <Setter.Value>
                 <DataTemplate>
                     <StackPanel Orientation="Vertical">
-                        <Viewbox Stretch="Uniform" Name="ThumbnailViewBox">
+                        <Viewbox Stretch="Uniform" Name="ThumbnailViewBox"
+                            Height="{Binding Path=(ListView.View).ItemHeight, RelativeSource={RelativeSource AncestorType=ListView}, Converter={StaticResource ItemHeightConverter}}">
                             <Border BorderBrush="White">
                                 <Border.BorderThickness>
                                     <MultiBinding Converter="{StaticResource BorderThicknessConverter}">
@@ -46,7 +48,7 @@
                                         </MultiBinding.Bindings>
                                     </MultiBinding>
                                 </Border.BorderThickness>
-                                <Image Source="{Binding Path=Image, Converter={StaticResource ImageConverter}}" Name="ThumbnailImage"/>
+                                <Image Source="{Binding Path=Image, Converter={StaticResource ImageConverter}}" Name="ThumbnailImage" Stretch="Uniform" />
                             </Border>
                         </Viewbox>
                         <TextBlock Text="{Binding Path=Text}" HorizontalAlignment="Right" Foreground="White"/>

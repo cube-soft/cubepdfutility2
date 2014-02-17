@@ -49,10 +49,10 @@ namespace CubePdfUtility
         {
             try
             {
-                var height = (int)value;
-                return height + _TextHeight;
+                var height = (double)value;
+                return height - _TextHeight;
             }
-            catch (Exception /* err */) { return default(int); }
+            catch (Exception /* err */) { return default(double); }
         }
 
         /* ----------------------------------------------------------------- */
@@ -68,14 +68,14 @@ namespace CubePdfUtility
         {
             try
             {
-                var height = (int)value;
-                return height - _TextHeight;
+                var height = (double)value;
+                return height + _TextHeight;
             }
-            catch (Exception /* err */) { return default(int); }
+            catch (Exception /* err */) { return default(double); }
         }
 
         #region Static variables
-        private static readonly int _TextHeight = 20;
+        private static readonly int _TextHeight = 26;
         #endregion
     }
 }
