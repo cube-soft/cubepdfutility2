@@ -75,7 +75,7 @@ namespace CubePdfUtility
         }
 
         #region Static variables
-        private static readonly int _TextHeight = 26;
+        private static readonly int _TextHeight = 30;
         #endregion
     }
 }
