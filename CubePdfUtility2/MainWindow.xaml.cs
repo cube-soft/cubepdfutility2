@@ -111,7 +111,16 @@ namespace CubePdfUtility
         public MainWindow(string path)
             : this()
         {
-            Loaded += (sender, e) => {
+            var process = _checker.GetProcess(path);
+            if (process != null)
+            {
+                Win32Api.SetForegroundWindow(process.MainWindowHandle);
+                Application.Current.Shutdown();
+                return;
+            }
+
+            Loaded += (sender, e) =>
+            {
                 try { if (!String.IsNullOrEmpty(path)) OpenFileAsync(path, ""); }
                 catch (Exception err) { Trace.TraceError(err.ToString()); }
             };
@@ -1282,7 +1291,7 @@ namespace CubePdfUtility
             var control = sender as MenuItem;
             if (control != null && control.Tag != null)
             {
-                OpenFileAsync(control.Tag as string, "");
+                OpenFileAsyncOrNewProcess(control.Tag as string);
             }
         }
 
@@ -1409,13 +1418,6 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         private void OpenFileAsync(string path, string password)
         {
-            var process = _checker.GetProcess(path);
-            if (process != null)
-            {
-                Win32Api.BringWindowToTop(process.MainWindowHandle);
-                return;
-            }
-
             Cursor = Cursors.Wait;
             var filename = System.IO.Path.GetFileName(path);
             var message = String.Format(Properties.Resources.OpenFile, filename);
@@ -1469,6 +1471,7 @@ namespace CubePdfUtility
             var process = _checker.GetProcess(path);
             if (process != null)
             {
+                this.Activate();
                 Win32Api.BringWindowToTop(process.MainWindowHandle);
                 return;
             }
@@ -1862,6 +1865,8 @@ namespace CubePdfUtility
 
             [DllImport("user32.dll", SetLastError = true)]
             public static extern bool BringWindowToTop(IntPtr hWnd);
+            [DllImport("user32.dll", SetLastError = true)]
+            public static extern bool SetForegroundWindow(IntPtr hWnd);
         }
 
         #endregion
