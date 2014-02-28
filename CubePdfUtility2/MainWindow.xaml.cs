@@ -1694,6 +1694,7 @@ namespace CubePdfUtility
         {
             var s = (inner != null) ? string.Format("{0}({1})", message, inner.Message) : message;
             MessageBox.Show(s, Properties.Resources.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+            Refresh();
         }
 
         /* ----------------------------------------------------------------- */
@@ -1709,6 +1710,7 @@ namespace CubePdfUtility
         {
             var s = (inner != null) ? string.Format("{0}({1})", message, inner.Message) : message;
             MessageBox.Show(s, Properties.Resources.WarningTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+            Refresh();
         }
 
         /* ----------------------------------------------------------------- */
