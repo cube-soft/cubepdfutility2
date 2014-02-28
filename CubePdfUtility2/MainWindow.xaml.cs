@@ -201,11 +201,7 @@ namespace CubePdfUtility
                 }
                 OpenFileAsyncOrNewProcess(path);
             }
-            catch (Exception err)
-            {
-                Trace.TraceError(err.ToString());
-                ShowErrorMessage(Properties.Resources.OpenError, err);
-            }
+            catch (Exception err) { ShowErrorMessage(Properties.Resources.OpenError, err); }
         }
 
         #endregion
@@ -267,11 +263,7 @@ namespace CubePdfUtility
         {
             try { _viewmodel.Save(); }
             catch (System.IO.IOException err) { Trace.TraceError(err.ToString()); }
-            catch (Exception err)
-            {
-                ShowErrorMessage(Properties.Resources.SaveError, err);
-                Trace.TraceError(err.ToString());
-            }
+            catch (Exception err) { ShowErrorMessage(Properties.Resources.SaveError, err); }
         }
 
         #endregion
@@ -306,11 +298,7 @@ namespace CubePdfUtility
                 RecentFile.Add(dialog.FileName);
                 UpdateRecentFiles();
             }
-            catch (Exception err)
-            {
-                ShowErrorMessage(Properties.Resources.SaveError, err);
-                Trace.TraceError(err.ToString());
-            }
+            catch (Exception err) { ShowErrorMessage(Properties.Resources.SaveError, err); }
         }
 
         #endregion
@@ -359,11 +347,7 @@ namespace CubePdfUtility
                 if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
                 InsertFileAsync(index, dialog.FileName, "", obj as string);
             }
-            catch (Exception err)
-            {
-                ShowErrorMessage(Properties.Resources.InsertError, err);
-                Trace.TraceError(err.ToString());
-            }
+            catch (Exception err) { ShowErrorMessage(Properties.Resources.InsertError, err); }
         }
 
         #endregion
@@ -458,11 +442,7 @@ namespace CubePdfUtility
                 if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
                 _viewmodel.Extract(items, dialog.FileName);
             }
-            catch (Exception err)
-            {
-                ShowErrorMessage(Properties.Resources.SaveError, err);
-                Trace.TraceError(err.ToString());
-            }
+            catch (Exception err) { ShowErrorMessage(Properties.Resources.SaveError, err); }
         }
 
         #endregion
@@ -502,11 +482,7 @@ namespace CubePdfUtility
                 if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
                 _viewmodel.Split(items, dialog.SelectedPath);
             }
-            catch (Exception err)
-            {
-                ShowErrorMessage(Properties.Resources.SaveError, err);
-                Trace.TraceError(err.ToString());
-            }
+            catch (Exception err) { ShowErrorMessage(Properties.Resources.SaveError, err); }
         }
 
         #endregion
@@ -1384,11 +1360,7 @@ namespace CubePdfUtility
                 RecentFile.Add(reader.FilePath);
                 UpdateRecentFiles();
             }
-            catch (Exception err)
-            {
-                ShowErrorMessage(Properties.Resources.OpenError, err);
-                Trace.TraceError(err.ToString());
-            }
+            catch (Exception err) { ShowErrorMessage(Properties.Resources.OpenError, err); }
             finally { reader.Dispose(); }
         }
 
@@ -1444,7 +1416,6 @@ namespace CubePdfUtility
                 {
                     Dispatcher.BeginInvoke(new Action(() => {
                         ShowErrorMessage(Properties.Resources.OpenError, err);
-                        Trace.TraceError(err.ToString());
                     }));
                 }
             }), null);
@@ -1502,11 +1473,7 @@ namespace CubePdfUtility
                 _viewmodel.Insert(index, reader);
                 _viewmodel.History[0].Text = history;
             }
-            catch (Exception err)
-            {
-                ShowErrorMessage(Properties.Resources.InsertError, err);
-                Trace.TraceError(err.ToString());
-            }
+            catch (Exception err) { ShowErrorMessage(Properties.Resources.InsertError, err); }
             finally { reader.Dispose(); }
         }
 
@@ -1632,7 +1599,6 @@ namespace CubePdfUtility
                 {
                     Dispatcher.BeginInvoke(new Action(() => {
                         ShowErrorMessage(Properties.Resources.InsertError, err);
-                        Trace.TraceError(err.ToString());
                     }));
                 }
             }), null);
@@ -1663,7 +1629,6 @@ namespace CubePdfUtility
                     catch (Exception err)
                     {
                         ShowErrorMessage(Properties.Resources.SaveError, err);
-                        Trace.TraceError(err.ToString());
                         return false;
                     }
                 }
