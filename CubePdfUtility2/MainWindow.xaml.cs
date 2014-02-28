@@ -230,10 +230,7 @@ namespace CubePdfUtility
 
         private void CloseCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            try
-            {
-                e.Handled = CloseFile();
-            }
+            try { e.Handled = CloseFile(); }
             catch (Exception err) { Trace.TraceError(err.ToString()); }
             finally
             {
@@ -362,7 +359,11 @@ namespace CubePdfUtility
                 if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
                 InsertFileAsync(index, dialog.FileName, "", obj as string);
             }
-            catch (Exception err) { Trace.TraceError(err.ToString()); }
+            catch (Exception err)
+            {
+                ShowErrorMessage(Properties.Resources.InsertError, err);
+                Trace.TraceError(err.ToString());
+            }
         }
 
         #endregion
@@ -1065,9 +1066,13 @@ namespace CubePdfUtility
 
         private void WebCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            var url = e.Parameter as string;
-            if (url == null) return;
-            Process.Start(url);
+            try
+            {
+                var url = e.Parameter as string;
+                if (url == null) return;
+                Process.Start(url);
+            }
+            catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
 
         #endregion
@@ -1133,7 +1138,6 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         protected override void OnClosed(EventArgs e)
         {
-
             base.OnClosed(e);
             _viewmodel.Dispose();
         }
@@ -1435,6 +1439,14 @@ namespace CubePdfUtility
                         dialog.Owner = this;
                         if (dialog.ShowDialog() == true) OpenFileAsync(path, dialog.Password);
                         else Refresh();
+                    }));
+                }
+                catch (Exception err)
+                {
+                    Dispatcher.BeginInvoke(new Action(() => {
+                        ShowErrorMessage(Properties.Resources.OpenError, err);
+                        Trace.TraceError(err.ToString());
+                        Refresh();
                     }));
                 }
             }), null);
