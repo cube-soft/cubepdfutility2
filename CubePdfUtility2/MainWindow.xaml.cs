@@ -262,7 +262,7 @@ namespace CubePdfUtility
         private void SaveCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             try { _viewmodel.Save(); }
-            catch (System.IO.IOException err) { Trace.TraceError(err.ToString()); }
+            catch (CubePdf.Misc.UserCancelledException err) { Trace.TraceError(err.ToString()); }
             catch (Exception err) { ShowErrorMessage(Properties.Resources.SaveError, err); }
         }
 
@@ -298,6 +298,7 @@ namespace CubePdfUtility
                 RecentFile.Add(dialog.FileName);
                 UpdateRecentFiles();
             }
+            catch (CubePdf.Misc.UserCancelledException err) { Trace.TraceError(err.ToString()); }
             catch (Exception err) { ShowErrorMessage(Properties.Resources.SaveError, err); }
         }
 
@@ -442,6 +443,7 @@ namespace CubePdfUtility
                 if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
                 _viewmodel.Extract(items, dialog.FileName);
             }
+            catch (CubePdf.Misc.UserCancelledException err) { Trace.TraceError(err.ToString()); }
             catch (Exception err) { ShowErrorMessage(Properties.Resources.SaveError, err); }
         }
 
@@ -482,6 +484,7 @@ namespace CubePdfUtility
                 if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
                 _viewmodel.Split(items, dialog.SelectedPath);
             }
+            catch (CubePdf.Misc.UserCancelledException err) { Trace.TraceError(err.ToString()); }
             catch (Exception err) { ShowErrorMessage(Properties.Resources.SaveError, err); }
         }
 
@@ -1626,6 +1629,7 @@ namespace CubePdfUtility
                 if (result == MessageBoxResult.Yes)
                 {
                     try { _viewmodel.SaveOnClose(); }
+                    catch (CubePdf.Misc.UserCancelledException /* err */) { return false; }
                     catch (Exception err)
                     {
                         ShowErrorMessage(Properties.Resources.SaveError, err);
