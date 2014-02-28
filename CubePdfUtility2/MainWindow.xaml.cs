@@ -204,7 +204,7 @@ namespace CubePdfUtility
             catch (Exception err)
             {
                 Trace.TraceError(err.ToString());
-                MessageBox.Show(err.Message, Properties.Resources.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+                ShowErrorMessage(Properties.Resources.OpenError, err);
             }
         }
 
@@ -269,14 +269,10 @@ namespace CubePdfUtility
         private void SaveCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             try { _viewmodel.Save(); }
-            catch (System.IO.IOException err)
-            {
-                Trace.TraceError(err.ToString());
-            }
+            catch (System.IO.IOException err) { Trace.TraceError(err.ToString()); }
             catch (Exception err)
             {
-                MessageBox.Show(Properties.Resources.SaveError, Properties.Resources.ErrorTitle,
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+                ShowErrorMessage(Properties.Resources.SaveError, err);
                 Trace.TraceError(err.ToString());
             }
         }
@@ -315,8 +311,7 @@ namespace CubePdfUtility
             }
             catch (Exception err)
             {
-                MessageBox.Show(Properties.Resources.SaveError, Properties.Resources.ErrorTitle,
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+                ShowErrorMessage(Properties.Resources.SaveError, err);
                 Trace.TraceError(err.ToString());
             }
         }
@@ -464,8 +459,7 @@ namespace CubePdfUtility
             }
             catch (Exception err)
             {
-                MessageBox.Show(Properties.Resources.SaveError, Properties.Resources.ErrorTitle,
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+                ShowErrorMessage(Properties.Resources.SaveError, err);
                 Trace.TraceError(err.ToString());
             }
         }
@@ -509,8 +503,7 @@ namespace CubePdfUtility
             }
             catch (Exception err)
             {
-                MessageBox.Show(Properties.Resources.SaveError, Properties.Resources.ErrorTitle,
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+                ShowErrorMessage(Properties.Resources.SaveError, err);
                 Trace.TraceError(err.ToString());
             }
         }
@@ -1388,8 +1381,7 @@ namespace CubePdfUtility
             }
             catch (Exception err)
             {
-                MessageBox.Show(Properties.Resources.OpenError, Properties.Resources.ErrorTitle,
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+                ShowErrorMessage(Properties.Resources.OpenError, err);
                 Trace.TraceError(err.ToString());
                 Refresh();
             }
@@ -1433,11 +1425,7 @@ namespace CubePdfUtility
                     if (NeedPassword(reader)) throw new CubePdf.Data.EncryptionException();
                     else Dispatcher.BeginInvoke(new Action(() => {
                         OpenFile(reader);
-                        if (reader.IsTaggedDocument)
-                        {
-                            MessageBox.Show(Properties.Resources.TaggedPdf, Properties.Resources.WarningTitle,
-                                MessageBoxButton.OK, MessageBoxImage.Warning);
-                        }
+                        if (reader.IsTaggedDocument) ShowWarnMessage(Properties.Resources.TaggedPdf);
                     }));
                 }
                 catch (CubePdf.Data.EncryptionException /* err */)
@@ -1506,8 +1494,7 @@ namespace CubePdfUtility
             }
             catch (Exception err)
             {
-                MessageBox.Show(Properties.Resources.InsertError, Properties.Resources.ErrorTitle,
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+                ShowErrorMessage(Properties.Resources.InsertError, err);
                 Trace.TraceError(err.ToString());
                 Refresh();
             }
@@ -1659,7 +1646,7 @@ namespace CubePdfUtility
                     try { _viewmodel.SaveOnClose(); }
                     catch (Exception err)
                     {
-                        MessageBox.Show(Properties.Resources.SaveError, Properties.Resources.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+                        ShowErrorMessage(Properties.Resources.SaveError, err);
                         Trace.TraceError(err.ToString());
                         return false;
                     }
@@ -1691,10 +1678,25 @@ namespace CubePdfUtility
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
-        private void ShowErrorMessage(Exception err, string message)
+        private void ShowErrorMessage(string message, Exception inner = null)
         {
-            var s = string.Format("{0}({1})", message, err.Message);
+            var s = (inner != null) ? string.Format("{0}({1})", message, inner.Message) : message;
             MessageBox.Show(s, Properties.Resources.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// ShowWarnMessage
+        ///
+        /// <summary>
+        /// 警告用メッセージを表示します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void ShowWarnMessage(string message, Exception inner = null)
+        {
+            var s = (inner != null) ? string.Format("{0}({1})", message, inner.Message) : message;
+            MessageBox.Show(s, Properties.Resources.WarningTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
         }
 
         /* ----------------------------------------------------------------- */
