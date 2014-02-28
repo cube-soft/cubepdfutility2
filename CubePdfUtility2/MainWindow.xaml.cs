@@ -1388,7 +1388,6 @@ namespace CubePdfUtility
             {
                 ShowErrorMessage(Properties.Resources.OpenError, err);
                 Trace.TraceError(err.ToString());
-                Refresh();
             }
             finally { reader.Dispose(); }
         }
@@ -1446,7 +1445,6 @@ namespace CubePdfUtility
                     Dispatcher.BeginInvoke(new Action(() => {
                         ShowErrorMessage(Properties.Resources.OpenError, err);
                         Trace.TraceError(err.ToString());
-                        Refresh();
                     }));
                 }
             }), null);
@@ -1508,7 +1506,6 @@ namespace CubePdfUtility
             {
                 ShowErrorMessage(Properties.Resources.InsertError, err);
                 Trace.TraceError(err.ToString());
-                Refresh();
             }
             finally { reader.Dispose(); }
         }
