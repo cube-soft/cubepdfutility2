@@ -1684,6 +1684,21 @@ namespace CubePdfUtility
 
         /* ----------------------------------------------------------------- */
         ///
+        /// ShowErrorMessage
+        ///
+        /// <summary>
+        /// エラーメッセージを表示します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void ShowErrorMessage(Exception err, string message)
+        {
+            var s = string.Format("{0}({1})", message, err.Message);
+            MessageBox.Show(s, Properties.Resources.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
         /// Refresh
         ///
         /// <summary>
