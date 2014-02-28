@@ -1628,6 +1628,13 @@ namespace CubePdfUtility
                         if (dialog.ShowDialog() == true) InsertFileAsync(index, path, dialog.Password, history);
                     }));
                 }
+                catch (Exception err)
+                {
+                    Dispatcher.BeginInvoke(new Action(() => {
+                        ShowErrorMessage(Properties.Resources.InsertError, err);
+                        Trace.TraceError(err.ToString());
+                    }));
+                }
             }), null);
         }
 
@@ -1692,6 +1699,7 @@ namespace CubePdfUtility
             var s = (inner != null) ? string.Format("{0}({1})", message, inner.Message) : message;
             MessageBox.Show(s, Properties.Resources.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             Refresh();
+            if (inner != null) Trace.TraceError(inner.ToString());
         }
 
         /* ----------------------------------------------------------------- */
@@ -1708,6 +1716,7 @@ namespace CubePdfUtility
             var s = (inner != null) ? string.Format("{0}({1})", message, inner.Message) : message;
             MessageBox.Show(s, Properties.Resources.WarningTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
             Refresh();
+            if (inner != null) Trace.TraceWarning(inner.ToString());
         }
 
         /* ----------------------------------------------------------------- */
