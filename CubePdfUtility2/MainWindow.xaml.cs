@@ -1380,6 +1380,7 @@ namespace CubePdfUtility
         {
             try {
                 _viewmodel.Open(reader);
+                _checker.Register(reader.FilePath, Process.GetCurrentProcess());
                 RecentFile.Add(reader.FilePath);
                 UpdateRecentFiles();
             }
@@ -1419,7 +1420,6 @@ namespace CubePdfUtility
             var message = String.Format(Properties.Resources.OpenFile, filename);
             InfoStatusBarItem.Content = message;
 
-            _checker.Register(path, Process.GetCurrentProcess());
             NavigationCanvas.Visibility = Visibility.Collapsed;
             ThreadPool.QueueUserWorkItem(new WaitCallback((Object parameter) => {
                 var reader = new CubePdf.Editing.DocumentReader();
