@@ -294,7 +294,11 @@ namespace CubePdfUtility
                 dialog.Filter = Properties.Resources.PdfFilter;
                 dialog.OverwritePrompt = true;
                 if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
+
+                var oldpath = _viewmodel.FilePath;
                 _viewmodel.Save(dialog.FileName);
+                _checker.Remove(oldpath);
+                _checker.Register(_viewmodel.FilePath, Process.GetCurrentProcess());
                 RecentFile.Add(dialog.FileName);
                 UpdateRecentFiles();
             }
