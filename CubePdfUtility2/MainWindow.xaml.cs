@@ -1448,7 +1448,7 @@ namespace CubePdfUtility
             if (process != null)
             {
                 this.Activate();
-                Win32Api.BringWindowToTop(process.MainWindowHandle);
+                Win32Api.SetForegroundWindow(process.MainWindowHandle);
                 return;
             }
 
@@ -1873,8 +1873,6 @@ namespace CubePdfUtility
             [DllImport("kernel32.dll")]
             public static extern bool SetProcessWorkingSetSize(IntPtr procHandle, int min, int max);
 
-            [DllImport("user32.dll", SetLastError = true)]
-            public static extern bool BringWindowToTop(IntPtr hWnd);
             [DllImport("user32.dll", SetLastError = true)]
             public static extern bool SetForegroundWindow(IntPtr hWnd);
         }
