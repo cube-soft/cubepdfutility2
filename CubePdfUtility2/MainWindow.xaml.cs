@@ -61,7 +61,7 @@ namespace CubePdfUtility
         static MainWindow()
         {
             _ViewSize = new List<KeyValuePair<int, string>>() {
-                new KeyValuePair<int, string>(128, "100px"),
+                new KeyValuePair<int, string>(100, "100px"),
                 new KeyValuePair<int, string>(150, "150px"),
                 new KeyValuePair<int, string>(200, "200px"),
                 new KeyValuePair<int, string>(250, "250px"),
