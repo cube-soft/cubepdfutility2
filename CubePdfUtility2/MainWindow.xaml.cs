@@ -114,7 +114,7 @@ namespace CubePdfUtility
             var process = _checker.GetProcess(path);
             if (process != null)
             {
-                Win32Api.SetForegroundWindow(process.MainWindowHandle);
+                Activate(process);
                 Application.Current.Shutdown();
                 return;
             }
@@ -1447,8 +1447,8 @@ namespace CubePdfUtility
             var process = _checker.GetProcess(path);
             if (process != null)
             {
-                this.Activate();
-                Win32Api.SetForegroundWindow(process.MainWindowHandle);
+                Activate();
+                Activate(process);
                 return;
             }
 
@@ -1694,6 +1694,22 @@ namespace CubePdfUtility
 
         /* ----------------------------------------------------------------- */
         ///
+        /// Activate
+        ///
+        /// <summary>
+        /// 他プロセスの画面をアクティブ化します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void Activate(Process other)
+        {
+            var hwnd = other.MainWindowHandle;
+            if (Win32Api.IsIconic(hwnd)) Win32Api.ShowWindowAsync(hwnd, _SwRestore);
+            Win32Api.SetForegroundWindow(hwnd);
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
         /// Refresh
         ///
         /// <summary>
@@ -1864,6 +1880,7 @@ namespace CubePdfUtility
         private static readonly IList<KeyValuePair<int, string>> _ViewSize;
         private static readonly int _MinSize = 400;
         private static readonly string _AppDataRoot = @"CubeSoft\CubePdfUtility2";
+        private static readonly int _SwRestore = 9;
         #endregion
 
         #region Win32 APIs
@@ -1873,8 +1890,14 @@ namespace CubePdfUtility
             [DllImport("kernel32.dll")]
             public static extern bool SetProcessWorkingSetSize(IntPtr procHandle, int min, int max);
 
-            [DllImport("user32.dll", SetLastError = true)]
+            [DllImport("user32.dll")]
             public static extern bool SetForegroundWindow(IntPtr hWnd);
+
+            [DllImport("user32.dll")]
+            public static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
+
+            [DllImport("user32.dll")]
+            public static extern bool IsIconic(IntPtr hWnd);
         }
 
         #endregion
