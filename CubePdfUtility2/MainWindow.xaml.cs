@@ -61,7 +61,7 @@ namespace CubePdfUtility
         static MainWindow()
         {
             _ViewSize = new List<KeyValuePair<int, string>>() {
-                new KeyValuePair<int, string>(128, "100px"),
+                new KeyValuePair<int, string>(100, "100px"),
                 new KeyValuePair<int, string>(150, "150px"),
                 new KeyValuePair<int, string>(200, "200px"),
                 new KeyValuePair<int, string>(250, "250px"),
@@ -111,7 +111,16 @@ namespace CubePdfUtility
         public MainWindow(string path)
             : this()
         {
-            Loaded += (sender, e) => {
+            var process = _checker.GetProcess(path);
+            if (process != null)
+            {
+                Activate(process);
+                Application.Current.Shutdown();
+                return;
+            }
+
+            Loaded += (sender, e) =>
+            {
                 try { if (!String.IsNullOrEmpty(path)) OpenFileAsync(path, ""); }
                 catch (Exception err) { Trace.TraceError(err.ToString()); }
             };
@@ -192,11 +201,7 @@ namespace CubePdfUtility
                 }
                 OpenFileAsyncOrNewProcess(path);
             }
-            catch (Exception err)
-            {
-                Trace.TraceError(err.ToString());
-                MessageBox.Show(err.Message, Properties.Resources.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            catch (Exception err) { ShowErrorMessage(Properties.Resources.OpenError, err); }
         }
 
         #endregion
@@ -221,10 +226,7 @@ namespace CubePdfUtility
 
         private void CloseCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            try
-            {
-                e.Handled = CloseFile();
-            }
+            try { e.Handled = CloseFile(); }
             catch (Exception err) { Trace.TraceError(err.ToString()); }
             finally
             {
@@ -260,16 +262,8 @@ namespace CubePdfUtility
         private void SaveCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             try { _viewmodel.Save(); }
-            catch (System.IO.IOException err)
-            {
-                Trace.TraceError(err.ToString());
-            }
-            catch (Exception err)
-            {
-                MessageBox.Show(Properties.Resources.SaveError, Properties.Resources.ErrorTitle,
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-                Trace.TraceError(err.ToString());
-            }
+            catch (CubePdf.Misc.UserCancelledException err) { Trace.TraceError(err.ToString()); }
+            catch (Exception err) { ShowErrorMessage(Properties.Resources.SaveError, err); }
         }
 
         #endregion
@@ -300,16 +294,16 @@ namespace CubePdfUtility
                 dialog.Filter = Properties.Resources.PdfFilter;
                 dialog.OverwritePrompt = true;
                 if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
+
+                var oldpath = _viewmodel.FilePath;
                 _viewmodel.Save(dialog.FileName);
+                _checker.Remove(oldpath);
+                _checker.Register(_viewmodel.FilePath, Process.GetCurrentProcess());
                 RecentFile.Add(dialog.FileName);
                 UpdateRecentFiles();
             }
-            catch (Exception err)
-            {
-                MessageBox.Show(Properties.Resources.SaveError, Properties.Resources.ErrorTitle,
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-                Trace.TraceError(err.ToString());
-            }
+            catch (CubePdf.Misc.UserCancelledException err) { Trace.TraceError(err.ToString()); }
+            catch (Exception err) { ShowErrorMessage(Properties.Resources.SaveError, err); }
         }
 
         #endregion
@@ -358,7 +352,7 @@ namespace CubePdfUtility
                 if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
                 InsertFileAsync(index, dialog.FileName, "", obj as string);
             }
-            catch (Exception err) { Trace.TraceError(err.ToString()); }
+            catch (Exception err) { ShowErrorMessage(Properties.Resources.InsertError, err); }
         }
 
         #endregion
@@ -453,12 +447,8 @@ namespace CubePdfUtility
                 if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
                 _viewmodel.Extract(items, dialog.FileName);
             }
-            catch (Exception err)
-            {
-                MessageBox.Show(Properties.Resources.SaveError, Properties.Resources.ErrorTitle,
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-                Trace.TraceError(err.ToString());
-            }
+            catch (CubePdf.Misc.UserCancelledException err) { Trace.TraceError(err.ToString()); }
+            catch (Exception err) { ShowErrorMessage(Properties.Resources.SaveError, err); }
         }
 
         #endregion
@@ -498,12 +488,8 @@ namespace CubePdfUtility
                 if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
                 _viewmodel.Split(items, dialog.SelectedPath);
             }
-            catch (Exception err)
-            {
-                MessageBox.Show(Properties.Resources.SaveError, Properties.Resources.ErrorTitle,
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-                Trace.TraceError(err.ToString());
-            }
+            catch (CubePdf.Misc.UserCancelledException err) { Trace.TraceError(err.ToString()); }
+            catch (Exception err) { ShowErrorMessage(Properties.Resources.SaveError, err); }
         }
 
         #endregion
@@ -1063,9 +1049,13 @@ namespace CubePdfUtility
 
         private void WebCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            var url = e.Parameter as string;
-            if (url == null) return;
-            Process.Start(url);
+            try
+            {
+                var url = e.Parameter as string;
+                if (url == null) return;
+                Process.Start(url);
+            }
+            catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
 
         #endregion
@@ -1131,7 +1121,6 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         protected override void OnClosed(EventArgs e)
         {
-
             base.OnClosed(e);
             _viewmodel.Dispose();
         }
@@ -1282,7 +1271,7 @@ namespace CubePdfUtility
             var control = sender as MenuItem;
             if (control != null && control.Tag != null)
             {
-                OpenFileAsync(control.Tag as string, "");
+                OpenFileAsyncOrNewProcess(control.Tag as string);
             }
         }
 
@@ -1374,16 +1363,11 @@ namespace CubePdfUtility
         {
             try {
                 _viewmodel.Open(reader);
+                _checker.Register(reader.FilePath, Process.GetCurrentProcess());
                 RecentFile.Add(reader.FilePath);
                 UpdateRecentFiles();
             }
-            catch (Exception err)
-            {
-                MessageBox.Show(Properties.Resources.OpenError, Properties.Resources.ErrorTitle,
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-                Trace.TraceError(err.ToString());
-                Refresh();
-            }
+            catch (Exception err) { ShowErrorMessage(Properties.Resources.OpenError, err); }
             finally { reader.Dispose(); }
         }
 
@@ -1409,19 +1393,11 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         private void OpenFileAsync(string path, string password)
         {
-            var process = _checker.GetProcess(path);
-            if (process != null)
-            {
-                Win32Api.BringWindowToTop(process.MainWindowHandle);
-                return;
-            }
-
             Cursor = Cursors.Wait;
             var filename = System.IO.Path.GetFileName(path);
             var message = String.Format(Properties.Resources.OpenFile, filename);
             InfoStatusBarItem.Content = message;
 
-            _checker.Register(path, Process.GetCurrentProcess());
             NavigationCanvas.Visibility = Visibility.Collapsed;
             ThreadPool.QueueUserWorkItem(new WaitCallback((Object parameter) => {
                 var reader = new CubePdf.Editing.DocumentReader();
@@ -1431,11 +1407,7 @@ namespace CubePdfUtility
                     if (NeedPassword(reader)) throw new CubePdf.Data.EncryptionException();
                     else Dispatcher.BeginInvoke(new Action(() => {
                         OpenFile(reader);
-                        if (reader.IsTaggedDocument)
-                        {
-                            MessageBox.Show(Properties.Resources.TaggedPdf, Properties.Resources.WarningTitle,
-                                MessageBoxButton.OK, MessageBoxImage.Warning);
-                        }
+                        if (reader.IsTaggedDocument) ShowWarnMessage(Properties.Resources.TaggedPdf);
                     }));
                 }
                 catch (CubePdf.Data.EncryptionException /* err */)
@@ -1445,6 +1417,12 @@ namespace CubePdfUtility
                         dialog.Owner = this;
                         if (dialog.ShowDialog() == true) OpenFileAsync(path, dialog.Password);
                         else Refresh();
+                    }));
+                }
+                catch (Exception err)
+                {
+                    Dispatcher.BeginInvoke(new Action(() => {
+                        ShowErrorMessage(Properties.Resources.OpenError, err);
                     }));
                 }
             }), null);
@@ -1469,7 +1447,8 @@ namespace CubePdfUtility
             var process = _checker.GetProcess(path);
             if (process != null)
             {
-                Win32Api.BringWindowToTop(process.MainWindowHandle);
+                Activate();
+                Activate(process);
                 return;
             }
 
@@ -1501,13 +1480,7 @@ namespace CubePdfUtility
                 _viewmodel.Insert(index, reader);
                 _viewmodel.History[0].Text = history;
             }
-            catch (Exception err)
-            {
-                MessageBox.Show(Properties.Resources.InsertError, Properties.Resources.ErrorTitle,
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-                Trace.TraceError(err.ToString());
-                Refresh();
-            }
+            catch (Exception err) { ShowErrorMessage(Properties.Resources.InsertError, err); }
             finally { reader.Dispose(); }
         }
 
@@ -1629,6 +1602,12 @@ namespace CubePdfUtility
                         if (dialog.ShowDialog() == true) InsertFileAsync(index, path, dialog.Password, history);
                     }));
                 }
+                catch (Exception err)
+                {
+                    Dispatcher.BeginInvoke(new Action(() => {
+                        ShowErrorMessage(Properties.Resources.InsertError, err);
+                    }));
+                }
             }), null);
         }
 
@@ -1654,10 +1633,10 @@ namespace CubePdfUtility
                 if (result == MessageBoxResult.Yes)
                 {
                     try { _viewmodel.SaveOnClose(); }
+                    catch (CubePdf.Misc.UserCancelledException /* err */) { return false; }
                     catch (Exception err)
                     {
-                        MessageBox.Show(Properties.Resources.SaveError, Properties.Resources.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
-                        Trace.TraceError(err.ToString());
+                        ShowErrorMessage(Properties.Resources.SaveError, err);
                         return false;
                     }
                 }
@@ -1678,6 +1657,56 @@ namespace CubePdfUtility
         #endregion
 
         #region Private methods for others
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// ShowErrorMessage
+        ///
+        /// <summary>
+        /// エラーメッセージを表示します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void ShowErrorMessage(string message, Exception inner = null)
+        {
+            var s = (inner != null) ? string.Format("{0}({1})", message, inner.Message) : message;
+            MessageBox.Show(s, Properties.Resources.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+            Refresh();
+            if (inner != null) Trace.TraceError(inner.ToString());
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// ShowWarnMessage
+        ///
+        /// <summary>
+        /// 警告用メッセージを表示します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void ShowWarnMessage(string message, Exception inner = null)
+        {
+            var s = (inner != null) ? string.Format("{0}({1})", message, inner.Message) : message;
+            MessageBox.Show(s, Properties.Resources.WarningTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+            Refresh();
+            if (inner != null) Trace.TraceWarning(inner.ToString());
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// Activate
+        ///
+        /// <summary>
+        /// 他プロセスの画面をアクティブ化します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void Activate(Process other)
+        {
+            var hwnd = other.MainWindowHandle;
+            if (Win32Api.IsIconic(hwnd)) Win32Api.ShowWindowAsync(hwnd, _SwRestore);
+            Win32Api.SetForegroundWindow(hwnd);
+        }
 
         /* ----------------------------------------------------------------- */
         ///
@@ -1851,6 +1880,7 @@ namespace CubePdfUtility
         private static readonly IList<KeyValuePair<int, string>> _ViewSize;
         private static readonly int _MinSize = 400;
         private static readonly string _AppDataRoot = @"CubeSoft\CubePdfUtility2";
+        private static readonly int _SwRestore = 9;
         #endregion
 
         #region Win32 APIs
@@ -1860,8 +1890,14 @@ namespace CubePdfUtility
             [DllImport("kernel32.dll")]
             public static extern bool SetProcessWorkingSetSize(IntPtr procHandle, int min, int max);
 
-            [DllImport("user32.dll", SetLastError = true)]
-            public static extern bool BringWindowToTop(IntPtr hWnd);
+            [DllImport("user32.dll")]
+            public static extern bool SetForegroundWindow(IntPtr hWnd);
+
+            [DllImport("user32.dll")]
+            public static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
+
+            [DllImport("user32.dll")]
+            public static extern bool IsIconic(IntPtr hWnd);
         }
 
         #endregion
