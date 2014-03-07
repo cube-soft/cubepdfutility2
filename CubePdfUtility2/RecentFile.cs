@@ -132,7 +132,25 @@ namespace CubePdfUtility
         public static string[] FindLink(string pattern)
         {
             var dir = Environment.GetFolderPath(System.Environment.SpecialFolder.Recent);
-            return System.IO.Directory.GetFiles(dir + "\\", pattern + ".lnk");
+            var files = System.IO.Directory.GetFiles(dir + "\\", pattern + ".lnk");
+            var dict = new System.Collections.Generic.SortedDictionary<DateTime, String>();
+            foreach(string path in files)
+            {
+                dict.Add(System.IO.Directory.GetLastAccessTime(path), path);
+            }
+            var list = new System.Collections.Generic.List<String>();
+            var array = new string[dict.Values.Count];
+            dict.Values.CopyTo(array, 0);
+            for (int i = dict.Values.Count - 1; i >= 0; i--)
+            {
+                list.Add(array[i]);
+            }
+            list.CopyTo(array, 0);
+            foreach (var p in array)
+            {
+                System.Diagnostics.Trace.WriteLine(p);
+            }
+            return array;
         }
     }
 }
