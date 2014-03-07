@@ -815,6 +815,7 @@ namespace CubePdfUtility
                 var item = (KeyValuePair<int, string>)ViewSizeGallery.SelectedItem;
                 var index = _ViewSize.IndexOf(item);
                 ViewSizeGallery.SelectedItem = _ViewSize[index + 1];
+                SaveSetting(sender, e);
             }
             catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
@@ -852,6 +853,7 @@ namespace CubePdfUtility
                 var item = (KeyValuePair<int, string>)ViewSizeGallery.SelectedItem;
                 var index = _ViewSize.IndexOf(item);
                 ViewSizeGallery.SelectedItem = _ViewSize[index - 1];
+                SaveSetting(sender, e);
             }
             catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
@@ -881,6 +883,7 @@ namespace CubePdfUtility
             {
                 var viewsize = (int)e.Parameter;
                 if (_viewmodel.ViewSize != viewsize) _viewmodel.ViewSize = viewsize;
+                SaveSetting(sender, e);
             }
             catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
@@ -913,6 +916,7 @@ namespace CubePdfUtility
                 _viewmodel.ItemVisibility = enable ?
                     CubePdf.Wpf.ListViewItemVisibility.Minimum :
                     CubePdf.Wpf.ListViewItemVisibility.Normal;
+                SaveSetting(sender, e);
             }
             catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
@@ -1223,6 +1227,7 @@ namespace CubePdfUtility
                     DateTime.Now <= _setting.LastCheckUpdate.AddDays(1)) return;
                 var path = System.IO.Path.Combine(_setting.InstallDirectory, "UpdateChecker.exe");
                 Process.Start(path);
+                SaveSetting(null, e);
             }
             catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
