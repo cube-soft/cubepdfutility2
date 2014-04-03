@@ -51,7 +51,19 @@ namespace CubePdfUtility
                 checker.ProductName = "cubepdfutility";
                 checker.CheckInterval = 1; // [day]
 
-                if (args.Length > 0 && args[0] == "install") checker.Notify();
+                var installer = new CubePdf.Settings.Installer();
+
+                if (args.Length > 0 && args[0] == "install")
+                {
+                    for (int i = 0; i < args.Length; ++i)
+                    {
+                        if (args[i] == "/medium") installer.Medium = args[i + 1];
+                        if (args[i] == "/content") installer.Content = args[i + 1];
+                    }
+                    installer.Notify();
+
+                    checker.Notify();
+                }
                 else
                 {
                     var response = checker.GetResponse();
