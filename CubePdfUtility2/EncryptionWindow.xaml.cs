@@ -129,7 +129,7 @@ namespace CubePdfUtility
         {
             DialogResult = true;
             Encryption.OwnerPassword = OwnerPasswordBox.Password;
-            Encryption.UserPassword = UserPasswordBox.Password;
+            Encryption.UserPassword = (UserPasswordCheckBox.IsChecked == true) ? UserPasswordBox.Password : "";
             Close();
         }
 
