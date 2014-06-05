@@ -128,8 +128,8 @@ namespace CubePdfUtility
         private void SaveCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             DialogResult = true;
-            Encryption.OwnerPassword = OwnerPasswordBox.Password;
-            Encryption.UserPassword = (UserPasswordCheckBox.IsChecked == true) ? UserPasswordBox.Password : "";
+            Encryption.OwnerPassword = Encryption.IsEnabled ? OwnerPasswordBox.Password : "";
+            Encryption.UserPassword = (Encryption.IsEnabled && UserPasswordCheckBox.IsChecked == true) ? UserPasswordBox.Password : "";
             Close();
         }
 
