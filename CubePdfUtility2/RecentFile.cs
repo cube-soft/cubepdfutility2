@@ -19,6 +19,8 @@
 ///
 /* ------------------------------------------------------------------------- */
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using IWshRuntimeLibrary;
 
 namespace CubePdfUtility
@@ -125,14 +127,18 @@ namespace CubePdfUtility
         /// 
         /// <summary>
         /// 「最近使用したファイル」の一覧からパターンにマッチする全ての
-        /// ファイルへのリンクを取得します。
+        /// ファイルへのリンクを最終アクセス時刻順に取得します。
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
         public static string[] FindLink(string pattern)
         {
             var dir = Environment.GetFolderPath(System.Environment.SpecialFolder.Recent);
-            return System.IO.Directory.GetFiles(dir + "\\", pattern + ".lnk");
+            var files = System.IO.Directory.GetFiles(dir + "\\", pattern + ".lnk");
+
+            var dest = new SortedDictionary<DateTime, string>();
+            foreach (var path in files) dest.Add(System.IO.File.GetLastAccessTime(path), path);
+            return dest.Values.Reverse().ToArray();
         }
     }
 }
