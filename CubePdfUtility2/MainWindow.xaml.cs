@@ -1227,7 +1227,7 @@ namespace CubePdfUtility
                     DateTime.Now <= _setting.LastCheckUpdate.AddDays(1)) return;
                 var path = System.IO.Path.Combine(_setting.InstallDirectory, "UpdateChecker.exe");
                 Process.Start(path);
-                SaveSetting(null, e);
+                SaveSetting(this, e);
             }
             catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
