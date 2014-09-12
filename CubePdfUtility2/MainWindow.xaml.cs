@@ -815,6 +815,7 @@ namespace CubePdfUtility
                 var item = (KeyValuePair<int, string>)ViewSizeGallery.SelectedItem;
                 var index = _ViewSize.IndexOf(item);
                 ViewSizeGallery.SelectedItem = _ViewSize[index + 1];
+                SaveSetting(sender, e);
             }
             catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
@@ -852,6 +853,7 @@ namespace CubePdfUtility
                 var item = (KeyValuePair<int, string>)ViewSizeGallery.SelectedItem;
                 var index = _ViewSize.IndexOf(item);
                 ViewSizeGallery.SelectedItem = _ViewSize[index - 1];
+                SaveSetting(sender, e);
             }
             catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
@@ -881,6 +883,7 @@ namespace CubePdfUtility
             {
                 var viewsize = (int)e.Parameter;
                 if (_viewmodel.ViewSize != viewsize) _viewmodel.ViewSize = viewsize;
+                SaveSetting(sender, e);
             }
             catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
@@ -913,6 +916,7 @@ namespace CubePdfUtility
                 _viewmodel.ItemVisibility = enable ?
                     CubePdf.Wpf.ListViewItemVisibility.Minimum :
                     CubePdf.Wpf.ListViewItemVisibility.Normal;
+                SaveSetting(sender, e);
             }
             catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
@@ -1194,7 +1198,12 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         private void OnPreview(object sender, EventArgs e)
         {
-            if (Thumbnail == null || Thumbnail.SelectedIndex == -1) return;
+            var args = e as MouseEventArgs;
+            if (args == null) return;
+
+            var source = args.OriginalSource as Image;
+            if (Thumbnail == null || Thumbnail.SelectedIndex == -1 || source == null) return;
+
             var dialog = new PreviewWindow(_viewmodel, Thumbnail.SelectedIndex);
             dialog.ShowDialog();
         }
@@ -1223,6 +1232,7 @@ namespace CubePdfUtility
                     DateTime.Now <= _setting.LastCheckUpdate.AddDays(1)) return;
                 var path = System.IO.Path.Combine(_setting.InstallDirectory, "UpdateChecker.exe");
                 Process.Start(path);
+                SaveSetting(this, e);
             }
             catch (Exception err) { Trace.TraceError(err.ToString()); }
         }
@@ -1407,7 +1417,11 @@ namespace CubePdfUtility
                     if (NeedPassword(reader)) throw new CubePdf.Data.EncryptionException();
                     else Dispatcher.BeginInvoke(new Action(() => {
                         OpenFile(reader);
-                        if (reader.IsTaggedDocument) ShowWarnMessage(Properties.Resources.TaggedPdf);
+                        if (reader.EncryptionStatus == CubePdf.Data.EncryptionStatus.RestrictedAccess)
+                        {
+                            ShowWarnMessage(Properties.Resources.RestrictedAccess);
+                        }
+                        else if (reader.IsTaggedDocument) ShowWarnMessage(Properties.Resources.TaggedPdf);
                     }));
                 }
                 catch (CubePdf.Data.EncryptionException /* err */)
