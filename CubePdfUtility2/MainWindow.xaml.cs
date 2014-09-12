@@ -1194,8 +1194,12 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         private void OnPreview(object sender, EventArgs e)
         {
-            var origin = ((MouseButtonEventArgs)e).OriginalSource;
-            if (Thumbnail == null || Thumbnail.SelectedIndex == -1 || !(origin is Image)) return;
+            var args = e as MouseEventArgs;
+            if (args == null) return;
+
+            var source = args.OriginalSource as Image;
+            if (Thumbnail == null || Thumbnail.SelectedIndex == -1 || source == null) return;
+
             var dialog = new PreviewWindow(_viewmodel, Thumbnail.SelectedIndex);
             dialog.ShowDialog();
         }
