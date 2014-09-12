@@ -19,6 +19,8 @@
 ///
 /* ------------------------------------------------------------------------- */
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using IWshRuntimeLibrary;
 
 namespace CubePdfUtility
@@ -125,7 +127,7 @@ namespace CubePdfUtility
         /// 
         /// <summary>
         /// 「最近使用したファイル」の一覧からパターンにマッチする全ての
-        /// ファイルへのリンクを取得します。
+        /// ファイルへのリンクを最終アクセス時刻順に取得します。
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
@@ -133,24 +135,10 @@ namespace CubePdfUtility
         {
             var dir = Environment.GetFolderPath(System.Environment.SpecialFolder.Recent);
             var files = System.IO.Directory.GetFiles(dir + "\\", pattern + ".lnk");
-            var dict = new System.Collections.Generic.SortedDictionary<DateTime, String>();
-            foreach(string path in files)
-            {
-                dict.Add(System.IO.Directory.GetLastAccessTime(path), path);
-            }
-            var list = new System.Collections.Generic.List<String>();
-            var array = new string[dict.Values.Count];
-            dict.Values.CopyTo(array, 0);
-            for (int i = dict.Values.Count - 1; i >= 0; i--)
-            {
-                list.Add(array[i]);
-            }
-            list.CopyTo(array, 0);
-            foreach (var p in array)
-            {
-                System.Diagnostics.Trace.WriteLine(p);
-            }
-            return array;
+
+            var dest = new SortedDictionary<DateTime, string>();
+            foreach (var path in files) dest.Add(System.IO.File.GetLastAccessTime(path), path);
+            return dest.Values.Reverse().ToArray();
         }
     }
 }
