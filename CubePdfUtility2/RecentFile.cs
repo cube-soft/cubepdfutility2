@@ -136,9 +136,13 @@ namespace CubePdfUtility
             var dir = Environment.GetFolderPath(System.Environment.SpecialFolder.Recent);
             var files = System.IO.Directory.GetFiles(dir + "\\", pattern + ".lnk");
 
-            var dest = new SortedDictionary<DateTime, string>();
-            foreach (var path in files) dest.Add(System.IO.File.GetLastAccessTime(path), path);
-            return dest.Values.Reverse().ToArray();
+            var list = new List<KeyValuePair<DateTime, string>>();
+            foreach (var path in files) list.Add(new KeyValuePair<DateTime, string>(System.IO.File.GetLastAccessTime(path), path));
+            list.Sort((a, b) => { return DateTime.Compare(a.Key, b.Key); });
+            var dest = new List<string>();
+            foreach (var element in list) dest.Add(element.Value);
+            dest.Reverse();
+            return dest.ToArray();
         }
     }
 }
