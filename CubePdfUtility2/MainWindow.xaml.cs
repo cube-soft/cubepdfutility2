@@ -1178,6 +1178,7 @@ namespace CubePdfUtility
 
             foreach (var file in files)
             {
+                System.Diagnostics.Trace.WriteLine("Drop: " + file);
                 if (System.IO.Path.GetExtension(file) == Properties.Resources.PdfExtension)
                 {
                     OpenFileAsyncOrNewProcess(file);
