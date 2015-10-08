@@ -47,16 +47,25 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         public static void Add(string path)
         {
-            var dir = Environment.GetFolderPath(System.Environment.SpecialFolder.Recent);
-            var link = System.IO.Path.Combine(dir, System.IO.Path.GetFileName(path) + ".lnk");
-            var shell = new WshShell();
-            var shortcut = shell.CreateShortcut(link) as IWshShortcut;
-            if (shortcut == null) return;
+            IWshShortcut shortcut = null;
 
-            shortcut.TargetPath = path;
-            shortcut.WindowStyle = 1;
-            shortcut.Save();
-            System.Runtime.InteropServices.Marshal.ReleaseComObject(shortcut);
+            try
+            {
+                var dir = Environment.GetFolderPath(Environment.SpecialFolder.Recent);
+                var link = System.IO.Path.Combine(dir, System.IO.Path.GetFileName(path) + ".lnk");
+                var shell = new WshShell();
+                shortcut = shell.CreateShortcut(link) as IWshShortcut;
+                if (shortcut == null) return;
+
+                shortcut.TargetPath = path;
+                shortcut.WindowStyle = 1;
+                shortcut.Save();
+            }
+            catch (Exception err) { System.Diagnostics.Trace.TraceError(err.ToString()); }
+            finally
+            {
+                if (shortcut != null) System.Runtime.InteropServices.Marshal.ReleaseComObject(shortcut);
+            }
         }
 
         /* ----------------------------------------------------------------- */
