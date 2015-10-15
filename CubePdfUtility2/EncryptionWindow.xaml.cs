@@ -127,7 +127,7 @@ namespace CubePdfUtility
 
         private void SaveCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            if (!IsValidUserPassword())
+            if (IsUserPasswordRequired())
             {
                 ShowErrorMessage(Properties.Resources.NeedUserPassword);
                 return;
@@ -194,12 +194,13 @@ namespace CubePdfUtility
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
-        private bool IsValidUserPassword()
+        private bool IsUserPasswordRequired()
         {
-            return !Encryption.IsEnabled ||
-                   Encryption.Permission.FullAccess ||
-                   !Encryption.IsUserPasswordEnabled ||
-                   !string.IsNullOrEmpty(Encryption.UserPassword);
+            return Encryption.IsEnabled &&
+                  !Encryption.Permission.FullAccess &&
+                   Encryption.IsUserPasswordEnabled &&
+                  (UserPasswordCheckBox.IsChecked != true ||
+                   OwnerPasswordBox.Password == UserPasswordBox.Password);
         }
 
         /* ----------------------------------------------------------------- */

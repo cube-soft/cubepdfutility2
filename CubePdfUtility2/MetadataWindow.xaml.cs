@@ -58,6 +58,7 @@ namespace CubePdfUtility
             : this()
         {
             _metadata = new CubePdf.Data.Metadata(viewmodel.Metadata);
+            _restricted = viewmodel.EncryptionStatus == CubePdf.Data.EncryptionStatus.RestrictedAccess;
             DataContext = _metadata;
 
             var info = new System.IO.FileInfo(viewmodel.FilePath);
@@ -110,7 +111,7 @@ namespace CubePdfUtility
 
         private void SaveCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = true;
+            e.CanExecute = !_restricted;
         }
 
         private void SaveCommand_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -183,6 +184,7 @@ namespace CubePdfUtility
 
         #region Variables
         private CubePdf.Data.Metadata _metadata = null;
+        private bool _restricted = false;
         #endregion
     }
 }
