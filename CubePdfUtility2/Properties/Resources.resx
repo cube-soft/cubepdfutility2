@@ -129,6 +129,10 @@
   <data name="IsOverwrite" xml:space="preserve">
     <value>PDFの内容が編集されています。上書き保存しますか？</value>
   </data>
+  <data name="NeedUserPassword" xml:space="preserve">
+    <value>閲覧専用のパスワードを設定して下さい。
+パスワードを兼用した場合、パスワード入力時に他の操作への制限も解除されます。</value>
+  </data>
   <data name="OpenError" xml:space="preserve">
     <value>PDFを開く事に失敗しました。PDFファイルが壊れていないか確認して下さい。</value>
   </data>
@@ -145,7 +149,7 @@
     <value>PDF ファイル(*.pdf)|*.pdf|すべてのファイル(*.*)|*.*</value>
   </data>
   <data name="RestrictedAccess" xml:space="preserve">
-    <value>PDFファイルはパスワードで保護されています。編集を行うには、コンテキストメニューから「パスワード入力して入力してセキュリティを解除」を選択して下さい。</value>
+    <value>PDFファイルはパスワードで保護されています。編集を行うには、マウスを右クリックして表示されるコンテキストメニューから「パスワード入力して入力してセキュリティを解除」を選択して下さい。</value>
   </data>
   <data name="SaveError" xml:space="preserve">
     <value>PDFの保存に失敗しました。PDFファイルがセキュリティ機能によって保護されていないか確認して下さい。</value>
