@@ -1514,7 +1514,7 @@ namespace CubePdfUtility
         {
             var dialog = new PasswordWindow(path, _font);
             dialog.Owner = this;
-            if (dialog.ShowDialog() == true && CloseFile()) OpenFileAsync(path, dialog.Password);
+            if (dialog.ShowDialog() == true && CloseFile(true)) OpenFileAsync(path, dialog.Password);
         }
 
         /* ----------------------------------------------------------------- */
@@ -1673,13 +1673,14 @@ namespace CubePdfUtility
         /// PDF ファイルを閉じます。編集されていた場合は、ファイルを上書き
         /// 保存するかどうかを尋ねるダイアログを表示します。キャンセル
         /// ボタンが押下された場合は false を、それ以外のボタンが押下された
-        /// 場合は true が返ります。
+        /// 場合は true が返ります。強制モードの場合は、ファイルの上書きを
+        /// 尋ねる事なく閉じます。
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
-        private bool CloseFile()
+        private bool CloseFile(bool force = false)
         {
-            if (_viewmodel.IsModified)
+            if (_viewmodel.IsModified && !force)
             {
                 var result = MessageBox.Show(Properties.Resources.IsOverwrite, ProductName,
                     MessageBoxButton.YesNoCancel, MessageBoxImage.Information);
