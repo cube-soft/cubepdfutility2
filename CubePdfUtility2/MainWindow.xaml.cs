@@ -1464,6 +1464,7 @@ namespace CubePdfUtility
                 }
                 catch (CubePdf.Data.EncryptionException /* err */)
                 {
+                    reader.Dispose();
                     Dispatcher.BeginInvoke(new Action(() => {
                         var dialog = new PasswordWindow(path, _font);
                         dialog.Owner = this;
@@ -1473,6 +1474,7 @@ namespace CubePdfUtility
                 }
                 catch (Exception err)
                 {
+                    reader.Dispose();
                     Dispatcher.BeginInvoke(new Action(() => {
                         ShowErrorMessage(Properties.Resources.OpenError, err);
                     }));
