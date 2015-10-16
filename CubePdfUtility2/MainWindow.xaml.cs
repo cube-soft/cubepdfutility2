@@ -226,7 +226,11 @@ namespace CubePdfUtility
 
         private void CloseCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            try { e.Handled = CloseFile(); }
+            try
+            {
+                var force = _viewmodel.EncryptionStatus == CubePdf.Data.EncryptionStatus.RestrictedAccess;
+                e.Handled = CloseFile(force);
+            }
             catch (Exception err) { Trace.TraceError(err.ToString()); }
             finally
             {
@@ -261,9 +265,23 @@ namespace CubePdfUtility
 
         private void SaveCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            try { _viewmodel.Save(); }
-            catch (CubePdf.Misc.UserCancelledException err) { Trace.TraceError(err.ToString()); }
-            catch (Exception err) { ShowErrorMessage(Properties.Resources.SaveError, err); }
+            ExecuteAsPossible(() =>
+            {
+                try { _viewmodel.Save(); }
+                catch (CubePdf.Misc.UserCancelledException err) { Trace.TraceError(err.ToString()); }
+                catch (Exception err)
+                {
+                    if (System.IO.File.Exists(_viewmodel.FilePath))
+                    {
+                        var message = new System.Text.StringBuilder();
+                        message.AppendLine(Properties.Resources.SaveError);
+                        message.Append(Properties.Resources.SaveErrorBackup);
+                        ShowErrorMessage(message.ToString(), err);
+                        System.Diagnostics.Process.Start(_viewmodel.BackupFolder);
+                    }
+                    else ShowErrorMessage(Properties.Resources.SaveError, err);
+                }
+            });
         }
 
         #endregion
@@ -288,22 +306,25 @@ namespace CubePdfUtility
 
         private void SaveAsCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            try
+            ExecuteAsPossible(() =>
             {
-                var dialog = new System.Windows.Forms.SaveFileDialog();
-                dialog.Filter = Properties.Resources.PdfFilter;
-                dialog.OverwritePrompt = true;
-                if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
+                try
+                {
+                    var dialog = new System.Windows.Forms.SaveFileDialog();
+                    dialog.Filter = Properties.Resources.PdfFilter;
+                    dialog.OverwritePrompt = true;
+                    if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
 
-                var oldpath = _viewmodel.FilePath;
-                _viewmodel.Save(dialog.FileName);
-                _checker.Remove(oldpath);
-                _checker.Register(_viewmodel.FilePath, Process.GetCurrentProcess());
-                RecentFile.Add(dialog.FileName);
-                UpdateRecentFiles();
-            }
-            catch (CubePdf.Misc.UserCancelledException err) { Trace.TraceError(err.ToString()); }
-            catch (Exception err) { ShowErrorMessage(Properties.Resources.SaveError, err); }
+                    var oldpath = _viewmodel.FilePath;
+                    _viewmodel.Save(dialog.FileName);
+                    _checker.Remove(oldpath);
+                    _checker.Register(_viewmodel.FilePath, Process.GetCurrentProcess());
+                    RecentFile.Add(dialog.FileName);
+                    UpdateRecentFiles();
+                }
+                catch (CubePdf.Misc.UserCancelledException err) { Trace.TraceError(err.ToString()); }
+                catch (Exception err) { ShowErrorMessage(Properties.Resources.SaveError, err); }
+            });
         }
 
         #endregion
@@ -334,25 +355,28 @@ namespace CubePdfUtility
 
         private void InsertCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            try
+            ExecuteAsPossible(() =>
             {
-                if (e.Parameter == null)
+                try
                 {
-                    InsertFiles();
-                    return;
-                }
+                    if (e.Parameter == null)
+                    {
+                        InsertFiles();
+                        return;
+                    }
 
-                var index = Math.Max(Math.Min((int)e.Parameter + 1, _viewmodel.PageCount), 0);
-                var obj = (index == 0) ? InsertHead.Header
-                    : (index == _viewmodel.PageCount) ? InsertTail.Header
-                    : InsertSelect.Header;
-                var dialog = new System.Windows.Forms.OpenFileDialog();
-                dialog.Filter = Properties.Resources.PdfFilter;
-                dialog.CheckFileExists = true;
-                if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
-                InsertFileAsync(index, dialog.FileName, "", obj as string);
-            }
-            catch (Exception err) { ShowErrorMessage(Properties.Resources.InsertError, err); }
+                    var index = Math.Max(Math.Min((int)e.Parameter + 1, _viewmodel.PageCount), 0);
+                    var obj = (index == 0) ? InsertHead.Header
+                        : (index == _viewmodel.PageCount) ? InsertTail.Header
+                        : InsertSelect.Header;
+                    var dialog = new System.Windows.Forms.OpenFileDialog();
+                    dialog.Filter = Properties.Resources.PdfFilter;
+                    dialog.CheckFileExists = true;
+                    if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
+                    InsertFileAsync(index, dialog.FileName, "", obj as string);
+                }
+                catch (Exception err) { ShowErrorMessage(Properties.Resources.InsertError, err); }
+            });
         }
 
         #endregion
@@ -380,33 +404,36 @@ namespace CubePdfUtility
 
         private void RemoveCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            var items = new ArrayList();
-            var src = e.Parameter as IList;
-            if (src == null)
+            ExecuteAsPossible(() =>
             {
-                var dialog = new RemoveWindow(_viewmodel, _font);
-                dialog.Owner = this;
-                if (dialog.ShowDialog() == false) return;
-                foreach (var i in dialog.PageRange) items.Add(_viewmodel.Items[i - 1]);
-            }
-            else items.AddRange(src);
-
-            try
-            {
-                Cursor = Cursors.Wait;
-                _viewmodel.BeginCommand();
-                while (items.Count > 0)
+                var items = new ArrayList();
+                var src = e.Parameter as IList;
+                if (src == null)
                 {
-                    var index = items.Count - 1;
-                    _viewmodel.Remove(items[index]);
-                    items.RemoveAt(index);
+                    var dialog = new RemoveWindow(_viewmodel, _font);
+                    dialog.Owner = this;
+                    if (dialog.ShowDialog() == false) return;
+                    foreach (var i in dialog.PageRange) items.Add(_viewmodel.Items[i - 1]);
                 }
+                else items.AddRange(src);
 
-                var obj = (src == null) ? RemoveRange.Header : RemoveSelect.Header;
-                _viewmodel.History[0].Text = obj as string;
-            }
-            catch (Exception err) { Trace.TraceError(err.ToString()); }
-            finally { _viewmodel.EndCommand(); }
+                try
+                {
+                    Cursor = Cursors.Wait;
+                    _viewmodel.BeginCommand();
+                    while (items.Count > 0)
+                    {
+                        var index = items.Count - 1;
+                        _viewmodel.Remove(items[index]);
+                        items.RemoveAt(index);
+                    }
+
+                    var obj = (src == null) ? RemoveRange.Header : RemoveSelect.Header;
+                    _viewmodel.History[0].Text = obj as string;
+                }
+                catch (Exception err) { Trace.TraceError(err.ToString()); }
+                finally { _viewmodel.EndCommand(); }
+            });
         }
 
         #endregion
@@ -438,17 +465,19 @@ namespace CubePdfUtility
 
         private void ExtractCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            try
-            {
-                var items = GetSortedItems(e.Parameter as IList);
-                var dialog = new System.Windows.Forms.SaveFileDialog();
-                dialog.Filter = Properties.Resources.PdfFilter;
-                dialog.OverwritePrompt = true;
-                if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
-                _viewmodel.Extract(items, dialog.FileName);
-            }
-            catch (CubePdf.Misc.UserCancelledException err) { Trace.TraceError(err.ToString()); }
-            catch (Exception err) { ShowErrorMessage(Properties.Resources.SaveError, err); }
+            ExecuteAsPossible(() => {
+                try
+                {
+                    var items = GetSortedItems(e.Parameter as IList);
+                    var dialog = new System.Windows.Forms.SaveFileDialog();
+                    dialog.Filter = Properties.Resources.PdfFilter;
+                    dialog.OverwritePrompt = true;
+                    if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
+                    _viewmodel.Extract(items, dialog.FileName);
+                }
+                catch (CubePdf.Misc.UserCancelledException err) { Trace.TraceError(err.ToString()); }
+                catch (Exception err) { ShowErrorMessage(Properties.Resources.SaveError, err); }
+            });
         }
 
         #endregion
@@ -479,17 +508,20 @@ namespace CubePdfUtility
 
         private void SplitCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            try
+            ExecuteAsPossible(() =>
             {
-                var items = e.Parameter as IList;
-                if (items == null) items = _viewmodel.Items;
+                try
+                {
+                    var items = e.Parameter as IList;
+                    if (items == null) items = _viewmodel.Items;
 
-                var dialog = new System.Windows.Forms.FolderBrowserDialog();
-                if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
-                _viewmodel.Split(items, dialog.SelectedPath);
-            }
-            catch (CubePdf.Misc.UserCancelledException err) { Trace.TraceError(err.ToString()); }
-            catch (Exception err) { ShowErrorMessage(Properties.Resources.SaveError, err); }
+                    var dialog = new System.Windows.Forms.FolderBrowserDialog();
+                    if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
+                    _viewmodel.Split(items, dialog.SelectedPath);
+                }
+                catch (CubePdf.Misc.UserCancelledException err) { Trace.TraceError(err.ToString()); }
+                catch (Exception err) { ShowErrorMessage(Properties.Resources.SaveError, err); }
+            });
         }
 
         #endregion
@@ -515,31 +547,33 @@ namespace CubePdfUtility
         {
             if (e.Parameter == null) return;
 
-            try
-            {
-                var delta = int.Parse(e.Parameter as string);
-                if (delta == 0) return;
-
-                var indices = new List<int>();
-                foreach (var item in Thumbnail.SelectedItems)
+            ExecuteAsPossible(() => {
+                try
                 {
-                    var index = _viewmodel.IndexOf(item);
-                    indices.Add(index);
-                }
+                    var delta = int.Parse(e.Parameter as string);
+                    if (delta == 0) return;
 
-                _viewmodel.BeginCommand();
-                var sorted = (delta < 0) ? indices.OrderBy(i => i) : indices.OrderByDescending(i => i);
-                foreach (var oldindex in sorted)
-                {
-                    if (oldindex < 0) continue;
-                    var newindex = oldindex + delta;
-                    if (newindex < 0 || newindex >= _viewmodel.PageCount) continue;
-                    _viewmodel.Move(oldindex, newindex);
+                    var indices = new List<int>();
+                    foreach (var item in Thumbnail.SelectedItems)
+                    {
+                        var index = _viewmodel.IndexOf(item);
+                        indices.Add(index);
+                    }
+
+                    _viewmodel.BeginCommand();
+                    var sorted = (delta < 0) ? indices.OrderBy(i => i) : indices.OrderByDescending(i => i);
+                    foreach (var oldindex in sorted)
+                    {
+                        if (oldindex < 0) continue;
+                        var newindex = oldindex + delta;
+                        if (newindex < 0 || newindex >= _viewmodel.PageCount) continue;
+                        _viewmodel.Move(oldindex, newindex);
+                    }
+                    _viewmodel.History[0].Text = (delta < 0) ? ForwardButton.Label : BackButton.Label;
                 }
-                _viewmodel.History[0].Text = (delta < 0) ? ForwardButton.Label : BackButton.Label;
-            }
-            catch (Exception err) { Trace.TraceError(err.ToString()); }
-            finally { _viewmodel.EndCommand(); }
+                catch (Exception err) { Trace.TraceError(err.ToString()); }
+                finally { _viewmodel.EndCommand(); }
+            });
         }
 
         #endregion
@@ -563,25 +597,28 @@ namespace CubePdfUtility
 
         private void RotateCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            try
+            ExecuteAsPossible(() =>
             {
-                Cursor = Cursors.Wait;
-                var degree = int.Parse(e.Parameter as string);
-                var done = new List<int>();
-                _viewmodel.BeginCommand();
-                while (Thumbnail.SelectedItems.Count > 0)
+                try
                 {
-                    var obj = Thumbnail.SelectedItems[0];
-                    var index = _viewmodel.IndexOf(obj);
-                    _viewmodel.RotateAt(index, degree);
-                    done.Add(index);
-                    Thumbnail.SelectedItems.Remove(obj);
+                    Cursor = Cursors.Wait;
+                    var degree = int.Parse(e.Parameter as string);
+                    var done = new List<int>();
+                    _viewmodel.BeginCommand();
+                    while (Thumbnail.SelectedItems.Count > 0)
+                    {
+                        var obj = Thumbnail.SelectedItems[0];
+                        var index = _viewmodel.IndexOf(obj);
+                        _viewmodel.RotateAt(index, degree);
+                        done.Add(index);
+                        Thumbnail.SelectedItems.Remove(obj);
+                    }
+                    foreach (var index in done) Thumbnail.SelectedItems.Add(_viewmodel.Items[index]);
+                    _viewmodel.History[0].Text = (degree < 0) ? RotateLeftButton.Label : RotateRightButton.Label;
                 }
-                foreach (var index in done) Thumbnail.SelectedItems.Add(_viewmodel.Items[index]);
-                _viewmodel.History[0].Text = (degree < 0) ? RotateLeftButton.Label : RotateRightButton.Label;
-            }
-            catch (Exception err) { Trace.TraceError(err.ToString()); }
-            finally { _viewmodel.EndCommand(); }
+                catch (Exception err) { Trace.TraceError(err.ToString()); }
+                finally { _viewmodel.EndCommand(); }
+            });
         }
 
         #endregion
@@ -600,7 +637,8 @@ namespace CubePdfUtility
 
         private void UndoCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = _viewmodel.History.Count > 0;
+            e.CanExecute = _viewmodel.EncryptionStatus != CubePdf.Data.EncryptionStatus.RestrictedAccess &&
+                           _viewmodel.History.Count > 0;
             UndoButton.IsEnabled = e.CanExecute;
         }
 
@@ -636,7 +674,8 @@ namespace CubePdfUtility
 
         private void RedoCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = _viewmodel.UndoHistory.Count > 0;
+            e.CanExecute = _viewmodel.EncryptionStatus != CubePdf.Data.EncryptionStatus.RestrictedAccess &&
+                           _viewmodel.UndoHistory.Count > 0;
             RedoButton.IsEnabled = e.CanExecute;
         }
 
@@ -1085,10 +1124,7 @@ namespace CubePdfUtility
         {
             var path = _viewmodel.FilePath;
             if (String.IsNullOrEmpty(path)) return;
-
-            var dialog = new PasswordWindow(path, _font);
-            dialog.Owner = this;
-            if (dialog.ShowDialog() == true && CloseFile()) OpenFileAsync(path, dialog.Password);
+            OpenFileWithPassword(path);
         }
 
         #endregion
@@ -1108,7 +1144,8 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
-            var result = CloseFile();
+            var force = _viewmodel.EncryptionStatus == CubePdf.Data.EncryptionStatus.RestrictedAccess;
+            var result = CloseFile(force);
             e.Cancel = !result;
             if (!e.Cancel) SaveSetting(this, e);
             base.OnClosing(e);
@@ -1178,6 +1215,7 @@ namespace CubePdfUtility
 
             foreach (var file in files)
             {
+                System.Diagnostics.Trace.WriteLine("Drop: " + file);
                 if (System.IO.Path.GetExtension(file) == Properties.Resources.PdfExtension)
                 {
                     OpenFileAsyncOrNewProcess(file);
@@ -1479,6 +1517,24 @@ namespace CubePdfUtility
 
         /* ----------------------------------------------------------------- */
         ///
+        /// OpenFileWithPassword
+        /// 
+        /// <summary>
+        /// 指定されたパスの PDF ファイルをパスワードを入力して開きます。
+        /// パスワードはダイアログを表示する事により、ユーザに入力して
+        /// もらいます。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void OpenFileWithPassword(string path)
+        {
+            var dialog = new PasswordWindow(path, _font);
+            dialog.Owner = this;
+            if (dialog.ShowDialog() == true && CloseFile(true)) OpenFileAsync(path, dialog.Password);
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
         /// InsertFile
         /// 
         /// <summary>
@@ -1633,13 +1689,14 @@ namespace CubePdfUtility
         /// PDF ファイルを閉じます。編集されていた場合は、ファイルを上書き
         /// 保存するかどうかを尋ねるダイアログを表示します。キャンセル
         /// ボタンが押下された場合は false を、それ以外のボタンが押下された
-        /// 場合は true が返ります。
+        /// 場合は true が返ります。強制モードの場合は、ファイルの上書きを
+        /// 尋ねる事なく閉じます。
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
-        private bool CloseFile()
+        private bool CloseFile(bool force = false)
         {
-            if (_viewmodel.IsModified)
+            if (_viewmodel.IsModified && !force)
             {
                 var result = MessageBox.Show(Properties.Resources.IsOverwrite, ProductName,
                     MessageBoxButton.YesNoCancel, MessageBoxImage.Information);
@@ -1805,6 +1862,31 @@ namespace CubePdfUtility
         {
             return reader.EncryptionStatus == CubePdf.Data.EncryptionStatus.RestrictedAccess &&
                    reader.Encryption.Method == CubePdf.Data.EncryptionMethod.Aes256;
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// ExecuteAsPossible
+        /// 
+        /// <summary>
+        /// 可能な限り Action を実行します。
+        /// </summary>
+        /// 
+        /// <remarks>
+        /// パスワードで保護されているため指定された Action が実行できない
+        /// 場合、代わりにパスワードダイアログを表示します。
+        /// </remarks>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void ExecuteAsPossible(Action action)
+        {
+            if (_viewmodel.EncryptionStatus == CubePdf.Data.EncryptionStatus.RestrictedAccess)
+            {
+                var path = _viewmodel.FilePath;
+                if (string.IsNullOrEmpty(path)) return;
+                OpenFileWithPassword(path);
+            }
+            else action();
         }
 
         /* ----------------------------------------------------------------- */
