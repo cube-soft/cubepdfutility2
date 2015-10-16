@@ -1085,10 +1085,7 @@ namespace CubePdfUtility
         {
             var path = _viewmodel.FilePath;
             if (String.IsNullOrEmpty(path)) return;
-
-            var dialog = new PasswordWindow(path, _font);
-            dialog.Owner = this;
-            if (dialog.ShowDialog() == true && CloseFile()) OpenFileAsync(path, dialog.Password);
+            OpenFileWithPassword(path);
         }
 
         #endregion
@@ -1476,6 +1473,24 @@ namespace CubePdfUtility
             }
             else if (!CloseFile()) return;
             else OpenFileAsync(path, "");
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// OpenFileWithPassword
+        /// 
+        /// <summary>
+        /// 指定されたパスの PDF ファイルをパスワードを入力して開きます。
+        /// パスワードはダイアログを表示する事により、ユーザに入力して
+        /// もらいます。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void OpenFileWithPassword(string path)
+        {
+            var dialog = new PasswordWindow(path, _font);
+            dialog.Owner = this;
+            if (dialog.ShowDialog() == true && CloseFile()) OpenFileAsync(path, dialog.Password);
         }
 
         /* ----------------------------------------------------------------- */
