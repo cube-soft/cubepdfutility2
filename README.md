@@ -3,6 +3,7 @@
 Copyright (c) 2013 CubeSoft, Inc. All rights reserved.
 
 * 開発・配布: 株式会社キューブ・ソフト
+* License: GNU Affero General Public License version 3 (AGPLv3)
 * Mail: support@cube-soft.jp
 * Web: http://www.cube-soft.jp/
 
