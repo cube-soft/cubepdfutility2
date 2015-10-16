@@ -1,10 +1,10 @@
 #  CubePDF Utility
 
- Copyright (c) 2013 CubeSoft, Inc. All rights reserved.
+Copyright (c) 2013 CubeSoft, Inc. All rights reserved.
 
- 開発・配布: 株式会社キューブ・ソフト
- Mail: support@cube-soft.jp
- Web: http://www.cube-soft.jp/
+* 開発・配布: 株式会社キューブ・ソフト
+* Mail: support@cube-soft.jp
+* Web: http://www.cube-soft.jp/
 
 ## What's this
 
