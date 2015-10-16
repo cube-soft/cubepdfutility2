@@ -1825,6 +1825,31 @@ namespace CubePdfUtility
 
         /* ----------------------------------------------------------------- */
         ///
+        /// ExecuteAsPossible
+        /// 
+        /// <summary>
+        /// 可能な限り Action を実行します。
+        /// </summary>
+        /// 
+        /// <remarks>
+        /// パスワードで保護されているため指定された Action が実行できない
+        /// 場合、代わりにパスワードダイアログを表示します。
+        /// </remarks>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void ExecuteAsPossible(Action action)
+        {
+            if (_viewmodel.EncryptionStatus == CubePdf.Data.EncryptionStatus.RestrictedAccess)
+            {
+                var path = _viewmodel.FilePath;
+                if (string.IsNullOrEmpty(path)) return;
+                OpenFileWithPassword(path);
+            }
+            else action();
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
         /// ReplaceFont
         ///
         /// <summary>
