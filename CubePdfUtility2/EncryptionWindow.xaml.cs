@@ -127,6 +127,12 @@ namespace CubePdfUtility
 
         private void SaveCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
+            if (IsUserPasswordRequired())
+            {
+                ShowErrorMessage(Properties.Resources.NeedUserPassword);
+                return;
+            }
+
             DialogResult = true;
             Encryption.OwnerPassword = Encryption.IsEnabled ? OwnerPasswordBox.Password : "";
             Encryption.UserPassword = (Encryption.IsEnabled && UserPasswordCheckBox.IsChecked == true) ? UserPasswordBox.Password : "";
@@ -181,6 +187,24 @@ namespace CubePdfUtility
 
         /* ----------------------------------------------------------------- */
         ///
+        /// IsValidUserPassword
+        ///
+        /// <summary>
+        /// ユーザパスワードの設定が正しいかどうかを判断します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private bool IsUserPasswordRequired()
+        {
+            return Encryption.IsEnabled &&
+                  !Encryption.Permission.FullAccess &&
+                   Encryption.IsUserPasswordEnabled &&
+                  (UserPasswordCheckBox.IsChecked != true ||
+                   OwnerPasswordBox.Password == UserPasswordBox.Password);
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
         /// ReplaceFont
         ///
         /// <summary>
@@ -204,6 +228,22 @@ namespace CubePdfUtility
                     break;
                 }
             }
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// ShowErrorMessage
+        ///
+        /// <summary>
+        /// エラーメッセージを表示します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void ShowErrorMessage(string message, Exception inner = null)
+        {
+            var s = (inner != null) ? string.Format("{0}({1})", message, inner.Message) : message;
+            MessageBox.Show(s, Properties.Resources.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+            if (inner != null) Trace.TraceError(inner.ToString());
         }
 
         #endregion
