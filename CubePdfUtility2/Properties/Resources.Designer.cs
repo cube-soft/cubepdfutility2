@@ -161,11 +161,20 @@ namespace CubePdfUtility.Properties {
         }
         
         /// <summary>
-        ///   PDFの保存に失敗しました。PDFファイルがセキュリティ機能によって保護されていないか確認して下さい。 に類似しているローカライズされた文字列を検索します。
+        ///   PDFファイルの保存に失敗しました。PDFファイルが他のアプリケーションで開かれていないか、または、セキュリティ機能によって保護されていないか確認して下さい。 に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string SaveError {
             get {
                 return ResourceManager.GetString("SaveError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   PDFファイルが消失した可能性があるため、バックアップフォルダを開きます。 に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string SaveErrorBackup {
+            get {
+                return ResourceManager.GetString("SaveErrorBackup", resourceCulture);
             }
         }
         

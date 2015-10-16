@@ -269,7 +269,18 @@ namespace CubePdfUtility
             {
                 try { _viewmodel.Save(); }
                 catch (CubePdf.Misc.UserCancelledException err) { Trace.TraceError(err.ToString()); }
-                catch (Exception err) { ShowErrorMessage(Properties.Resources.SaveError, err); }
+                catch (Exception err)
+                {
+                    if (System.IO.File.Exists(_viewmodel.FilePath))
+                    {
+                        var message = new System.Text.StringBuilder();
+                        message.AppendLine(Properties.Resources.SaveError);
+                        message.Append(Properties.Resources.SaveErrorBackup);
+                        ShowErrorMessage(message.ToString(), err);
+                        System.Diagnostics.Process.Start(_viewmodel.BackupFolder);
+                    }
+                    else ShowErrorMessage(Properties.Resources.SaveError, err);
+                }
             });
         }
 

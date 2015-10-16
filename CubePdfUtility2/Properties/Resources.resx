@@ -152,7 +152,10 @@
     <value>PDFファイルはパスワードで保護されています。編集を行うには、マウスを右クリックして表示されるコンテキストメニューから「パスワード入力して入力してセキュリティを解除」を選択して下さい。</value>
   </data>
   <data name="SaveError" xml:space="preserve">
-    <value>PDFの保存に失敗しました。PDFファイルがセキュリティ機能によって保護されていないか確認して下さい。</value>
+    <value>PDFファイルの保存に失敗しました。PDFファイルが他のアプリケーションで開かれていないか、または、セキュリティ機能によって保護されていないか確認して下さい。</value>
+  </data>
+  <data name="SaveErrorBackup" xml:space="preserve">
+    <value>PDFファイルが消失した可能性があるため、バックアップフォルダを開きます。</value>
   </data>
   <data name="TaggedPdf" xml:space="preserve">
     <value>このファイルはタグ付き PDF（構造化された PDF）です。保存すると一部の情報が失われる可能性があります。</value>
