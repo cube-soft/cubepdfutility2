@@ -1,13 +1,12 @@
--------------------------------------------------------------------------------
-  CubePDF Utility
-  Copyright (c) 2013 CubeSoft, Inc. All rights reserved.
+#  CubePDF Utility
 
-  開発・配布：株式会社キューブ・ソフト
-  Mailto: support@cube-soft.jp
-  URL: http://www.cube-soft.jp/
--------------------------------------------------------------------------------
+ Copyright (c) 2013 CubeSoft, Inc. All rights reserved.
 
-# What's this
+ 開発・配布: 株式会社キューブ・ソフト
+ Mail: support@cube-soft.jp
+ Web: http://www.cube-soft.jp/
+
+## What's this
 
 CubPDF Utility は、既存の PDF ファイルのページ挿入や削除、文書プロパティ、各種セキュリティ機能
 などを設定・変更するためのソフトウェアです。
@@ -16,7 +15,7 @@ CubePDF Utility を使用するためには、Microsoft .NetFramework 3.5 SP1 以上がインス
 Microsoft .NetFramework 3.5 SP1 は、以下の URL からダウンロードして下さい。
 http://www.microsoft.com/ja-jp/download/details.aspx?id=22
 
-# 使用用法
+## 使用用法
 
 まず、ファイルを開くボタンやドラッグ&ドラップを通じて編集したい PDF ファイルを開きます。
 この際、選択した PDF ファイルに対して、既にセキュリティ機能が設定されている場合には、
@@ -53,7 +52,7 @@ CubePDF Utility で編集可能なものは以下の通りです。
  - 注釈の追加・編集操作を許可する
  - フォームフィールドへの入力を許可する
 
-# 使用ライブラリ
+## 使用ライブラリ
 
 CubePDF Utility は、以下のライブラリを利用しています。
 それぞれのライブラリについては、記載した URL から取得することができます。
@@ -65,7 +64,7 @@ CubePDF Utility は、以下のライブラリを利用しています。
   URL: http://www.codeproject.com/KB/files/xpdf_csharp.aspx
   GNU General Public License ( http://www.gnu.org/licenses/gpl.html )
 
-# バージョン履歴
+## バージョン履歴
 
 * 2015/10/16 version 0.3.4β
  - ファイル名に特定の文字が含まれている場合、ファイルを開く処理に失敗する不都合を修正
