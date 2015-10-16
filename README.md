@@ -16,7 +16,7 @@ CubePDF Utility を使用するためには、Microsoft .NetFramework 3.5 SP1 以上がインス
 Microsoft .NetFramework 3.5 SP1 は、以下の URL からダウンロードして下さい。
 http://www.microsoft.com/ja-jp/download/details.aspx?id=22
 
-## 使用用法
+### 使用用法
 
 まず、ファイルを開くボタンやドラッグ&ドラップを通じて編集したい PDF ファイルを開きます。
 この際、選択した PDF ファイルに対して、既にセキュリティ機能が設定されている場合には、
@@ -53,7 +53,7 @@ CubePDF Utility で編集可能なものは以下の通りです。
  - 注釈の追加・編集操作を許可する
  - フォームフィールドへの入力を許可する
 
-## 使用ライブラリ
+### 使用ライブラリ
 
 CubePDF Utility は、以下のライブラリを利用しています。
 それぞれのライブラリについては、記載した URL から取得することができます。
