@@ -226,7 +226,11 @@ namespace CubePdfUtility
 
         private void CloseCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            try { e.Handled = CloseFile(); }
+            try
+            {
+                var force = _viewmodel.EncryptionStatus == CubePdf.Data.EncryptionStatus.RestrictedAccess;
+                e.Handled = CloseFile(force);
+            }
             catch (Exception err) { Trace.TraceError(err.ToString()); }
             finally
             {
@@ -1129,7 +1133,8 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
-            var result = CloseFile();
+            var force = _viewmodel.EncryptionStatus == CubePdf.Data.EncryptionStatus.RestrictedAccess;
+            var result = CloseFile(force);
             e.Cancel = !result;
             if (!e.Cancel) SaveSetting(this, e);
             base.OnClosing(e);
