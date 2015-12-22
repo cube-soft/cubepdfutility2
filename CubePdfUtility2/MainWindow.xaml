@@ -122,6 +122,18 @@
             <Setter Property="Visibility" Value="Collapsed"/>
         </Style>
 
+        <Style x:Key="ExtractRibbonMenuItem" TargetType="r:RibbonMenuItem">
+            <Style.Triggers>
+                <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="True">
+                    <Setter Property="ImageSource" Value="Images\SmallIcons\Extract.png"/>
+                </Trigger>
+
+                <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="False">
+                    <Setter Property="ImageSource" Value="Images\SmallIcons\ExtractDisable.png"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
         <ContextMenu x:Key="EditMenu">
             <MenuItem Header="パスワードを入力してセキュリティを解除"
                 x:Name="PasswordMenuItem"
@@ -511,78 +523,47 @@
                             </Style>
                         </r:RibbonSplitButton.Style>
 
-                        <r:RibbonMenuItem Header="選択ページを単一ファイルとして抽出"
-                            Command="{x:Static cube:ListViewCommands.Extract}"
-                            CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedItems}">
-
-                            <r:RibbonMenuItem.Style>
-                                <Style TargetType="r:RibbonMenuItem">
-                                    <Style.Triggers>
-                                        <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="True">
-                                            <Setter Property="ImageSource" Value="Images\SmallIcons\Extract.png"/>
-                                        </Trigger>
-
-                                        <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="False">
-                                            <Setter Property="ImageSource" Value="Images\SmallIcons\ExtractDisable.png"/>
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </r:RibbonMenuItem.Style>
+                        <r:RibbonMenuItem Header="選択ページを抽出"
+                                          Command="{x:Static cube:ListViewCommands.Extract}"
+                                          CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedItems}"
+                                          Style="{StaticResource ExtractRibbonMenuItem}">
+                            
+                            <r:RibbonMenuItem Header="ページ全体"
+                                              Command="{x:Static cube:ListViewCommands.Extract}"
+                                              CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedItems}"
+                                              Style="{StaticResource ExtractRibbonMenuItem}">
+                                <r:RibbonMenuItem Header="単一ファイルとして保存"
+                                                  Command="{x:Static cube:ListViewCommands.Extract}"
+                                                  CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedItems}"
+                                                  Style="{StaticResource ExtractRibbonMenuItem}" />
+                                <r:RibbonMenuItem Header="個別のファイルとして保存"
+                                                  Command="{x:Static cube:ListViewCommands.Split}"
+                                                  CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedItems}"
+                                                  Style="{StaticResource ExtractRibbonMenuItem}" />
+                            </r:RibbonMenuItem>
+                            
+                            <r:RibbonMenuItem Header="ページに含まれる画像"
+                                Command="{x:Static cube:ListViewCommands.Split}"
+                                CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedItems}"
+                                Style="{StaticResource ExtractRibbonMenuItem}"/>
                         </r:RibbonMenuItem>
 
-                        <r:RibbonMenuItem Header="選択ページを個別のファイルとして抽出"
-                            Command="{x:Static cube:ListViewCommands.Split}"
-                            CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedItems}">
+                        <r:RibbonMenuItem Header="全てのページを抽出"
+                            Style="{StaticResource ExtractRibbonMenuItem}">
+                            <r:RibbonMenuItem Header="ページ全体"
+                                Style="{StaticResource ExtractRibbonMenuItem}">
+                                <r:RibbonMenuItem Header="単一ファイルとして保存"
+                                    Command="{x:Static cube:ListViewCommands.Extract}"
+                                    Style="{StaticResource ExtractRibbonMenuItem}" />
 
-                            <r:RibbonMenuItem.Style>
-                                <Style TargetType="r:RibbonMenuItem">
-                                    <Style.Triggers>
-                                        <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="True">
-                                            <Setter Property="ImageSource" Value="Images\SmallIcons\Extract.png"/>
-                                        </Trigger>
+                                <r:RibbonMenuItem Header="個別のファイルとして保存"
+                                    Command="{x:Static cube:ListViewCommands.Split}"
+                                    Style="{StaticResource ExtractRibbonMenuItem}" />
+                            </r:RibbonMenuItem>
 
-                                        <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="False">
-                                            <Setter Property="ImageSource" Value="Images\SmallIcons\ExtractDisable.png"/>
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </r:RibbonMenuItem.Style>
-                        </r:RibbonMenuItem>
-
-                        <r:RibbonMenuItem Header="全てのページを単一ファイルとして抽出"
-                            Command="{x:Static cube:ListViewCommands.Extract}">
-
-                            <r:RibbonMenuItem.Style>
-                                <Style TargetType="r:RibbonMenuItem">
-                                    <Style.Triggers>
-                                        <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="True">
-                                            <Setter Property="ImageSource" Value="Images\SmallIcons\Extract.png"/>
-                                        </Trigger>
-
-                                        <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="False">
-                                            <Setter Property="ImageSource" Value="Images\SmallIcons\ExtractDisable.png"/>
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </r:RibbonMenuItem.Style>
-                        </r:RibbonMenuItem>
-
-                        <r:RibbonMenuItem Header="全てのページを個別のファイルとして抽出"
-                            Command="{x:Static cube:ListViewCommands.Split}">
-
-                            <r:RibbonMenuItem.Style>
-                                <Style TargetType="r:RibbonMenuItem">
-                                    <Style.Triggers>
-                                        <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="True">
-                                            <Setter Property="ImageSource" Value="Images\SmallIcons\Extract.png"/>
-                                        </Trigger>
-
-                                        <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="False">
-                                            <Setter Property="ImageSource" Value="Images\SmallIcons\ExtractDisable.png"/>
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </r:RibbonMenuItem.Style>
+                            <r:RibbonMenuItem Header="ページに含まれる画像"
+                                Command="{x:Static cube:ListViewCommands.Split}"
+                                Style="{StaticResource ExtractRibbonMenuItem}"/>
                         </r:RibbonMenuItem>
                     </r:RibbonSplitButton>
                 </r:RibbonGroup>

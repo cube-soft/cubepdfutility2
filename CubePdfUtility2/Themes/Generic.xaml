@@ -6,7 +6,7 @@
     <cube:ImageConverter x:Key="ImageConverter"/>
     <local:ItemHeightConverter x:Key="ItemHeightConverter" />
     <local:BorderThicknessConverter x:Key="BorderThicknessConverter"/>
-    
+
     <Style x:Key="{ComponentResourceKey TypeInTargetAssembly={x:Type local:ImageView}, ResourceId=ImageView}"
         TargetType="{x:Type ListView}" BasedOn="{StaticResource {x:Type ListBox}}">
         <Setter Property="Template">
