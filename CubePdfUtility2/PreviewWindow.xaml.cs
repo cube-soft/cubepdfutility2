@@ -22,6 +22,7 @@ using System;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
+using CubePdf.Data.Extensions;
 
 namespace CubePdfUtility
 {
@@ -62,10 +63,10 @@ namespace CubePdfUtility
             : this()
         {
             var page = viewmodel.ToPage(viewmodel.Items[index]);
-            Width  = page.ViewSize.Width;
-            Height = page.ViewSize.Height;
+            Width  = page.ViewSize().Width;
+            Height = page.ViewSize().Height;
 
-            _image = viewmodel.GetImage(index, page.ViewSize);
+            _image = viewmodel.GetImage(index, page.ViewSize());
             MainViewer.DataContext = _image;
 
             var filename = System.IO.Path.GetFileName(page.FilePath);
