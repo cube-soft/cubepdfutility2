@@ -1,0 +1,564 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:r="clr-namespace:Microsoft.Windows.Controls.Ribbon;assembly=RibbonControlsLibrary"
+                    xmlns:local="clr-namespace:CubePdfUtility">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/CubePdfUtility;component/Themes/Generic.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+
+    <!--
+      Buttons
+    
+      Ribbon に表示されるボタンのイメージを定義します。
+    -->
+    <Style x:Key="OpenButtonStyle" TargetType="{x:Type r:RibbonButton}">
+        <Style.Triggers>
+            <Trigger Property="r:RibbonButton.IsEnabled" Value="True">
+                <Setter Property="LargeImageSource" Value="{StaticResource OpenLargeImage}"/>
+                <Setter Property="SmallImageSource" Value="{StaticResource OpenSmallImage}"/>
+            </Trigger>
+            <Trigger Property="r:RibbonButton.IsEnabled" Value="False">
+                <Setter Property="LargeImageSource" Value="{StaticResource OpenDisableLargeImage}"/>
+                <Setter Property="SmallImageSource" Value="{StaticResource OpenDisableSmallImage}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="SaveButtonStyle" TargetType="{x:Type r:RibbonSplitButton}">
+        <Style.Triggers>
+            <Trigger Property="r:RibbonSplitButton.IsEnabled" Value="True">
+                <Setter Property="LargeImageSource" Value="{StaticResource SaveLargeImage}"/>
+                <Setter Property="SmallImageSource" Value="{StaticResource SaveSmallImage}"/>
+            </Trigger>
+            <Trigger Property="r:RibbonSplitButton.IsEnabled" Value="False">
+                <Setter Property="LargeImageSource" Value="{StaticResource SaveDisableLargeImage}"/>
+                <Setter Property="SmallImageSource" Value="{StaticResource SaveDisableSmallImage}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="ExtractButtonStyle" TargetType="{x:Type r:RibbonSplitButton}">
+        <Style.Triggers>
+            <Trigger Property="r:RibbonSplitButton.IsEnabled" Value="True">
+                <Setter Property="LargeImageSource" Value="{StaticResource ExtractLargeImage}"/>
+                <Setter Property="SmallImageSource" Value="{StaticResource ExtractSmallImage}"/>
+            </Trigger>
+            <Trigger Property="r:RibbonSplitButton.IsEnabled" Value="False">
+                <Setter Property="LargeImageSource" Value="{StaticResource ExitDisableLargeImage}"/>
+                <Setter Property="SmallImageSource" Value="{StaticResource ExitDisableSmallImage}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="UndoButtonStyle" TargetType="{x:Type r:RibbonSplitButton}">
+        <Style.Triggers>
+            <Trigger Property="r:RibbonSplitButton.IsEnabled" Value="True">
+                <Setter Property="LargeImageSource" Value="{StaticResource UndoLargeImage}"/>
+                <Setter Property="SmallImageSource" Value="{StaticResource UndoSmallImage}"/>
+            </Trigger>
+            <Trigger Property="r:RibbonSplitButton.IsEnabled" Value="False">
+                <Setter Property="LargeImageSource" Value="{StaticResource UndoDisableLargeImage}"/>
+                <Setter Property="SmallImageSource" Value="{StaticResource UndoDisableSmallImage}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="RedoButtonStyle" TargetType="{x:Type r:RibbonSplitButton}">
+        <Style.Triggers>
+            <Trigger Property="r:RibbonSplitButton.IsEnabled" Value="True">
+                <Setter Property="LargeImageSource" Value="{StaticResource RedoLargeImage}"/>
+                <Setter Property="SmallImageSource" Value="{StaticResource RedoSmallImage}"/>
+            </Trigger>
+            <Trigger Property="r:RibbonSplitButton.IsEnabled" Value="False">
+                <Setter Property="LargeImageSource" Value="{StaticResource RedoDisableLargeImage}"/>
+                <Setter Property="SmallImageSource" Value="{StaticResource RedoDisableSmallImage}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="SelectButtonStyle" TargetType="{x:Type r:RibbonSplitButton}">
+        <Style.Triggers>
+            <Trigger Property="r:RibbonButton.IsEnabled" Value="True">
+                <Setter Property="LargeImageSource" Value="{StaticResource SelectLargeImage}"/>
+                <Setter Property="SmallImageSource" Value="{StaticResource SelectSmallImage}"/>
+            </Trigger>
+            <Trigger Property="r:RibbonButton.IsEnabled" Value="False">
+                <Setter Property="LargeImageSource" Value="{StaticResource SelectDisableLargeImage}"/>
+                <Setter Property="SmallImageSource" Value="{StaticResource SelectDisableSmallImage}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="InsertButtonStyle" TargetType="{x:Type r:RibbonSplitButton}">
+        <Style.Triggers>
+            <Trigger Property="r:RibbonSplitButton.IsEnabled" Value="True">
+                <Setter Property="LargeImageSource" Value="{StaticResource InsertLargeImage}"/>
+                <Setter Property="SmallImageSource" Value="{StaticResource InsertSmallImage}"/>
+            </Trigger>
+            <Trigger Property="r:RibbonSplitButton.IsEnabled" Value="False">
+                <Setter Property="LargeImageSource" Value="{StaticResource InsertDisableLargeImage}"/>
+                <Setter Property="SmallImageSource" Value="{StaticResource InsertDisableSmallImage}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="RemoveButtonStyle" TargetType="{x:Type r:RibbonSplitButton}">
+        <Style.Triggers>
+            <Trigger Property="r:RibbonSplitButton.IsEnabled" Value="True">
+                <Setter Property="LargeImageSource" Value="{StaticResource RemoveLargeImage}"/>
+                <Setter Property="SmallImageSource" Value="{StaticResource RemoveSmallImage}"/>
+            </Trigger>
+            <Trigger Property="r:RibbonSplitButton.IsEnabled" Value="False">
+                <Setter Property="LargeImageSource" Value="{StaticResource RemoveDisableLargeImage}"/>
+                <Setter Property="SmallImageSource" Value="{StaticResource RemoveDisableSmallImage}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="BackButtonStyle" TargetType="{x:Type r:RibbonButton}">
+        <Style.Triggers>
+            <Trigger Property="r:RibbonButton.IsEnabled" Value="True">
+                <Setter Property="LargeImageSource" Value="{StaticResource BackLargeImage}"/>
+                <Setter Property="SmallImageSource" Value="{StaticResource BackSmallImage}"/>
+            </Trigger>
+            <Trigger Property="r:RibbonButton.IsEnabled" Value="False">
+                <Setter Property="LargeImageSource" Value="{StaticResource BackDisableLargeImage}"/>
+                <Setter Property="SmallImageSource" Value="{StaticResource BackDisableSmallImage}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="ForwardButtonStyle" TargetType="{x:Type r:RibbonButton}">
+        <Style.Triggers>
+            <Trigger Property="r:RibbonButton.IsEnabled" Value="True">
+                <Setter Property="LargeImageSource" Value="{StaticResource ForwardLargeImage}"/>
+                <Setter Property="SmallImageSource" Value="{StaticResource ForwardSmallImage}"/>
+            </Trigger>
+            <Trigger Property="r:RibbonButton.IsEnabled" Value="False">
+                <Setter Property="LargeImageSource" Value="{StaticResource ForwardDisableLargeImage}"/>
+                <Setter Property="SmallImageSource" Value="{StaticResource ForwardDisableSmallImage}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="RotateLeftButtonStyle" TargetType="{x:Type r:RibbonButton}">
+        <Style.Triggers>
+            <Trigger Property="r:RibbonButton.IsEnabled" Value="True">
+                <Setter Property="LargeImageSource" Value="{StaticResource RotateLeftLargeImage}"/>
+                <Setter Property="SmallImageSource" Value="{StaticResource RotateLeftSmallImage}"/>
+            </Trigger>
+            <Trigger Property="r:RibbonButton.IsEnabled" Value="False">
+                <Setter Property="LargeImageSource" Value="{StaticResource RotateLeftDisableLargeImage}"/>
+                <Setter Property="SmallImageSource" Value="{StaticResource RotateLeftDisableSmallImage}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="RotateRightButtonStyle" TargetType="{x:Type r:RibbonButton}">
+        <Style.Triggers>
+            <Trigger Property="r:RibbonButton.IsEnabled" Value="True">
+                <Setter Property="LargeImageSource" Value="{StaticResource RotateRightLargeImage}"/>
+                <Setter Property="SmallImageSource" Value="{StaticResource RotateRightSmallImage}"/>
+            </Trigger>
+            <Trigger Property="r:RibbonButton.IsEnabled" Value="False">
+                <Setter Property="LargeImageSource" Value="{StaticResource RotateRightDisableLargeImage}"/>
+                <Setter Property="SmallImageSource" Value="{StaticResource RotateRightDisableSmallImage}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="MetadataButtonStyle" TargetType="{x:Type r:RibbonButton}">
+        <Style.Triggers>
+            <Trigger Property="r:RibbonButton.IsEnabled" Value="True">
+                <Setter Property="LargeImageSource" Value="{StaticResource MetadataLargeImage}"/>
+                <Setter Property="SmallImageSource" Value="{StaticResource MetadataSmallImage}"/>
+            </Trigger>
+            <Trigger Property="r:RibbonButton.IsEnabled" Value="False">
+                <Setter Property="LargeImageSource" Value="{StaticResource MetadataDisableLargeImage}"/>
+                <Setter Property="SmallImageSource" Value="{StaticResource MetadataDisableSmallImage}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="EncryptionButtonStyle" TargetType="{x:Type r:RibbonButton}">
+        <Style.Triggers>
+            <Trigger Property="r:RibbonButton.IsEnabled" Value="True">
+                <Setter Property="LargeImageSource" Value="{StaticResource EncryptionLargeImage}"/>
+                <Setter Property="SmallImageSource" Value="{StaticResource EncryptionSmallImage}"/>
+            </Trigger>
+            <Trigger Property="r:RibbonButton.IsEnabled" Value="False">
+                <Setter Property="LargeImageSource" Value="{StaticResource EncryptionDisableLargeImage}"/>
+                <Setter Property="SmallImageSource" Value="{StaticResource EncryptionDisableSmallImage}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="RefreshButtonStyle" TargetType="{x:Type r:RibbonButton}">
+        <Style.Triggers>
+            <Trigger Property="r:RibbonButton.IsEnabled" Value="True">
+                <Setter Property="LargeImageSource" Value="{StaticResource RefreshLargeImage}"/>
+                <Setter Property="SmallImageSource" Value="{StaticResource RefreshSmallImage}"/>
+            </Trigger>
+            <Trigger Property="r:RibbonButton.IsEnabled" Value="False">
+                <Setter Property="LargeImageSource" Value="{StaticResource RefreshDisableLargeImage}"/>
+                <Setter Property="SmallImageSource" Value="{StaticResource RefreshDisableSmallImage}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="ZoomInButtonStyle" TargetType="{x:Type r:RibbonButton}">
+        <Style.Triggers>
+            <Trigger Property="r:RibbonButton.IsEnabled" Value="True">
+                <Setter Property="LargeImageSource" Value="{StaticResource ZoomInLargeImage}"/>
+                <Setter Property="SmallImageSource" Value="{StaticResource ZoomInSmallImage}"/>
+            </Trigger>
+            <Trigger Property="r:RibbonButton.IsEnabled" Value="False">
+                <Setter Property="LargeImageSource" Value="{StaticResource ZoomInDisableLargeImage}"/>
+                <Setter Property="SmallImageSource" Value="{StaticResource ZoomInDisableSmallImage}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="ZoomOutButtonStyle" TargetType="{x:Type r:RibbonButton}">
+        <Style.Triggers>
+            <Trigger Property="r:RibbonButton.IsEnabled" Value="True">
+                <Setter Property="LargeImageSource" Value="{StaticResource ZoomOutLargeImage}"/>
+                <Setter Property="SmallImageSource" Value="{StaticResource ZoomOutSmallImage}"/>
+            </Trigger>
+            <Trigger Property="r:RibbonButton.IsEnabled" Value="False">
+                <Setter Property="LargeImageSource" Value="{StaticResource ZoomOutDisableLargeImage}"/>
+                <Setter Property="SmallImageSource" Value="{StaticResource ZoomOutDisableSmallImage}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="HelpButtonStyle" TargetType="{x:Type r:RibbonButton}">
+        <Style.Triggers>
+            <Trigger Property="r:RibbonButton.IsEnabled" Value="True">
+                <Setter Property="LargeImageSource" Value="{StaticResource HelpLargeImage}"/>
+                <Setter Property="SmallImageSource" Value="{StaticResource HelpSmallImage}"/>
+            </Trigger>
+            <Trigger Property="r:RibbonButton.IsEnabled" Value="False">
+                <Setter Property="LargeImageSource" Value="{StaticResource HelpDisableLargeImage}"/>
+                <Setter Property="SmallImageSource" Value="{StaticResource HelpDisableSmallImage}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="VersionButtonStyle" TargetType="{x:Type r:RibbonButton}">
+        <Style.Triggers>
+            <Trigger Property="r:RibbonButton.IsEnabled" Value="True">
+                <Setter Property="LargeImageSource" Value="{StaticResource VersionLargeImage}"/>
+                <Setter Property="SmallImageSource" Value="{StaticResource VersionSmallImage}"/>
+            </Trigger>
+            <Trigger Property="r:RibbonButton.IsEnabled" Value="False">
+                <Setter Property="LargeImageSource" Value="{StaticResource VersionDisableLargeImage}"/>
+                <Setter Property="SmallImageSource" Value="{StaticResource VersionDisableSmallImage}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="WebButtonStyle" TargetType="{x:Type r:RibbonButton}">
+        <Style.Triggers>
+            <Trigger Property="r:RibbonButton.IsEnabled" Value="True">
+                <Setter Property="LargeImageSource" Value="{StaticResource WebLargeImage}"/>
+                <Setter Property="SmallImageSource" Value="{StaticResource WebSmallImage}"/>
+            </Trigger>
+            <Trigger Property="r:RibbonButton.IsEnabled" Value="False">
+                <Setter Property="LargeImageSource" Value="{StaticResource WebDisableLargeImage}"/>
+                <Setter Property="SmallImageSource" Value="{StaticResource WebDisableSmallImage}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--
+      MenuItems
+    
+      コンテキストメニュー、およびボタンのサブ項目として表示されるメニュー項目
+      のイメージを定義します。
+    -->
+    <Style x:Key="SaveMenuItemStyle" TargetType="{x:Type r:RibbonMenuItem}">
+        <Style.Triggers>
+            <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="True">
+                <Setter Property="ImageSource" Value="{StaticResource SaveSmallImage}"/>
+            </Trigger>
+            <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="False">
+                <Setter Property="ImageSource" Value="{StaticResource SaveDisableSmallImage}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="SaveAsMenuItemStyle" TargetType="{x:Type r:RibbonMenuItem}">
+        <Style.Triggers>
+            <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="True">
+                <Setter Property="ImageSource" Value="{StaticResource SaveAsSmallImage}"/>
+            </Trigger>
+            <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="False">
+                <Setter Property="ImageSource" Value="{StaticResource SaveAsDisableSmallImage}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="ExtractMenuItemStyle" TargetType="{x:Type r:RibbonMenuItem}">
+        <Style.Triggers>
+            <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="True">
+                <Setter Property="ImageSource" Value="{StaticResource ExtractSmallImage}"/>
+            </Trigger>
+            <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="False">
+                <Setter Property="ImageSource" Value="{StaticResource ExtractDisableSmallImage}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="SelectMenuItemStyle" TargetType="{x:Type r:RibbonMenuItem}">
+        <Style.Triggers>
+            <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="True">
+                <Setter Property="ImageSource" Value="{StaticResource SelectSmallImage}"/>
+            </Trigger>
+            <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="False">
+                <Setter Property="ImageSource" Value="{StaticResource SelectDisableSmallImage}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="InsertMenuItemStyle" TargetType="{x:Type r:RibbonMenuItem}">
+        <Style.Triggers>
+            <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="True">
+                <Setter Property="ImageSource" Value="{StaticResource InsertSmallImage}"/>
+            </Trigger>
+            <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="False">
+                <Setter Property="ImageSource" Value="{StaticResource InsertDisableSmallImage}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="RemoveMenuItemStyle" TargetType="{x:Type r:RibbonMenuItem}">
+        <Style.Triggers>
+            <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="True">
+                <Setter Property="ImageSource" Value="{StaticResource RemoveSmallImage}"/>
+            </Trigger>
+            <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="False">
+                <Setter Property="ImageSource" Value="{StaticResource RemoveDisableSmallImage}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- 
+      ApplicationMenu
+    
+      アプリケーションメニューのイメージを定義します。
+    -->
+    <Style x:Key="OpenApplicationMenuItemStyle" TargetType="{x:Type r:RibbonApplicationMenuItem}">
+        <Style.Triggers>
+            <Trigger Property="r:RibbonApplicationMenuItem.IsEnabled" Value="True">
+                <Setter Property="ImageSource" Value="{StaticResource OpenLargeImage}"/>
+            </Trigger>
+            <Trigger Property="r:RibbonApplicationMenuItem.IsEnabled" Value="False">
+                <Setter Property="ImageSource" Value="{StaticResource OpenDisableLargeImage}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="SaveApplicationMenuItemStyle" TargetType="{x:Type r:RibbonApplicationMenuItem}">
+        <Style.Triggers>
+            <Trigger Property="r:RibbonApplicationMenuItem.IsEnabled" Value="True">
+                <Setter Property="ImageSource" Value="{StaticResource SaveLargeImage}"/>
+            </Trigger>
+            <Trigger Property="r:RibbonApplicationMenuItem.IsEnabled" Value="False">
+                <Setter Property="ImageSource" Value="{StaticResource SaveDisableLargeImage}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="SaveAsApplicationMenuItemStyle" TargetType="{x:Type r:RibbonApplicationMenuItem}">
+        <Style.Triggers>
+            <Trigger Property="r:RibbonApplicationMenuItem.IsEnabled" Value="True">
+                <Setter Property="ImageSource" Value="{StaticResource SaveAsLargeImage}"/>
+            </Trigger>
+            <Trigger Property="r:RibbonApplicationMenuItem.IsEnabled" Value="False">
+                <Setter Property="ImageSource" Value="{StaticResource SaveAsDisableLargeImage}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="VersionApplicationMenuItemStyle" TargetType="{x:Type r:RibbonApplicationMenuItem}">
+        <Style.Triggers>
+            <Trigger Property="r:RibbonApplicationMenuItem.IsEnabled" Value="True">
+                <Setter Property="ImageSource" Value="{StaticResource VersionLargeImage}"/>
+            </Trigger>
+            <Trigger Property="r:RibbonApplicationMenuItem.IsEnabled" Value="False">
+                <Setter Property="ImageSource" Value="{StaticResource VersionDisableLargeImage}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="CloseApplicationMenuItemStyle" TargetType="{x:Type r:RibbonApplicationMenuItem}">
+        <Style.Triggers>
+            <Trigger Property="r:RibbonApplicationMenuItem.IsEnabled" Value="True">
+                <Setter Property="ImageSource" Value="{StaticResource CloseLargeImage}"/>
+            </Trigger>
+            <Trigger Property="r:RibbonApplicationMenuItem.IsEnabled" Value="False">
+                <Setter Property="ImageSource" Value="{StaticResource CloseDisableLargeImage}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="ExitApplicationMenuItemStyle" TargetType="{x:Type r:RibbonApplicationMenuItem}">
+        <Style.Triggers>
+            <Trigger Property="r:RibbonApplicationMenuItem.IsEnabled" Value="True">
+                <Setter Property="ImageSource" Value="{StaticResource ExitLargeImage}"/>
+            </Trigger>
+            <Trigger Property="r:RibbonApplicationMenuItem.IsEnabled" Value="False">
+                <Setter Property="ImageSource" Value="{StaticResource ExitDisableLargeImage}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- 
+      ContextMenu
+    
+      コンテキストメニューのイメージを定義します。
+    -->
+    <Style x:Key="PasswordMenuItemStyle" TargetType="{x:Type MenuItem}">
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Icon">
+            <Setter.Value>
+                <Image Source="{StaticResource LockImage}"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="InsertContextMenuItemStyle" TargetType="{x:Type MenuItem}">
+        <Style.Triggers>
+            <Trigger Property="MenuItem.IsEnabled" Value="True">
+                <Setter Property="Icon">
+                    <Setter.Value>
+                        <Image Source="{StaticResource InsertSmallImage}"/>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+            <Trigger Property="MenuItem.IsEnabled" Value="False">
+                <Setter Property="Icon">
+                    <Setter.Value>
+                        <Image Source="{StaticResource InsertDisableSmallImage}"/>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="RemoveContextMenuItemStyle" TargetType="{x:Type MenuItem}">
+        <Style.Triggers>
+            <Trigger Property="MenuItem.IsEnabled" Value="True">
+                <Setter Property="Icon">
+                    <Setter.Value>
+                        <Image Source="{StaticResource RemoveSmallImage}"/>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+            <Trigger Property="MenuItem.IsEnabled" Value="False">
+                <Setter Property="Icon">
+                    <Setter.Value>
+                        <Image Source="{StaticResource RemoveDisableSmallImage}"/>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="ExtractContextMenuItemStyle" TargetType="{x:Type MenuItem}">
+        <Style.Triggers>
+            <Trigger Property="MenuItem.IsEnabled" Value="True">
+                <Setter Property="Icon">
+                    <Setter.Value>
+                        <Image Source="{StaticResource ExtractSmallImage}"/>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+            <Trigger Property="MenuItem.IsEnabled" Value="False">
+                <Setter Property="Icon">
+                    <Setter.Value>
+                        <Image Source="{StaticResource ExtractDisableSmallImage}"/>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="RotateLeftContextMenuItemStyle" TargetType="{x:Type MenuItem}">
+        <Style.Triggers>
+            <Trigger Property="MenuItem.IsEnabled" Value="True">
+                <Setter Property="Icon">
+                    <Setter.Value>
+                        <Image Source="{StaticResource RotateLeftSmallImage}"/>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+            <Trigger Property="MenuItem.IsEnabled" Value="False">
+                <Setter Property="Icon">
+                    <Setter.Value>
+                        <Image Source="{StaticResource RotateLeftDisableSmallImage}"/>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="RotateRightContextMenuItemStyle" TargetType="{x:Type MenuItem}">
+        <Style.Triggers>
+            <Trigger Property="MenuItem.IsEnabled" Value="True">
+                <Setter Property="Icon">
+                    <Setter.Value>
+                        <Image Source="{StaticResource RotateRightSmallImage}"/>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+            <Trigger Property="MenuItem.IsEnabled" Value="False">
+                <Setter Property="Icon">
+                    <Setter.Value>
+                        <Image Source="{StaticResource RotateRightDisableSmallImage}"/>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="MetadataContextMenuItemStyle" TargetType="{x:Type MenuItem}">
+        <Style.Triggers>
+            <Trigger Property="MenuItem.IsEnabled" Value="True">
+                <Setter Property="Icon">
+                    <Setter.Value>
+                        <Image Source="{StaticResource MetadataSmallImage}"/>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+            <Trigger Property="MenuItem.IsEnabled" Value="False">
+                <Setter Property="Icon">
+                    <Setter.Value>
+                        <Image Source="{StaticResource MetadataDisableSmallImage}"/>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="EncryptionContextMenuItemStyle" TargetType="{x:Type MenuItem}">
+        <Style.Triggers>
+            <Trigger Property="MenuItem.IsEnabled" Value="True">
+                <Setter Property="Icon">
+                    <Setter.Value>
+                        <Image Source="{StaticResource EncryptionSmallImage}"/>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+            <Trigger Property="MenuItem.IsEnabled" Value="False">
+                <Setter Property="Icon">
+                    <Setter.Value>
+                        <Image Source="{StaticResource EncryptionDisableSmallImage}"/>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+</ResourceDictionary>

@@ -42,173 +42,13 @@
     </Window.CommandBindings>
 
     <Window.Resources>
-        <system:Int32 x:Key="NegativeTwo">-2</system:Int32>
-        <cube:DataResource x:Key="SelectedItems" BindingTarget="{Binding ElementName=Thumbnail, Path=SelectedItems}" />
-        <cube:DataResource x:Key="SelectedIndex" BindingTarget="{Binding ElementName=Thumbnail, Path=SelectedIndex}" />
-        <cube:ControlToTagConverter x:Key="ControlToTagConverter"/>
-        <cube:IsEnabledToVisibilityConverter x:Key="IsEnabledToVisibilityConverter" />
-        
-        <Color x:Key="{x:Static SystemColors.GrayTextColorKey}">#FF595959</Color>
-        <SolidColorBrush x:Key="MainBorderBrush" Color="#FF000000"/>
-        <SolidColorBrush x:Key="MainBackgroundBrush" Color="#FF555555"/>
-        <SolidColorBrush x:Key="MainForegroundBrush" Color="#FFB3B3B3"/>
-        
-        <ImageBrush x:Key="TabBackgroundBrush" ImageSource="Images\Background.png" TileMode="Tile" ViewportUnits="Absolute" Viewport="0,0,4,4"/>
-        <SolidColorBrush x:Key="TabForegroundBrush" Color="#FFE6E6E6"/>
-        <SolidColorBrush x:Key="TabBorderBrush" Color="#FF000000"/>
-        <SolidColorBrush x:Key="TabMouseOverBackgroundBrush" Opacity="0.1" Color="#FFFFB700"/>
-
-        <LinearGradientBrush x:Key="MenuButtonBrush" EndPoint="0.1,1" StartPoint="0.1,0">
-            <GradientStop Color="#FF000000" Offset="1"/>
-            <GradientStop Color="#FF303030"/>
-            <GradientStop Color="#FF404040" Offset="1"/>
-        </LinearGradientBrush>
-
-        <SolidColorBrush x:Key="MenuItemBackgroundBrush" Color="#FFFFFFFF"/>
-        <SolidColorBrush x:Key="MenuItemForegroundBrush" Color="#FF000000"/>
-
-        <Style TargetType="{x:Type r:Ribbon}">
-            <Setter Property="Background" Value="{StaticResource MainBackgroundBrush}" />
-            <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}" />
-            <Setter Property="BorderBrush" Value="{StaticResource MainBorderBrush}" />
-            <Setter Property="CheckedBackground" Value="{StaticResource TabBackgroundBrush}" />
-            <Setter Property="CheckedBorderBrush" Value="{StaticResource TabBorderBrush}" />
-            <Setter Property="MouseOverBackground" Value="{StaticResource TabMouseOverBackgroundBrush}" />
-        </Style>
-
-        <Style TargetType="{x:Type r:RibbonTab}">
-            <Setter Property="Background" Value="{StaticResource TabBackgroundBrush}"/>
-            <Setter Property="Foreground" Value="{StaticResource TabForegroundBrush}"/>
-        </Style>
-
-        <Style TargetType="{x:Type r:RibbonGroup}">
-            <Setter Property="Foreground" Value="{StaticResource TabForegroundBrush}" />
-            <Setter Property="MouseOverBackground" Value="{StaticResource TabBackgroundBrush}" />
-        </Style>
-
-        <Style TargetType="{x:Type r:RibbonTabHeader}">
-            <Setter Property="FontWeight" Value="Bold" />
-            <Setter Property="CheckedBackground" Value="{StaticResource TabBackgroundBrush}"/>
-            <Style.Triggers>
-                <Trigger Property="IsRibbonTabSelected" Value="True">
-                    <Setter Property="Foreground" Value="#FFFFFFFF"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-
-        <Style TargetType="{x:Type r:RibbonCheckBox}">
-            <Setter Property="CheckedBackground" Value="Transparent" />
-            <Setter Property="CheckedBorderBrush" Value="{x:Static SystemColors.ControlDarkBrush}" />
-        </Style>
-
-        <Style TargetType="{x:Type r:RibbonApplicationMenu}">
-            <Setter Property="Background" Value="{StaticResource MenuButtonBrush}" />
-            <Setter Property="BorderBrush" Value="{StaticResource TabBorderBrush}" />
-            <Setter Property="Foreground" Value="{StaticResource TabForegroundBrush}" />
-            <Setter Property="FocusedBackground" Value="{StaticResource TabBackgroundBrush}" />
-            <Setter Property="FocusedBorderBrush" Value="{StaticResource TabBorderBrush}" />
-        </Style>
-
-        <Style TargetType="{x:Type r:RibbonGallery}">
-            <Setter Property="BorderThickness" Value="0" />
-        </Style>
-
-        <Style TargetType="{x:Type r:RibbonGalleryItem}">
-            <Setter Property="CheckedBorderBrush" Value="{Binding RelativeSource={RelativeSource Self}, Path=MouseOverBorderBrush}" />
-            <Setter Property="CheckedBackground" Value="#7FFFD178" />
-        </Style>
-
-        <Style TargetType="{x:Type r:RibbonContextMenu}" >
-            <Setter Property="Visibility" Value="Collapsed"/>
-        </Style>
-
-        <Style x:Key="ExtractRibbonMenuItem" TargetType="r:RibbonMenuItem">
-            <Style.Triggers>
-                <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="True">
-                    <Setter Property="ImageSource" Value="Images\SmallIcons\Extract.png"/>
-                </Trigger>
-
-                <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="False">
-                    <Setter Property="ImageSource" Value="Images\SmallIcons\ExtractDisable.png"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-
-        <ContextMenu x:Key="EditMenu">
-            <MenuItem Header="パスワードを入力してセキュリティを解除"
-                x:Name="PasswordMenuItem"
-                FontWeight="Bold"
-                Visibility="{Binding RelativeSource={RelativeSource Self}, Path=IsEnabled, Converter={StaticResource IsEnabledToVisibilityConverter}}"
-                Command="{x:Static local:MainWindow.Password}">
-                <MenuItem.Icon>
-                    <Image Source="Images\Lock.png" />
-                </MenuItem.Icon>
-            </MenuItem>
-
-            <MenuItem Header="プレビュー" Click="OnPreview" />
-
-            <Separator/>
-
-            <MenuItem Header="挿入">
-                <MenuItem Header="選択位置の後ろに挿入"
-                    Command="{x:Static cube:ListViewCommands.Insert}"
-                    CommandParameter="{Binding PlacementTarget.SelectedIndex, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"/>
-                <MenuItem Header="先頭に挿入"
-                    Command="{x:Static cube:ListViewCommands.Insert}"/>
-                <MenuItem Header="末尾に挿入"
-                    Command="{x:Static cube:ListViewCommands.Insert}"
-                    CommandParameter="{Binding PlacementTarget.Items.Count, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"/>
-            </MenuItem>
-
-            <MenuItem Header="抽出">
-                <MenuItem Header="選択ページを単一ファイルとして抽出"
-                    Command="{x:Static cube:ListViewCommands.Extract}"
-                    CommandParameter="{Binding PlacementTarget.SelectedItems, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"/>
-                <MenuItem Header="選択ページを個別ファイルとして抽出"
-                    Command="{x:Static cube:ListViewCommands.Split}"
-                    CommandParameter="{Binding PlacementTarget.SelectedItems, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"/>
-                <MenuItem Header="全てのページを単一ファイルとして抽出"
-                    Command="{x:Static cube:ListViewCommands.Extract}"/>
-                <MenuItem Header="全てのページを個別ファイルとして抽出"
-                    Command="{x:Static cube:ListViewCommands.Split}"/>
-            </MenuItem>
-
-            <MenuItem Header="削除">
-                <MenuItem Header="選択ページを削除"
-                    Command="{x:Static cube:ListViewCommands.Remove}"
-                    CommandParameter="{Binding PlacementTarget.SelectedItems, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"/>
-                <MenuItem Header="範囲を指定して削除"
-                    Command="{x:Static cube:ListViewCommands.Remove}"/>
-            </MenuItem>
-
-            <Separator/>
-
-            <MenuItem Header="前へ"
-                Command="{x:Static cube:ListViewCommands.Move}"
-                CommandParameter="-1"/>
-            <MenuItem Header="後へ"
-                Command="{x:Static cube:ListViewCommands.Move}"
-                CommandParameter="1"/>
-
-            <Separator/>
-
-            <MenuItem Header="左90度回転"
-                Command="{x:Static cube:ListViewCommands.Rotate}"
-                CommandParameter="-90"/>
-            <MenuItem Header="右90度回転"
-                Command="{x:Static cube:ListViewCommands.Rotate}"
-                CommandParameter="90"/>
-            <MenuItem Header="180度回転"
-                Command="{x:Static cube:ListViewCommands.Rotate}"
-                CommandParameter="180"/>
-
-            <Separator/>
-
-            <MenuItem Header="文書プロパティ"
-                Command="{x:Static cube:ListViewCommands.Metadata}"/>
-            <MenuItem Header="セキュリティ"
-                Command="{x:Static cube:ListViewCommands.Encryption}"/>
-        </ContextMenu>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/CubePdfUtility;component/Styles/Button.xaml"/>
+                <ResourceDictionary Source="/CubePdfUtility;component/Styles/Header.xaml"/>
+                <ResourceDictionary Source="/CubePdfUtility;component/Styles/Misc.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Window.Resources>
 
     <Window.InputBindings>
@@ -526,44 +366,44 @@
                         <r:RibbonMenuItem Header="選択ページを抽出"
                                           Command="{x:Static cube:ListViewCommands.Extract}"
                                           CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedItems}"
-                                          Style="{StaticResource ExtractRibbonMenuItem}">
+                                          Style="{StaticResource ExtractMenuItemStyle}">
                             
                             <r:RibbonMenuItem Header="ページ全体"
                                               Command="{x:Static cube:ListViewCommands.Extract}"
                                               CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedItems}"
-                                              Style="{StaticResource ExtractRibbonMenuItem}">
+                                              Style="{StaticResource ExtractMenuItemStyle}">
                                 <r:RibbonMenuItem Header="単一ファイルとして保存"
                                                   Command="{x:Static cube:ListViewCommands.Extract}"
                                                   CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedItems}"
-                                                  Style="{StaticResource ExtractRibbonMenuItem}" />
+                                                  Style="{StaticResource ExtractMenuItemStyle}" />
                                 <r:RibbonMenuItem Header="個別のファイルとして保存"
                                                   Command="{x:Static cube:ListViewCommands.Split}"
                                                   CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedItems}"
-                                                  Style="{StaticResource ExtractRibbonMenuItem}" />
+                                                  Style="{StaticResource ExtractMenuItemStyle}" />
                             </r:RibbonMenuItem>
                             
                             <r:RibbonMenuItem Header="ページに含まれる画像"
                                 Command="{x:Static cube:ListViewCommands.Split}"
                                 CommandParameter="{Binding ElementName=Thumbnail, Path=SelectedItems}"
-                                Style="{StaticResource ExtractRibbonMenuItem}"/>
+                                Style="{StaticResource ExtractMenuItemStyle}"/>
                         </r:RibbonMenuItem>
 
                         <r:RibbonMenuItem Header="全てのページを抽出"
-                            Style="{StaticResource ExtractRibbonMenuItem}">
+                            Style="{StaticResource ExtractMenuItemStyle}">
                             <r:RibbonMenuItem Header="ページ全体"
-                                Style="{StaticResource ExtractRibbonMenuItem}">
+                                Style="{StaticResource ExtractMenuItemStyle}">
                                 <r:RibbonMenuItem Header="単一ファイルとして保存"
                                     Command="{x:Static cube:ListViewCommands.Extract}"
-                                    Style="{StaticResource ExtractRibbonMenuItem}" />
+                                    Style="{StaticResource ExtractMenuItemStyle}" />
 
                                 <r:RibbonMenuItem Header="個別のファイルとして保存"
                                     Command="{x:Static cube:ListViewCommands.Split}"
-                                    Style="{StaticResource ExtractRibbonMenuItem}" />
+                                    Style="{StaticResource ExtractMenuItemStyle}" />
                             </r:RibbonMenuItem>
 
                             <r:RibbonMenuItem Header="ページに含まれる画像"
                                 Command="{x:Static cube:ListViewCommands.Split}"
-                                Style="{StaticResource ExtractRibbonMenuItem}"/>
+                                Style="{StaticResource ExtractMenuItemStyle}"/>
                         </r:RibbonMenuItem>
                     </r:RibbonSplitButton>
                 </r:RibbonGroup>
@@ -1209,7 +1049,6 @@
 
         <ListView Grid.Row="1" Grid.ColumnSpan="2" x:Name="Thumbnail"
             ItemsSource="{Binding ElementName=RibbonWindow, Path=ViewModel.Items}"
-            ContextMenu="{DynamicResource EditMenu}"
             VirtualizingStackPanel.VirtualizationMode="Recycling"
             VirtualizingStackPanel.IsVirtualizing="True"
             SelectionMode="Extended"
