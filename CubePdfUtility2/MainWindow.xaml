@@ -47,6 +47,7 @@
                 <ResourceDictionary Source="/CubePdfUtility;component/Styles/Button.xaml"/>
                 <ResourceDictionary Source="/CubePdfUtility;component/Styles/Header.xaml"/>
                 <ResourceDictionary Source="/CubePdfUtility;component/Styles/Misc.xaml"/>
+                <ResourceDictionary Source="/CubePdfUtility;component/MainContextMenu.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
@@ -1048,6 +1049,7 @@
             Margin="0,0,5,0" />
 
         <ListView Grid.Row="1" Grid.ColumnSpan="2" x:Name="Thumbnail"
+                  ContextMenu="{StaticResource MainContextMenu}"
             ItemsSource="{Binding ElementName=RibbonWindow, Path=ViewModel.Items}"
             VirtualizingStackPanel.VirtualizationMode="Recycling"
             VirtualizingStackPanel.IsVirtualizing="True"
