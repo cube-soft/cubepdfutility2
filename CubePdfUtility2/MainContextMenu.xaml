@@ -17,7 +17,6 @@
                                        Converter={StaticResource IsEnabledToVisibilityConverter}}"
                   Command="{x:Static local:MainWindow.Password}"/>
 
-        <!-- TODO: OnPreview に代わるコマンドを用意する -->
         <MenuItem Header="プレビュー"
                   Command="{x:Static local:MainWindow.Preview}"/>
 
