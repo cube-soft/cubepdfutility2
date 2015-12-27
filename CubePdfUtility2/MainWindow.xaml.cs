@@ -1129,6 +1129,31 @@ namespace CubePdfUtility
 
         #endregion
 
+        /* ----------------------------------------------------------------- */
+        ///
+        /// Preview
+        ///
+        /// <summary>
+        /// プレビュー画面を表示します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        #region Preview
+
+        private void PreviewCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = _viewmodel.PageCount > 0;
+        }
+
+        private void PreviewCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (Thumbnail == null || Thumbnail.SelectedIndex == -1) return;
+            var dialog = new PreviewWindow(_viewmodel, Thumbnail.SelectedIndex);
+            dialog.ShowDialog();
+        }
+
+        #endregion
+
         #endregion
 
         #region Event handlers
@@ -1198,6 +1223,24 @@ namespace CubePdfUtility
 
         /* ----------------------------------------------------------------- */
         ///
+        /// OnPreview
+        ///
+        /// <summary>
+        /// プレビュー画面を表示します。
+        /// </summary>
+        /// 
+        /// <remarks>
+        /// TODO: Preview コマンドに統一したい。
+        /// </remarks>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void OnPreview(object sender, EventArgs e)
+        {
+            PreviewCommand_Executed(this, null);
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
         /// OnDrop
         ///
         /// <summary>
@@ -1223,27 +1266,6 @@ namespace CubePdfUtility
                     return;
                 }
             }
-        }
-
-        /* ----------------------------------------------------------------- */
-        ///
-        /// OnPreview
-        /// 
-        /// <summary>
-        /// プレビュー画面を開きます。
-        /// </summary>
-        ///
-        /* ----------------------------------------------------------------- */
-        private void OnPreview(object sender, EventArgs e)
-        {
-            var args = e as MouseEventArgs;
-            if (args == null) return;
-
-            var source = args.OriginalSource as Image;
-            if (Thumbnail == null || Thumbnail.SelectedIndex == -1 || source == null) return;
-
-            var dialog = new PreviewWindow(_viewmodel, Thumbnail.SelectedIndex);
-            dialog.ShowDialog();
         }
 
         /* ----------------------------------------------------------------- */
@@ -2021,6 +2043,7 @@ namespace CubePdfUtility
         public static readonly ICommand Help     = new RoutedCommand("Help",     typeof(MainWindow));
         public static readonly ICommand Web      = new RoutedCommand("Web",      typeof(MainWindow));
         public static readonly ICommand Password = new RoutedCommand("Password", typeof(MainWindow));
+        public static readonly ICommand Preview  = new RoutedCommand("Preview",  typeof(MainWindow));
         #endregion
     }
 }

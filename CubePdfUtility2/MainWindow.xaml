@@ -50,7 +50,8 @@
         <CommandBinding Command="{x:Static local:MainWindow.Version}"  CanExecute="VersionCommand_CanExecute"  Executed="VersionCommand_Executed"/>
         <CommandBinding Command="{x:Static local:MainWindow.Help}"     CanExecute="HelpCommand_CanExecute"     Executed="HelpCommand_Executed"/>
         <CommandBinding Command="{x:Static local:MainWindow.Web}"      CanExecute="WebCommand_CanExecute"      Executed="WebCommand_Executed"/>
-        <CommandBinding Command="{x:Static local:MainWindow.Password}" CanExecute="PasswordCommand_CanExecute" Executed="PasswordCommand_Executed" />
+        <CommandBinding Command="{x:Static local:MainWindow.Password}" CanExecute="PasswordCommand_CanExecute" Executed="PasswordCommand_Executed"/>
+        <CommandBinding Command="{x:Static local:MainWindow.Preview}"  CanExecute="PreviewCommand_CanExecute"  Executed="PreviewCommand_Executed"/>
     </Window.CommandBindings>
 
     <Window.InputBindings>
