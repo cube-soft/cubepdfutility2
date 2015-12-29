@@ -1,5 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:r="clr-namespace:Microsoft.Windows.Controls.Ribbon;assembly=RibbonControlsLibrary"
                     xmlns:system="clr-namespace:System;assembly=mscorlib"
                     xmlns:cube="clr-namespace:CubePdf.Wpf;assembly=CubePdf.Wpf"
                     xmlns:local="clr-namespace:CubePdfUtility">
@@ -7,10 +8,12 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/CubePdfUtility;component/Themes/Image.xaml"/>
     </ResourceDictionary.MergedDictionaries>
-    
+
     <!-- Integer -->
     <system:Int32 x:Key="NegativeTwo">-2</system:Int32>
 
+    <!-- FontFamily-->
+    
     <!-- DataResource -->
     <cube:DataResource x:Key="SelectedItems" BindingTarget="{Binding ElementName=Thumbnail, Path=SelectedItems}"/>
     <cube:DataResource x:Key="SelectedIndex" BindingTarget="{Binding ElementName=Thumbnail, Path=SelectedIndex}"/>
@@ -26,6 +29,7 @@
     <local:BorderThicknessConverter x:Key="BorderThicknessConverter"/>
     
     <!-- Main themes -->
+    <FontFamily x:Key="MainFontFamily">Meiryo UI, Meiryo, MS UI Gothic</FontFamily>
     <SolidColorBrush x:Key="MainBackgroundBrush" Color="#FF555555"/>
     <SolidColorBrush x:Key="MainForegroundBrush" Color="#FFB3B3B3"/>
     <SolidColorBrush x:Key="MainBorderBrush" Color="#FF000000"/>

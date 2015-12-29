@@ -6,8 +6,9 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/CubePdfUtility;component/Themes/Generic.xaml"/>
     </ResourceDictionary.MergedDictionaries>
-    
+
     <Style TargetType="{x:Type r:Ribbon}">
+        <Setter Property="FontFamily" Value="{StaticResource MainFontFamily}"/>
         <Setter Property="Background" Value="{StaticResource MainBackgroundBrush}"/>
         <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"/>
         <Setter Property="BorderBrush" Value="{StaticResource MainBorderBrush}"/>

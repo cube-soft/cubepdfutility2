@@ -10,14 +10,26 @@
 
     <!-- Main contents -->
     <Style TargetType="{x:Type ListView}">
+        <Setter Property="FontFamily" Value="{StaticResource MainFontFamily}"/>
         <Setter Property="Background" Value="{StaticResource MainBackgroundBrush}" />
         <Setter Property="BorderThickness" Value="0" />
     </Style>
 
     <!-- Footer -->
     <Style TargetType="{x:Type StatusBar}">
+        <Setter Property="FontFamily" Value="{StaticResource MainFontFamily}"/>
         <Setter Property="Background" Value="{StaticResource TabBackgroundBrush}" />
         <Setter Property="Foreground" Value="{StaticResource TabForegroundBrush}" />
         <Setter Property="BorderBrush" Value="{StaticResource TabBorderBrush}" />
+    </Style>
+    
+    <!-- ContextMenu -->
+    <Style TargetType="{x:Type ContextMenu}">
+        <Setter Property="FontFamily" Value="{StaticResource MainFontFamily}"/>
+    </Style>
+    
+    <!-- SubWindow -->
+    <Style TargetType="{x:Type Window}">
+        <Setter Property="FontFamily" Value="{StaticResource MainFontFamily}"/>
     </Style>
 </ResourceDictionary>
