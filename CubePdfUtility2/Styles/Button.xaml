@@ -419,12 +419,13 @@
       ContextMenu
     
       コンテキストメニューのイメージを定義します。
+      TODO: Image の設定を StaticResource にしたい。
     -->
     <Style x:Key="PasswordMenuItemStyle" TargetType="{x:Type MenuItem}">
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="Icon">
             <Setter.Value>
-                <Image Source="{StaticResource LockImage}"/>
+                <BitmapImage UriSource="/CubePdfUtility;component/Images/Lock.png"/>
             </Setter.Value>
         </Setter>
     </Style>

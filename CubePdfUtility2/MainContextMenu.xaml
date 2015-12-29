@@ -10,9 +10,9 @@
     <ContextMenu x:Key="MainContextMenu">
         <!--
           TODO: x:Name を削除したが問題ないか確認
-                Style の適用
         -->
         <MenuItem Header="パスワードを入力してセキュリティを解除"
+                  Style="{StaticResource PasswordMenuItemStyle}"
                   Visibility="{Binding Path=IsEnabled, RelativeSource={RelativeSource Self},
                                        Converter={StaticResource IsEnabledToVisibilityConverter}}"
                   Command="{x:Static local:MainWindow.Password}"/>
