@@ -3,7 +3,6 @@
                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                 xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
                 xmlns:r="clr-namespace:Microsoft.Windows.Controls.Ribbon;assembly=RibbonControlsLibrary"
-                xmlns:system="clr-namespace:System;assembly=mscorlib"
                 xmlns:cube="clr-namespace:CubePdf.Wpf;assembly=CubePdf.Wpf"
                 xmlns:local="clr-namespace:CubePdfUtility"
                 x:Name="RibbonWindow" Title="CubePDF Utility"
