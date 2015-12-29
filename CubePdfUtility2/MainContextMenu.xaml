@@ -43,23 +43,47 @@
 
         <!-- Extract -->
         <MenuItem Header="抽出">
-            <MenuItem Header="選択ページを単一ファイルとして抽出"
-                      Command="{x:Static cube:ListViewCommands.Extract}"
-                      CommandParameter="{Binding PlacementTarget.SelectedItems,
+            <MenuItem Header="選択ページを抽出">
+                <MenuItem Header="ページ全体"
+                          Command="{x:Static cube:ListViewCommands.Extract}"
+                          CommandParameter="{Binding PlacementTarget.SelectedItems,
+                                                 RelativeSource={RelativeSource FindAncestor,
+                                                 AncestorType={x:Type ContextMenu}}}">
+
+                    <MenuItem Header="単一ファイルとして保存"
+                              Command="{x:Static cube:ListViewCommands.Extract}"
+                              CommandParameter="{Binding PlacementTarget.SelectedItems,
                                                  RelativeSource={RelativeSource FindAncestor,
                                                  AncestorType={x:Type ContextMenu}}}"/>
-            
-            <MenuItem Header="選択ページを個別ファイルとして抽出"
-                      Command="{x:Static cube:ListViewCommands.Split}"
-                      CommandParameter="{Binding PlacementTarget.SelectedItems,
+
+                    <MenuItem Header="単一ファイルとして保存"
+                              Command="{x:Static cube:ListViewCommands.Split}"
+                              CommandParameter="{Binding PlacementTarget.SelectedItems,
                                                  RelativeSource={RelativeSource FindAncestor,
                                                  AncestorType={x:Type ContextMenu}}}"/>
-            
-            <MenuItem Header="全てのページを単一ファイルとして抽出"
-                      Command="{x:Static cube:ListViewCommands.Extract}"/>
-            
-            <MenuItem Header="全てのページを個別ファイルとして抽出"
-                      Command="{x:Static cube:ListViewCommands.Split}"/>
+                </MenuItem>
+
+                <MenuItem Header="ページに含まれる画像"
+                              Command="{x:Static cube:ListViewCommands.Split}"
+                              CommandParameter="{Binding PlacementTarget.SelectedItems,
+                                                 RelativeSource={RelativeSource FindAncestor,
+                                                 AncestorType={x:Type ContextMenu}}}"/>
+            </MenuItem>
+
+            <MenuItem Header="全てのページを抽出">
+                <MenuItem Header="ページ全体"
+                          Command="{x:Static cube:ListViewCommands.Extract}">
+
+                    <MenuItem Header="単一ファイルとして保存"
+                              Command="{x:Static cube:ListViewCommands.Extract}"/>
+
+                    <MenuItem Header="単一ファイルとして保存"
+                              Command="{x:Static cube:ListViewCommands.Split}"/>
+                </MenuItem>
+
+                <MenuItem Header="ページに含まれる画像"
+                          Command="{x:Static cube:ListViewCommands.Split}"/>
+            </MenuItem>
         </MenuItem>
 
         <MenuItem Header="削除">
