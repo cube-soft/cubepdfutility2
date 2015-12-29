@@ -139,6 +139,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="MainContextMenu.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -176,9 +180,25 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Themes\Generic.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="Styles\Button.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\Header.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\Misc.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Image.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="VersionWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -245,18 +265,18 @@
   <ItemGroup>
     <Resource Include="Images\LargeIcons\Back.png" />
     <Resource Include="Images\LargeIcons\Close.png" />
-    <Resource Include="Images\LargeIcons\Delete.png" />
+    <Resource Include="Images\LargeIcons\Remove.png" />
     <Resource Include="Images\LargeIcons\Exit.png" />
     <Resource Include="Images\LargeIcons\Extract.png" />
     <Resource Include="Images\LargeIcons\Forward.png" />
     <Resource Include="Images\LargeIcons\Insert.png" />
     <Resource Include="Images\LargeIcons\Open.png" />
-    <Resource Include="Images\LargeIcons\Property.png" />
+    <Resource Include="Images\LargeIcons\Metadata.png" />
     <Resource Include="Images\LargeIcons\RotateLeft.png" />
     <Resource Include="Images\LargeIcons\RotateRight.png" />
     <Resource Include="Images\LargeIcons\Save.png" />
     <Resource Include="Images\LargeIcons\SaveAs.png" />
-    <Resource Include="Images\LargeIcons\Security.png" />
+    <Resource Include="Images\LargeIcons\Encryption.png" />
     <Resource Include="Images\LargeIcons\Undo.png" />
     <Resource Include="Images\LargeIcons\Version.png" />
     <Resource Include="Images\LargeIcons\ZoomIn.png" />
@@ -265,17 +285,17 @@
   <ItemGroup>
     <Resource Include="Images\SmallIcons\Back.png" />
     <Resource Include="Images\SmallIcons\Close.png" />
-    <Resource Include="Images\SmallIcons\Delete.png" />
+    <Resource Include="Images\SmallIcons\Remove.png" />
     <Resource Include="Images\SmallIcons\Extract.png" />
     <Resource Include="Images\SmallIcons\Forward.png" />
     <Resource Include="Images\SmallIcons\Insert.png" />
     <Resource Include="Images\SmallIcons\Open.png" />
-    <Resource Include="Images\SmallIcons\Property.png" />
+    <Resource Include="Images\SmallIcons\Metadata.png" />
     <Resource Include="Images\SmallIcons\RotateLeft.png" />
     <Resource Include="Images\SmallIcons\RotateRight.png" />
     <Resource Include="Images\SmallIcons\Save.png" />
     <Resource Include="Images\SmallIcons\SaveAs.png" />
-    <Resource Include="Images\SmallIcons\Security.png" />
+    <Resource Include="Images\SmallIcons\Encryption.png" />
     <Resource Include="Images\SmallIcons\Undo.png" />
   </ItemGroup>
   <ItemGroup>
@@ -330,7 +350,7 @@
   <ItemGroup>
     <Resource Include="Images\LargeIcons\BackDisable.png" />
     <Resource Include="Images\LargeIcons\CloseDisable.png" />
-    <Resource Include="Images\LargeIcons\DeleteDisable.png" />
+    <Resource Include="Images\LargeIcons\RemoveDisable.png" />
     <Resource Include="Images\LargeIcons\ExitDisable.png" />
     <Resource Include="Images\LargeIcons\ExtractDisable.png" />
     <Resource Include="Images\LargeIcons\FontDisable.png" />
@@ -338,14 +358,14 @@
     <Resource Include="Images\LargeIcons\HelpDisable.png" />
     <Resource Include="Images\LargeIcons\InsertDisable.png" />
     <Resource Include="Images\LargeIcons\OpenDisable.png" />
-    <Resource Include="Images\LargeIcons\PropertyDisable.png" />
+    <Resource Include="Images\LargeIcons\MetadataDisable.png" />
     <Resource Include="Images\LargeIcons\RedoDisable.png" />
     <Resource Include="Images\LargeIcons\RefreshDisable.png" />
     <Resource Include="Images\LargeIcons\RotateLeftDisable.png" />
     <Resource Include="Images\LargeIcons\RotateRightDisable.png" />
     <Resource Include="Images\LargeIcons\SaveAsDisable.png" />
     <Resource Include="Images\LargeIcons\SaveDisable.png" />
-    <Resource Include="Images\LargeIcons\SecurityDisable.png" />
+    <Resource Include="Images\LargeIcons\EncryptionDisable.png" />
     <Resource Include="Images\LargeIcons\SelectDisable.png" />
     <Resource Include="Images\LargeIcons\UndoDisable.png" />
     <Resource Include="Images\LargeIcons\VersionDisable.png" />
@@ -359,7 +379,7 @@
   <ItemGroup>
     <Resource Include="Images\SmallIcons\BackDisable.png" />
     <Resource Include="Images\SmallIcons\CloseDisable.png" />
-    <Resource Include="Images\SmallIcons\DeleteDisable.png" />
+    <Resource Include="Images\SmallIcons\RemoveDisable.png" />
     <Resource Include="Images\SmallIcons\ExitDisable.png" />
     <Resource Include="Images\SmallIcons\ExtractDisable.png" />
     <Resource Include="Images\SmallIcons\FontDisable.png" />
@@ -367,20 +387,26 @@
     <Resource Include="Images\SmallIcons\HelpDisable.png" />
     <Resource Include="Images\SmallIcons\InsertDisable.png" />
     <Resource Include="Images\SmallIcons\OpenDisable.png" />
-    <Resource Include="Images\SmallIcons\PropertyDisable.png" />
+    <Resource Include="Images\SmallIcons\MetadataDisable.png" />
     <Resource Include="Images\SmallIcons\RedoDisable.png" />
     <Resource Include="Images\SmallIcons\RefreshDisable.png" />
     <Resource Include="Images\SmallIcons\RotateLeftDisable.png" />
     <Resource Include="Images\SmallIcons\RotateRightDisable.png" />
     <Resource Include="Images\SmallIcons\SaveAsDisable.png" />
     <Resource Include="Images\SmallIcons\SaveDisable.png" />
-    <Resource Include="Images\SmallIcons\SecurityDisable.png" />
+    <Resource Include="Images\SmallIcons\EncryptionDisable.png" />
     <Resource Include="Images\SmallIcons\SelectDisable.png" />
     <Resource Include="Images\SmallIcons\UndoDisable.png" />
     <Resource Include="Images\SmallIcons\VersionDisable.png" />
     <Resource Include="Images\SmallIcons\WebDisable.png" />
     <Resource Include="Images\SmallIcons\ZoomInDisable.png" />
     <Resource Include="Images\SmallIcons\ZoomOutDisable.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\NavigationHeader.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\PdfFile.png" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="IWshRuntimeLibrary">
@@ -392,12 +418,6 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\NavigationHeader.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\PdfFile.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

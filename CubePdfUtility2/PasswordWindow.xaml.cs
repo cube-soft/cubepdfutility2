@@ -71,10 +71,9 @@ namespace CubePdfUtility
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
-        public PasswordWindow(string path, string font)
+        public PasswordWindow(string path)
             : this()
         {
-            ReplaceFont(font);
             MessageLabel.Text = String.Format(Properties.Resources.PasswordPrompt, System.IO.Path.GetFileName(path));
         }
 
@@ -151,30 +150,6 @@ namespace CubePdfUtility
         #endregion
 
         # region Other Methods
-
-        /* ----------------------------------------------------------------- */
-        ///
-        /// ReplaceFont
-        ///
-        /// <summary>
-        /// コンストラクタ実行時に、画面のフォントを差し替えます。
-        /// </summary>
-        ///
-        /* ----------------------------------------------------------------- */
-        private void ReplaceFont(string font)
-        {
-            if (string.IsNullOrEmpty(font)) return;
-
-            var fonts = new System.Drawing.Text.InstalledFontCollection();
-            foreach (var ff in fonts.Families)
-            {
-                if (ff.Name == font)
-                {
-                    PasswordTextBox.FontFamily = new System.Windows.Media.FontFamily(ff.Name);
-                    break;
-                }
-            }
-        }
 
         /* ----------------------------------------------------------------- */
         ///

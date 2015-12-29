@@ -54,7 +54,7 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         /// MetadataWindow (constructor)
         /* ----------------------------------------------------------------- */
-        public MetadataWindow(CubePdf.Wpf.ListViewModel viewmodel, string font)
+        public MetadataWindow(CubePdf.Wpf.ListViewModel viewmodel)
             : this()
         {
             _metadata = new CubePdf.Data.Metadata(viewmodel.Metadata);
@@ -82,7 +82,6 @@ namespace CubePdfUtility
                     ViewerPreferences.SelectedIndex = i;
                 }
             }
-            ReplaceFont(font);
         }
 
         #endregion
@@ -147,38 +146,6 @@ namespace CubePdfUtility
         }
 
         #endregion
-
-        #endregion
-
-        # region Other Methods
-
-        /* ----------------------------------------------------------------- */
-        ///
-        /// ReplaceFont
-        ///
-        /// <summary>
-        /// コンストラクタ実行時に、画面のフォントを差し替えます。
-        /// </summary>
-        ///
-        /* ----------------------------------------------------------------- */
-        private void ReplaceFont(string font)
-        {
-            if (string.IsNullOrEmpty(font)) return;
-
-            var fonts = new System.Drawing.Text.InstalledFontCollection();
-            foreach (var ff in fonts.Families)
-            {
-                if (ff.Name == font)
-                {
-                    TitleTextBox.FontFamily = new System.Windows.Media.FontFamily(ff.Name);
-                    AuthorTextBox.FontFamily = new System.Windows.Media.FontFamily(ff.Name);
-                    SubTitleTextBox.FontFamily = new System.Windows.Media.FontFamily(ff.Name);
-                    KeyWordTextBox.FontFamily = new System.Windows.Media.FontFamily(ff.Name);
-                    ApplicationTextBox.FontFamily = new System.Windows.Media.FontFamily(ff.Name);
-                    break;
-                }
-            }
-        }
 
         #endregion
 
