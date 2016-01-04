@@ -195,7 +195,7 @@ namespace CubePdfUtility
         private bool IsUserPasswordRequired()
         {
             return Encryption.IsEnabled &&
-                  !Encryption.Permission.FullAccess &&
+                  !Encryption.Permission.IsFullAccess &&
                    Encryption.IsUserPasswordEnabled &&
                   (UserPasswordCheckBox.IsChecked != true ||
                    OwnerPasswordBox.Password == UserPasswordBox.Password);
