@@ -30,14 +30,15 @@
         <CommandBinding Command="Undo"      CanExecute="UndoCommand_CanExecute"      Executed="UndoCommand_Executed"/>
         <CommandBinding Command="Redo"      CanExecute="RedoCommand_CanExecute"      Executed="RedoCommand_Executed"/>
 
-        <CommandBinding Command="{x:Static cube:ListViewCommands.Insert}"     CanExecute="InsertCommand_CanExecute"     Executed="InsertCommand_Executed"/>
-        <CommandBinding Command="{x:Static cube:ListViewCommands.Remove}"     CanExecute="RemoveCommand_CanExecute"     Executed="RemoveCommand_Executed"/>
-        <CommandBinding Command="{x:Static cube:ListViewCommands.Extract}"    CanExecute="ExtractCommand_CanExecute"    Executed="ExtractCommand_Executed"/>
-        <CommandBinding Command="{x:Static cube:ListViewCommands.Split}"      CanExecute="SplitCommand_CanExecute"      Executed="SplitCommand_Executed"/>
-        <CommandBinding Command="{x:Static cube:ListViewCommands.Move}"       CanExecute="MoveCommand_CanExecute"       Executed="MoveCommand_Executed"/>
-        <CommandBinding Command="{x:Static cube:ListViewCommands.Rotate}"     CanExecute="RotateCommand_CanExecute"     Executed="RotateCommand_Executed"/>
-        <CommandBinding Command="{x:Static cube:ListViewCommands.Metadata}"   CanExecute="MetadataCommand_CanExecute"   Executed="MetadataCommand_Executed"/>
-        <CommandBinding Command="{x:Static cube:ListViewCommands.Encryption}" CanExecute="EncryptionCommand_CanExecute" Executed="EncryptionCommand_Executed"/>
+        <CommandBinding Command="{x:Static cube:ListViewCommands.Insert}"       CanExecute="InsertCommand_CanExecute"       Executed="InsertCommand_Executed"/>
+        <CommandBinding Command="{x:Static cube:ListViewCommands.Remove}"       CanExecute="RemoveCommand_CanExecute"       Executed="RemoveCommand_Executed"/>
+        <CommandBinding Command="{x:Static cube:ListViewCommands.Extract}"      CanExecute="ExtractCommand_CanExecute"      Executed="ExtractCommand_Executed"/>
+        <CommandBinding Command="{x:Static cube:ListViewCommands.ExtractImage}" CanExecute="ExtractImageCommand_CanExecute" Executed="ExtractImageCommand_Executed"/>
+        <CommandBinding Command="{x:Static cube:ListViewCommands.Split}"        CanExecute="SplitCommand_CanExecute"        Executed="SplitCommand_Executed"/>
+        <CommandBinding Command="{x:Static cube:ListViewCommands.Move}"         CanExecute="MoveCommand_CanExecute"         Executed="MoveCommand_Executed"/>
+        <CommandBinding Command="{x:Static cube:ListViewCommands.Rotate}"       CanExecute="RotateCommand_CanExecute"       Executed="RotateCommand_Executed"/>
+        <CommandBinding Command="{x:Static cube:ListViewCommands.Metadata}"     CanExecute="MetadataCommand_CanExecute"     Executed="MetadataCommand_Executed"/>
+        <CommandBinding Command="{x:Static cube:ListViewCommands.Encryption}"   CanExecute="EncryptionCommand_CanExecute"   Executed="EncryptionCommand_Executed"/>
 
         <CommandBinding Command="{x:Static local:MainWindow.Select}"   CanExecute="SelectCommand_CanExecute"   Executed="SelectCommand_Executed"/>
         <CommandBinding Command="{x:Static local:MainWindow.UnSelect}" CanExecute="UnSelectCommand_CanExecute" Executed="UnSelectCommand_Executed"/>
@@ -230,7 +231,7 @@
                             
                             <r:RibbonMenuItem Header="ページに含まれる画像"
                                               Style="{StaticResource ExtractMenuItemStyle}"
-                                              Command="{x:Static cube:ListViewCommands.Split}"
+                                              Command="{x:Static cube:ListViewCommands.ExtractImage}"
                                               CommandParameter="{Binding Path=SelectedItems, ElementName=Thumbnail}"/>
                         </r:RibbonMenuItem>
 
@@ -251,7 +252,7 @@
 
                             <r:RibbonMenuItem Header="ページに含まれる画像"
                                               Style="{StaticResource ExtractMenuItemStyle}"
-                                              Command="{x:Static cube:ListViewCommands.Split}"/>
+                                              Command="{x:Static cube:ListViewCommands.ExtractImage}"/>
                         </r:RibbonMenuItem>
                     </r:RibbonSplitButton>
                 </r:RibbonGroup>

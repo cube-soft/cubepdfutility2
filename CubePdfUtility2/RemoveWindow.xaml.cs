@@ -69,7 +69,7 @@ namespace CubePdfUtility
         public RemoveWindow(CubePdf.Wpf.ListViewModel viewmodel)
             : this()
         {
-            PageCount = viewmodel.PageCount;
+            PageCount = viewmodel.Pages.Count;
         }
 
         #endregion

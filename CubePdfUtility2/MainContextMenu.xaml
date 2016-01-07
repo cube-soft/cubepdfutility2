@@ -64,7 +64,7 @@
                 </MenuItem>
 
                 <MenuItem Header="ページに含まれる画像"
-                              Command="{x:Static cube:ListViewCommands.Split}"
+                              Command="{x:Static cube:ListViewCommands.ExtractImage}"
                               CommandParameter="{Binding PlacementTarget.SelectedItems,
                                                  RelativeSource={RelativeSource FindAncestor,
                                                  AncestorType={x:Type ContextMenu}}}"/>
@@ -82,7 +82,7 @@
                 </MenuItem>
 
                 <MenuItem Header="ページに含まれる画像"
-                          Command="{x:Static cube:ListViewCommands.Split}"/>
+                          Command="{x:Static cube:ListViewCommands.ExtractImage}"/>
             </MenuItem>
         </MenuItem>
 
