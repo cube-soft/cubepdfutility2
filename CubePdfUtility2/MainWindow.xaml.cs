@@ -369,7 +369,7 @@ namespace CubePdfUtility
                         : (index == _viewmodel.Pages.Count) ? InsertTail.Header
                         : InsertSelect.Header;
                     var dialog = new System.Windows.Forms.OpenFileDialog();
-                    dialog.Filter = Properties.Resources.PdfFilter;
+                    dialog.Filter = Properties.Resources.InsertFilter;
                     dialog.CheckFileExists = true;
                     if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
                     InsertFileAsync(index, dialog.FileName, "", obj as string);

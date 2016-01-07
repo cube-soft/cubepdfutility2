@@ -88,6 +88,15 @@ namespace CubePdfUtility.Properties {
         }
         
         /// <summary>
+        ///   追加可能なファイル (*.pdf, *.bmp, *.gif, *.jpg, *.png, *.tiff)|*.pdf;*.PDF;*.bmp;*.BMP;*.dib;*.DIB;*.gif;*.GIF;*.jpg;*.JPG;*.jpeg;*.JPEG;*.jpe;*.JPE;*.png;*.PNG;*.tif;*.TIF;*.tiff;*.TIFF|すべてのファイル|*.* に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string InsertFilter {
+            get {
+                return ResourceManager.GetString("InsertFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   PDFの内容が編集されています。上書き保存しますか？ に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string IsOverwrite {
