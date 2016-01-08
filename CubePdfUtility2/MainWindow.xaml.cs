@@ -371,6 +371,7 @@ namespace CubePdfUtility
                     var dialog = new System.Windows.Forms.OpenFileDialog();
                     dialog.Filter = Properties.Resources.InsertFilter;
                     dialog.CheckFileExists = true;
+                    dialog.Multiselect = false;
                     if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
                     InsertFileAsync(index, dialog.FileName, "", obj as string);
                 }
@@ -1634,8 +1635,16 @@ namespace CubePdfUtility
         {
             Cursor = Cursors.Wait;
             var filename = System.IO.Path.GetFileName(path);
+            var ext = System.IO.Path.GetExtension(path).ToLower();
             var message = String.Format(Properties.Resources.InsertFile, filename);
             InfoStatusBarItem.Content = message;
+
+            if (ext != ".pdf")
+            {
+                _viewmodel.InsertImage(index, path);
+                _viewmodel.History[0].Text = history;
+                return;
+            }
 
             var reader = new CubePdf.Editing.DocumentReader();
             try
@@ -1711,8 +1720,16 @@ namespace CubePdfUtility
         {
             Cursor = Cursors.Wait;
             var filename = System.IO.Path.GetFileName(path);
-            var message = String.Format(Properties.Resources.InsertFile, filename);
+            var ext = System.IO.Path.GetExtension(path).ToLower();
+            var message = string.Format(Properties.Resources.InsertFile, filename);
             InfoStatusBarItem.Content = message;
+
+            if (ext != ".pdf")
+            {
+                _viewmodel.InsertImage(index, path);
+                _viewmodel.History[0].Text = history;
+                return;
+            }
 
             ThreadPool.QueueUserWorkItem(new WaitCallback((Object parameter) => {
                 var reader = new CubePdf.Editing.DocumentReader();
