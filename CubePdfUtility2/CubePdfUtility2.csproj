@@ -112,7 +112,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="BorderThicknessConverter.cs" />
+    <Compile Include="Models\BorderThicknessConverter.cs" />
+    <Compile Include="Models\ImagePicker.cs" />
+    <Compile Include="Presenters\PresenterBase.cs" />
+    <Compile Include="Presenters\ThumbnailPresenter.cs" />
     <Compile Include="ThumbnailForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -122,16 +125,16 @@
     <Compile Include="InsertWindow.xaml.cs">
       <DependentUpon>InsertWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ItemHeightConverter.cs" />
-    <Compile Include="KiloByteConverter.cs" />
+    <Compile Include="Models\ItemHeightConverter.cs" />
+    <Compile Include="Models\KiloByteConverter.cs" />
     <Compile Include="PasswordWindow.xaml.cs">
       <DependentUpon>PasswordWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="PreviewWindow.xaml.cs">
       <DependentUpon>PreviewWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ProcessChecker.cs" />
-    <Compile Include="RecentFile.cs" />
+    <Compile Include="Models\ProcessChecker.cs" />
+    <Compile Include="Models\RecentFile.cs" />
     <Compile Include="RemoveWindow.xaml.cs">
       <DependentUpon>RemoveWindow.xaml</DependentUpon>
     </Compile>
@@ -141,7 +144,7 @@
     <Compile Include="NavigationCanvas.xaml.cs">
       <DependentUpon>NavigationCanvas.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserSetting.cs" />
+    <Compile Include="Models\UserSetting.cs" />
     <Compile Include="VersionWindow.xaml.cs">
       <DependentUpon>VersionWindow.xaml</DependentUpon>
     </Compile>
@@ -161,7 +164,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ImageView.cs" />
+    <Compile Include="Models\ImageView.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

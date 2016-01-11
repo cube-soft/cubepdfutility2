@@ -20,6 +20,7 @@
 /* ------------------------------------------------------------------------- */
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Drawing;
 using System.Windows.Forms;
 using Cube;
@@ -210,6 +211,8 @@ namespace CubePdfUtility
             ImagesListView.LargeImageList = new ImageList();
             ImagesListView.LargeImageList.ImageSize = new Size(128, 128);
             ImagesListView.LargeImageList.ColorDepth = ColorDepth.Depth32Bit;
+
+            SetWindowTheme(ImagesListView.Handle, "Explorer", null);
         }
 
         /* ----------------------------------------------------------------- */
@@ -242,6 +245,11 @@ namespace CubePdfUtility
             OnSaved(new DataEventArgs<IList<int>>(indices));
         }
 
+        #endregion
+
+        #region Win32 APIs
+        [DllImport("uxtheme.dll", CharSet = CharSet.Unicode)]
+        private static extern int SetWindowTheme(IntPtr hwnd, string pszSubAppName, string pszSubIdList);
         #endregion
     }
 }

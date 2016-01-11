@@ -1209,8 +1209,21 @@ namespace CubePdfUtility
 
         private void PreviewImageCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            var dialog = new ThumbnailForm();
-            dialog.ShowDialog();
+            var items = e.Parameter as IList;
+            if (items == null) items = Thumbnail.Items;
+
+            var model = new ImagePicker();
+            foreach (var item in items)
+            {
+                var index = Thumbnail.Items.IndexOf(item);
+                if (index == -1) continue;
+                model.Pages.Add(_viewmodel.GetPage(index + 1));
+            }
+
+            var view = new ThumbnailForm();
+            var presenter = new ThumbnailPresenter(view, model);
+
+            view.ShowDialog();
         }
 
         #endregion

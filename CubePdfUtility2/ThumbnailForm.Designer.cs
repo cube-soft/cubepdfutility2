@@ -63,7 +63,6 @@
             this.ImagesListView.Size = new System.Drawing.Size(634, 301);
             this.ImagesListView.TabIndex = 0;
             this.ImagesListView.UseCompatibleStateImageBehavior = false;
-            this.ImagesListView.View = System.Windows.Forms.View.Tile;
             // 
             // ButtonsPanel
             // 
