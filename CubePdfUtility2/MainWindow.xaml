@@ -234,15 +234,15 @@
                                               Style="{StaticResource ExtractMenuItemStyle}"
                                               Command="{x:Static cube:ListViewCommands.ExtractImage}"
                                               CommandParameter="{Binding Path=SelectedItems, ElementName=Thumbnail}">
-                                
-                                <r:RibbonMenuItem Header="全て保存"
-                                                  Style="{StaticResource ExtractMenuItemStyle}"
-                                                  Command="{x:Static cube:ListViewCommands.ExtractImage}"
-                                                  CommandParameter="{Binding Path=SelectedItems, ElementName=Thumbnail}"/>
-                                
+
                                 <r:RibbonMenuItem Header="プレビュー"
                                                   Style="{StaticResource ExtractMenuItemStyle}"
                                                   Command="{x:Static local:MainWindow.PreviewImage}"
+                                                  CommandParameter="{Binding Path=SelectedItems, ElementName=Thumbnail}"/>
+
+                                <r:RibbonMenuItem Header="全て保存"
+                                                  Style="{StaticResource ExtractMenuItemStyle}"
+                                                  Command="{x:Static cube:ListViewCommands.ExtractImage}"
                                                   CommandParameter="{Binding Path=SelectedItems, ElementName=Thumbnail}"/>
                             </r:RibbonMenuItem>
                         </r:RibbonMenuItem>
@@ -265,14 +265,14 @@
                             <r:RibbonMenuItem Header="ページに含まれる画像"
                                               Style="{StaticResource ExtractMenuItemStyle}"
                                               Command="{x:Static cube:ListViewCommands.ExtractImage}">
-                                
-                                <r:RibbonMenuItem Header="全て保存"
-                                                  Style="{StaticResource ExtractMenuItemStyle}"
-                                                  Command="{x:Static cube:ListViewCommands.ExtractImage}"/>
-                                
+
                                 <r:RibbonMenuItem Header="プレビュー"
                                                   Style="{StaticResource ExtractMenuItemStyle}"
                                                   Command="{x:Static local:MainWindow.PreviewImage}"/>
+
+                                <r:RibbonMenuItem Header="全て保存"
+                                                  Style="{StaticResource ExtractMenuItemStyle}"
+                                                  Command="{x:Static cube:ListViewCommands.ExtractImage}"/>
                             </r:RibbonMenuItem>
                         </r:RibbonMenuItem>
                     </r:RibbonSplitButton>

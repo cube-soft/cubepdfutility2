@@ -67,7 +67,20 @@
                               Command="{x:Static cube:ListViewCommands.ExtractImage}"
                               CommandParameter="{Binding PlacementTarget.SelectedItems,
                                                  RelativeSource={RelativeSource FindAncestor,
+                                                 AncestorType={x:Type ContextMenu}}}">
+
+                    <MenuItem Header="プレビュー"
+                              Command="{x:Static local:MainWindow.PreviewImage}"
+                              CommandParameter="{Binding PlacementTarget.SelectedItems,
+                                                 RelativeSource={RelativeSource FindAncestor,
                                                  AncestorType={x:Type ContextMenu}}}"/>
+
+                    <MenuItem Header="全て保存"
+                              Command="{x:Static cube:ListViewCommands.ExtractImage}"
+                              CommandParameter="{Binding PlacementTarget.SelectedItems,
+                                                 RelativeSource={RelativeSource FindAncestor,
+                                                 AncestorType={x:Type ContextMenu}}}"/>
+                </MenuItem>
             </MenuItem>
 
             <MenuItem Header="全てのページを抽出">
@@ -82,7 +95,14 @@
                 </MenuItem>
 
                 <MenuItem Header="ページに含まれる画像"
-                          Command="{x:Static cube:ListViewCommands.ExtractImage}"/>
+                          Command="{x:Static cube:ListViewCommands.ExtractImage}">
+                    
+                    <MenuItem Header="プレビュー"
+                              Command="{x:Static local:MainWindow.PreviewImage}"/>
+                    
+                    <MenuItem Header="全て保存"
+                              Command="{x:Static cube:ListViewCommands.ExtractImage}"/>
+                </MenuItem>
             </MenuItem>
         </MenuItem>
 
