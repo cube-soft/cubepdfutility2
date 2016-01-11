@@ -113,6 +113,12 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="BorderThicknessConverter.cs" />
+    <Compile Include="ThumbnailForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ThumbnailForm.Designer.cs">
+      <DependentUpon>ThumbnailForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="InsertWindow.xaml.cs">
       <DependentUpon>InsertWindow.xaml</DependentUpon>
     </Compile>
@@ -226,6 +232,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <EmbeddedResource Include="ThumbnailForm.resx">
+      <DependentUpon>ThumbnailForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

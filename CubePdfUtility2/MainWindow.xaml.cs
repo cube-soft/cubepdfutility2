@@ -1191,6 +1191,30 @@ namespace CubePdfUtility
 
         #endregion
 
+        /* ----------------------------------------------------------------- */
+        ///
+        /// PreviewImageCommand_CanExecute
+        ///
+        /// <summary>
+        /// 抽出したイメージのプレビュー画面を表示します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        #region PreviewImage
+
+        private void PreviewImageCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = _viewmodel.Pages.Count > 0;
+        }
+
+        private void PreviewImageCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var dialog = new ThumbnailForm();
+            dialog.ShowDialog();
+        }
+
+        #endregion
+
         #endregion
 
         #region Event handlers
@@ -2054,18 +2078,19 @@ namespace CubePdfUtility
         ///
         /* ----------------------------------------------------------------- */
         #region ICommand variables
-        public static readonly ICommand Select   = new RoutedCommand("Select",   typeof(MainWindow));
-        public static readonly ICommand UnSelect = new RoutedCommand("UnSelect", typeof(MainWindow));
-        public static readonly ICommand ZoomIn   = new RoutedCommand("ZoomIn",   typeof(MainWindow));
-        public static readonly ICommand ZoomOut  = new RoutedCommand("ZoomOut",  typeof(MainWindow));
-        public static readonly ICommand ViewSize = new RoutedCommand("ViewSize", typeof(MainWindow));
-        public static readonly ICommand ViewMode = new RoutedCommand("ViewMode", typeof(MainWindow));
-        public static readonly ICommand Redraw   = new RoutedCommand("Redraw",   typeof(MainWindow));
-        public static readonly ICommand Version  = new RoutedCommand("Version",  typeof(MainWindow));
-        public static readonly ICommand Help     = new RoutedCommand("Help",     typeof(MainWindow));
-        public static readonly ICommand Web      = new RoutedCommand("Web",      typeof(MainWindow));
-        public static readonly ICommand Password = new RoutedCommand("Password", typeof(MainWindow));
-        public static readonly ICommand Preview  = new RoutedCommand("Preview",  typeof(MainWindow));
+        public static readonly ICommand Select       = new RoutedCommand("Select",   typeof(MainWindow));
+        public static readonly ICommand UnSelect     = new RoutedCommand("UnSelect", typeof(MainWindow));
+        public static readonly ICommand ZoomIn       = new RoutedCommand("ZoomIn",   typeof(MainWindow));
+        public static readonly ICommand ZoomOut      = new RoutedCommand("ZoomOut",  typeof(MainWindow));
+        public static readonly ICommand ViewSize     = new RoutedCommand("ViewSize", typeof(MainWindow));
+        public static readonly ICommand ViewMode     = new RoutedCommand("ViewMode", typeof(MainWindow));
+        public static readonly ICommand Redraw       = new RoutedCommand("Redraw",   typeof(MainWindow));
+        public static readonly ICommand Version      = new RoutedCommand("Version",  typeof(MainWindow));
+        public static readonly ICommand Help         = new RoutedCommand("Help",     typeof(MainWindow));
+        public static readonly ICommand Web          = new RoutedCommand("Web",      typeof(MainWindow));
+        public static readonly ICommand Password     = new RoutedCommand("Password", typeof(MainWindow));
+        public static readonly ICommand Preview      = new RoutedCommand("Preview",  typeof(MainWindow));
+        public static readonly ICommand PreviewImage = new RoutedCommand("PreviewImage", typeof(MainWindow));
         #endregion
     }
 }

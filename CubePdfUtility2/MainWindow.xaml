@@ -52,6 +52,7 @@
         <CommandBinding Command="{x:Static local:MainWindow.Web}"      CanExecute="WebCommand_CanExecute"      Executed="WebCommand_Executed"/>
         <CommandBinding Command="{x:Static local:MainWindow.Password}" CanExecute="PasswordCommand_CanExecute" Executed="PasswordCommand_Executed"/>
         <CommandBinding Command="{x:Static local:MainWindow.Preview}"  CanExecute="PreviewCommand_CanExecute"  Executed="PreviewCommand_Executed"/>
+        <CommandBinding Command="{x:Static local:MainWindow.PreviewImage}" CanExecute="PreviewImageCommand_CanExecute" Executed="PreviewImageCommand_Executed"/>
     </Window.CommandBindings>
 
     <Window.InputBindings>
@@ -228,11 +229,22 @@
                                                   Command="{x:Static cube:ListViewCommands.Split}"
                                                   CommandParameter="{Binding Path=SelectedItems, ElementName=Thumbnail}"/>
                             </r:RibbonMenuItem>
-                            
+
                             <r:RibbonMenuItem Header="ページに含まれる画像"
                                               Style="{StaticResource ExtractMenuItemStyle}"
                                               Command="{x:Static cube:ListViewCommands.ExtractImage}"
-                                              CommandParameter="{Binding Path=SelectedItems, ElementName=Thumbnail}"/>
+                                              CommandParameter="{Binding Path=SelectedItems, ElementName=Thumbnail}">
+                                
+                                <r:RibbonMenuItem Header="全て保存"
+                                                  Style="{StaticResource ExtractMenuItemStyle}"
+                                                  Command="{x:Static cube:ListViewCommands.ExtractImage}"
+                                                  CommandParameter="{Binding Path=SelectedItems, ElementName=Thumbnail}"/>
+                                
+                                <r:RibbonMenuItem Header="プレビュー"
+                                                  Style="{StaticResource ExtractMenuItemStyle}"
+                                                  Command="{x:Static local:MainWindow.PreviewImage}"
+                                                  CommandParameter="{Binding Path=SelectedItems, ElementName=Thumbnail}"/>
+                            </r:RibbonMenuItem>
                         </r:RibbonMenuItem>
 
                         <r:RibbonMenuItem Header="全てのページを抽出"
@@ -252,7 +264,16 @@
 
                             <r:RibbonMenuItem Header="ページに含まれる画像"
                                               Style="{StaticResource ExtractMenuItemStyle}"
-                                              Command="{x:Static cube:ListViewCommands.ExtractImage}"/>
+                                              Command="{x:Static cube:ListViewCommands.ExtractImage}">
+                                
+                                <r:RibbonMenuItem Header="全て保存"
+                                                  Style="{StaticResource ExtractMenuItemStyle}"
+                                                  Command="{x:Static cube:ListViewCommands.ExtractImage}"/>
+                                
+                                <r:RibbonMenuItem Header="プレビュー"
+                                                  Style="{StaticResource ExtractMenuItemStyle}"
+                                                  Command="{x:Static local:MainWindow.PreviewImage}"/>
+                            </r:RibbonMenuItem>
                         </r:RibbonMenuItem>
                     </r:RibbonSplitButton>
                 </r:RibbonGroup>

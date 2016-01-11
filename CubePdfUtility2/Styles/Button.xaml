@@ -423,13 +423,14 @@
     -->
     <Style x:Key="PasswordMenuItemStyle" TargetType="{x:Type MenuItem}">
         <Setter Property="FontWeight" Value="Bold"/>
-        <Setter Property="Icon">
+        <!--<Setter Property="Icon">
             <Setter.Value>
                 <BitmapImage UriSource="/CubePdfUtility;component/Images/Lock.png"/>
             </Setter.Value>
-        </Setter>
+        </Setter>-->
     </Style>
 
+    <!--
     <Style x:Key="InsertContextMenuItemStyle" TargetType="{x:Type MenuItem}">
         <Style.Triggers>
             <Trigger Property="MenuItem.IsEnabled" Value="True">
@@ -562,4 +563,5 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+    -->
 </ResourceDictionary>
