@@ -21,8 +21,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Windows.Forms;
 using System.Linq;
-using System.Text;
+using Cube;
 
 namespace CubePdfUtility
 {
@@ -52,6 +53,9 @@ namespace CubePdfUtility
             : base(view, model)
         {
             View.Load += (s, e) => Model.Run();
+            View.Saved += View_Saved;
+            View.Removed += View_Removed;
+            View.Previewed += View_Previewed;
 
             Model.Images.CollectionChanged += Model_CollectionChanged;
         }
@@ -59,6 +63,63 @@ namespace CubePdfUtility
         #endregion
 
         #region Event handlers
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// View_Saved
+        /// 
+        /// <summary>
+        /// 抽出画像の保存時に実行されるハンドラです。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void View_Saved(object sender, DataEventArgs<IList<int>> e)
+        {
+            var dialog = new FolderBrowserDialog();
+            if (dialog.ShowDialog() == DialogResult.Cancel) return;
+
+            View.Cursor = Cursors.WaitCursor;
+            Model.SaveAsync(e.Value, dialog.SelectedPath, () =>
+            {
+                View.Cursor = Cursors.Default;
+                View.Close();
+            });
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// View_Removed
+        /// 
+        /// <summary>
+        /// 抽出画像の一覧から削除される時に実行されるハンドラです。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void View_Removed(object sender, DataEventArgs<IList<int>> e)
+        {
+            foreach (var index in e.Value.Reverse()) Model.Images.RemoveAt(index);
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// View_Previewed
+        /// 
+        /// <summary>
+        /// 画像がプレビューされる時に実行されるハンドラです。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void View_Previewed(object sender, DataEventArgs<int> e)
+        {
+            if (e.Value < 0 || e.Value >= Model.Images.Count) return;
+
+            var image = Model.GetImage(e.Value, 1.0);
+            var page  = Model.GetPage(e.Value);
+            if (image == null || page == null) return;
+
+            var dialog = new PreviewWindow(image, page);
+            dialog.ShowDialog();
+        }
 
         /* ----------------------------------------------------------------- */
         ///
@@ -75,6 +136,9 @@ namespace CubePdfUtility
             {
                 case NotifyCollectionChangedAction.Add:
                     View.Add(Model.GetImage(e.NewStartingIndex, View.ImageSize));
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    View.RemoveAt(e.OldStartingIndex);
                     break;
                 default:
                     break;

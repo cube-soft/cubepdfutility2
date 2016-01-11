@@ -54,6 +54,10 @@ namespace CubePdfUtility
             InitializeComponent();
             InitializeLayout();
 
+            ImagesListView.ContextMenuStrip = CreateContextMenu();
+            ImagesListView.SelectedIndexChanged += (s, e) => { SaveButton.Enabled = AnyItemsSelected; };
+            ImagesListView.DoubleClick += (s, e) => RaisePreviewEvent();
+
             ExitButton.Click += (s, e) => Close();
             SaveButton.Click += (s, e) => RaiseSavedEvent(SelectedIndices);
             SaveAllButton.Click += (s, e) => RaiseSavedEvent();
@@ -130,6 +134,28 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         public EventHandler<DataEventArgs<IList<int>>> Saved;
 
+        /* ----------------------------------------------------------------- */
+        ///
+        /// Removed
+        /// 
+        /// <summary>
+        /// 項目の削除時に発生するイベントです。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        public EventHandler<DataEventArgs<IList<int>>> Removed;
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// Previewed
+        /// 
+        /// <summary>
+        /// 画像がプレビューされる時に発生するイベントです。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        public EventHandler<DataEventArgs<int>> Previewed;
+
         #endregion
 
         #region Methods
@@ -152,6 +178,35 @@ namespace CubePdfUtility
             ));
         }
 
+        /* ----------------------------------------------------------------- */
+        ///
+        /// RemoveAt
+        /// 
+        /// <summary>
+        /// 指定されたインデックスに対応するサムネイルを削除します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        public void RemoveAt(int index)
+        {
+            if (index < 0 || index >= ImagesListView.Items.Count) return;
+            ImagesListView.Items.RemoveAt(index);
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// SelectAll
+        /// 
+        /// <summary>
+        /// 全てのサムネイルを選択します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        public void SelectAll()
+        {
+            foreach (ListViewItem item in ImagesListView.Items) item.Selected = true;
+        }
+
         #endregion
 
         #region Virtual methods
@@ -170,9 +225,52 @@ namespace CubePdfUtility
             if (Saved != null) Saved(this, e);
         }
 
+        /* ----------------------------------------------------------------- */
+        ///
+        /// OnRemoved
+        /// 
+        /// <summary>
+        /// 項目の削除時に実行されるハンドラです。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        protected virtual void OnRemoved(DataEventArgs<IList<int>> e)
+        {
+            if (Removed != null) Removed(this, e);
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// OnPreviewed
+        /// 
+        /// <summary>
+        /// 画像がプレビューされる時に実行されるハンドラです。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        protected virtual void OnPreviewed(DataEventArgs<int> e)
+        {
+            if (Previewed != null) Previewed(this, e);
+        }
+
         #endregion
 
         #region Override methods
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// OnLoad
+        /// 
+        /// <summary>
+        /// オブジェクトがロードされた時に実行されるハンドラです。
+        /// </summary>
+        /// 
+        /* ----------------------------------------------------------------- */
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            SaveButton.Enabled = false;
+        }
 
         /* ----------------------------------------------------------------- */
         ///
@@ -217,6 +315,39 @@ namespace CubePdfUtility
 
         /* ----------------------------------------------------------------- */
         ///
+        /// CreateContextMenu
+        /// 
+        /// <summary>
+        /// コンテキストメニューを生成します。
+        /// </summary>
+        /// 
+        /* ----------------------------------------------------------------- */
+        private ContextMenuStrip CreateContextMenu()
+        {
+            var dest = new ContextMenuStrip();
+
+            var preview = dest.Items.Add("プレビュー", null, (s, e) => RaisePreviewEvent());
+            var hr0 = dest.Items.Add("-");
+            var save = dest.Items.Add("保存", null, (s, e) => RaiseSavedEvent(SelectedIndices));
+            var remove = dest.Items.Add("一覧から削除", null, (s, e) => OnRemoved(new DataEventArgs<IList<int>>(SelectedIndices)));
+            var hr1 = dest.Items.Add("-");
+            var select = dest.Items.Add("全て選択", null, (s, e) => SelectAll());
+
+            Action action = () =>
+            {
+                preview.Enabled = AnyItemsSelected;
+                save.Enabled = AnyItemsSelected;
+                remove.Enabled = AnyItemsSelected;
+            };
+
+            action();
+            ImagesListView.SelectedIndexChanged += (s, e) => action();
+
+            return dest;
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
         /// RaiseSavedEvent
         /// 
         /// <summary>
@@ -243,6 +374,22 @@ namespace CubePdfUtility
         private void RaiseSavedEvent(IList<int> indices)
         {
             OnSaved(new DataEventArgs<IList<int>>(indices));
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// RaisePreviewEvent
+        /// 
+        /// <summary>
+        /// Preview イベントを発生させます。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void RaisePreviewEvent()
+        {
+            var indices = SelectedIndices;
+            if (indices.Count <= 0) return;
+            OnPreviewed(new DataEventArgs<int>(indices[0]));
         }
 
         #endregion
