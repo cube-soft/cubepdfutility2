@@ -32,13 +32,16 @@
                                                  AncestorType={x:Type ContextMenu}}}"/>
             
             <MenuItem Header="先頭に挿入"
-                      Command="{x:Static cube:ListViewCommands.Insert}"/>
+                      Command="{x:Static cube:ListViewCommands.Insert}"
+                      CommandParameter="{StaticResource NegativeTwo}"/>
             
             <MenuItem Header="末尾に挿入"
                       Command="{x:Static cube:ListViewCommands.Insert}"
                       CommandParameter="{Binding PlacementTarget.Items.Count,
                                                  RelativeSource={RelativeSource FindAncestor,
                                                  AncestorType={x:Type ContextMenu}}}"/>
+            <MenuItem Header="詳細を設定して挿入"
+                      Command="{x:Static cube:ListViewCommands.Insert}"/>
         </MenuItem>
 
         <!-- Extract -->
