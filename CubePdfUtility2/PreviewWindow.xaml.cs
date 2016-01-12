@@ -22,6 +22,7 @@ using System;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
+using CubePdf.Data.Extensions;
 
 namespace CubePdfUtility
 {
@@ -62,15 +63,37 @@ namespace CubePdfUtility
             : this()
         {
             var page = viewmodel.ToPage(viewmodel.Items[index]);
-            Width  = page.ViewSize.Width;
-            Height = page.ViewSize.Height;
+            Width  = page.ViewSize().Width;
+            Height = page.ViewSize().Height + 20;
 
-            _image = viewmodel.GetImage(index, page.ViewSize);
+            _image = viewmodel.GetImage(index, page.ViewSize());
             MainViewer.DataContext = _image;
 
             var filename = System.IO.Path.GetFileName(page.FilePath);
             var pagenum  = index + 1;
-            Title = String.Format("{0}（{1}/{2} ページ）", filename, pagenum, viewmodel.PageCount);
+            Title = String.Format("{0}（{1}/{2} ページ）", filename, pagenum, viewmodel.Pages.Count);
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// PreviewWindow (constructor)
+        ///
+        /// <summary>
+        /// プレビュー画面を表示するための初期化を行います。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        public PreviewWindow(System.Drawing.Image image, CubePdf.Data.PageBase page)
+            : this()
+        {
+            Width = image.Width;
+            Height = image.Height + 20;
+
+            _image = image;
+            MainViewer.DataContext = _image;
+
+            var filename = System.IO.Path.GetFileName(page.FilePath);
+            Title = String.Format("{0}（{1} ページ）", filename, page.PageNumber);
         }
 
         /* ----------------------------------------------------------------- */

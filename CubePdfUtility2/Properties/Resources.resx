@@ -120,11 +120,20 @@
   <data name="ErrorTitle" xml:space="preserve">
     <value>CubePDF Utility エラー</value>
   </data>
+  <data name="ExtractDescription" xml:space="preserve">
+    <value>抽出したファイルを保存するフォルダを選択して下さい。</value>
+  </data>
   <data name="InsertError" xml:space="preserve">
     <value>PDFの挿入に失敗しました。PDFファイルが壊れていないか確認して下さい。</value>
   </data>
   <data name="InsertFile" xml:space="preserve">
     <value>{0} を挿入しています...</value>
+  </data>
+  <data name="InsertFilter" xml:space="preserve">
+    <value>追加可能なファイル (*.pdf, *.bmp, *.gif, *.jpg, *.png, *.tiff)|*.pdf;*.PDF;*.bmp;*.BMP;*.dib;*.DIB;*.gif;*.GIF;*.jpg;*.JPG;*.jpeg;*.JPEG;*.jpe;*.JPE;*.png;*.PNG;*.tif;*.TIF;*.tiff;*.TIFF|すべてのファイル|*.*</value>
+  </data>
+  <data name="InsertTitle" xml:space="preserve">
+    <value>挿入するファイルの選択</value>
   </data>
   <data name="IsOverwrite" xml:space="preserve">
     <value>PDFの内容が編集されています。上書き保存しますか？</value>
@@ -146,7 +155,7 @@
     <value>.pdf</value>
   </data>
   <data name="PdfFilter" xml:space="preserve">
-    <value>PDF ファイル(*.pdf)|*.pdf|すべてのファイル(*.*)|*.*</value>
+    <value>PDF ファイル(*.pdf)|*.pdf;*.PDF|すべてのファイル(*.*)|*.*</value>
   </data>
   <data name="RestrictedAccess" xml:space="preserve">
     <value>PDFファイルはパスワードで保護されています。編集を行うには、マウスを右クリックして表示されるコンテキストメニューから「パスワード入力して入力してセキュリティを解除」を選択して下さい。</value>
