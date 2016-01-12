@@ -202,7 +202,7 @@ namespace CubePdfUtility
                 else
                 {
                     var dialog = new System.Windows.Forms.OpenFileDialog();
-                    dialog.Filter = Properties.Resources.PdfFilter;
+                    dialog.Filter = Properties.Resources.InsertFilter;
                     dialog.CheckFileExists = true;
                     dialog.Multiselect = true;
                     if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
@@ -452,7 +452,6 @@ namespace CubePdfUtility
         private void AddFile(string file)
         {
             if (string.IsNullOrEmpty(file)) return;
-            if (!System.IO.File.Exists(file) || System.IO.Path.GetExtension(file) != ".pdf") return; 
 
             try
             {

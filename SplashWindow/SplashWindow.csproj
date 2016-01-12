@@ -118,9 +118,9 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>mkdir $(ProjectDir)..\Release\$(PlatformName)\net4
-copy $(TargetPath) $(SolutionDir)Release\$(PlatformName)\net4\
-copy $(TargetPath).config $(SolutionDir)Release\$(PlatformName)\net4\</PostBuildEvent>
+    <PostBuildEvent>mkdir $(ProjectDir)..\Release\$(PlatformName)\net40
+copy $(TargetPath) $(SolutionDir)Release\$(PlatformName)\net40\
+copy $(TargetPath).config $(SolutionDir)Release\$(PlatformName)\net40\</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

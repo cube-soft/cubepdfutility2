@@ -85,7 +85,6 @@ namespace CubePdfUtility
         public MainWindow()
         {
             InitializeComponent();
-            ReplaceFont();
             SourceInitialized += new EventHandler(LoadSetting);
 
             var appdata = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
@@ -259,8 +258,8 @@ namespace CubePdfUtility
 
         private void SaveCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            if (SaveButton != null) SaveButton.IsEnabled = _viewmodel.PageCount > 0;
-            e.CanExecute = _viewmodel.PageCount > 0;
+            if (SaveButton != null) SaveButton.IsEnabled = _viewmodel.Pages.Count > 0;
+            e.CanExecute = _viewmodel.Pages.Count > 0;
         }
 
         private void SaveCommand_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -301,7 +300,7 @@ namespace CubePdfUtility
 
         private void SaveAsCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = _viewmodel.PageCount > 0;
+            e.CanExecute = _viewmodel.Pages.Count > 0;
         }
 
         private void SaveAsCommand_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -349,7 +348,7 @@ namespace CubePdfUtility
 
         private void InsertCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            this.InsertButton.IsEnabled = _viewmodel.PageCount > 0;
+            this.InsertButton.IsEnabled = _viewmodel.Pages.Count > 0;
             e.CanExecute = (e.Parameter == null || (int)e.Parameter != -1);
         }
 
@@ -365,13 +364,15 @@ namespace CubePdfUtility
                         return;
                     }
 
-                    var index = Math.Max(Math.Min((int)e.Parameter + 1, _viewmodel.PageCount), 0);
+                    var index = Math.Max(Math.Min((int)e.Parameter + 1, _viewmodel.Pages.Count), 0);
                     var obj = (index == 0) ? InsertHead.Header
-                        : (index == _viewmodel.PageCount) ? InsertTail.Header
+                        : (index == _viewmodel.Pages.Count) ? InsertTail.Header
                         : InsertSelect.Header;
                     var dialog = new System.Windows.Forms.OpenFileDialog();
-                    dialog.Filter = Properties.Resources.PdfFilter;
+                    dialog.Title = Properties.Resources.InsertTitle;
+                    dialog.Filter = Properties.Resources.InsertFilter;
                     dialog.CheckFileExists = true;
+                    dialog.Multiselect = false;
                     if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
                     InsertFileAsync(index, dialog.FileName, "", obj as string);
                 }
@@ -397,7 +398,7 @@ namespace CubePdfUtility
 
         private void RemoveCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            this.RemoveButton.IsEnabled = _viewmodel.PageCount > 0;
+            this.RemoveButton.IsEnabled = _viewmodel.Pages.Count > 0;
             var items = e.Parameter as IList;
             e.CanExecute = (items == null || items.Count > 0 && items.Count < Thumbnail.Items.Count);
         }
@@ -410,10 +411,10 @@ namespace CubePdfUtility
                 var src = e.Parameter as IList;
                 if (src == null)
                 {
-                    var dialog = new RemoveWindow(_viewmodel, _font);
+                    var dialog = new RemoveWindow(_viewmodel);
                     dialog.Owner = this;
                     if (dialog.ShowDialog() == false) return;
-                    foreach (var i in dialog.PageRange) items.Add(_viewmodel.Items[i - 1]);
+                    foreach (var i in dialog.PageRange) items.Add(Thumbnail.Items[i - 1]);
                 }
                 else items.AddRange(src);
 
@@ -424,7 +425,7 @@ namespace CubePdfUtility
                     while (items.Count > 0)
                     {
                         var index = items.Count - 1;
-                        _viewmodel.Remove(items[index]);
+                        _viewmodel.RemoveAt(Thumbnail.Items.IndexOf(items[index]));
                         items.RemoveAt(index);
                     }
 
@@ -457,7 +458,7 @@ namespace CubePdfUtility
 
         private void ExtractCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            this.ExtractButton.IsEnabled = _viewmodel.PageCount > 0;
+            this.ExtractButton.IsEnabled = _viewmodel.Pages.Count > 0;
             var items = e.Parameter as IList;
             if (items == null) items = _viewmodel.Items;
             e.CanExecute = items.Count > 0;
@@ -480,6 +481,44 @@ namespace CubePdfUtility
             });
         }
 
+        #endregion
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// ExtractImage
+        ///
+        /// <summary>
+        /// 一部、または全部のページに含まれる画像を抽出します。
+        /// パラメータ (e.Parameter) は、抽出対象となるページのサムネイル
+        /// オブジェクトのリスト、または null です。パラメータが null の
+        /// 場合は、全ページを抽出対象とします。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        #region ExtractImage
+
+        private void ExtractImageCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            var items = e.Parameter as IList;
+            if (items == null) items = _viewmodel.Items;
+            e.CanExecute = items.Count > 0;
+        }
+
+        private void ExtractImageCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            ExecuteAsPossible(() => {
+                try
+                {
+                    var items = GetSortedItems(e.Parameter as IList);
+                    var dialog = new System.Windows.Forms.FolderBrowserDialog();
+                    dialog.Description = Properties.Resources.ExtractDescription;
+                    if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
+                    _viewmodel.ExtractImage(items, dialog.SelectedPath);
+                }
+                catch (CubePdf.Misc.UserCancelledException err) { Trace.TraceError(err.ToString()); }
+                catch (Exception err) { ShowErrorMessage(Properties.Resources.SaveError, err); }
+            });
+        }
         #endregion
 
         /* ----------------------------------------------------------------- */
@@ -516,6 +555,7 @@ namespace CubePdfUtility
                     if (items == null) items = _viewmodel.Items;
 
                     var dialog = new System.Windows.Forms.FolderBrowserDialog();
+                    dialog.Description = Properties.Resources.ExtractDescription;
                     if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
                     _viewmodel.Split(items, dialog.SelectedPath);
                 }
@@ -556,7 +596,7 @@ namespace CubePdfUtility
                     var indices = new List<int>();
                     foreach (var item in Thumbnail.SelectedItems)
                     {
-                        var index = _viewmodel.IndexOf(item);
+                        var index = Thumbnail.Items.IndexOf(item);
                         indices.Add(index);
                     }
 
@@ -566,7 +606,7 @@ namespace CubePdfUtility
                     {
                         if (oldindex < 0) continue;
                         var newindex = oldindex + delta;
-                        if (newindex < 0 || newindex >= _viewmodel.PageCount) continue;
+                        if (newindex < 0 || newindex >= _viewmodel.Pages.Count) continue;
                         _viewmodel.Move(oldindex, newindex);
                     }
                     _viewmodel.History[0].Text = (delta < 0) ? ForwardButton.Label : BackButton.Label;
@@ -608,7 +648,7 @@ namespace CubePdfUtility
                     while (Thumbnail.SelectedItems.Count > 0)
                     {
                         var obj = Thumbnail.SelectedItems[0];
-                        var index = _viewmodel.IndexOf(obj);
+                        var index = Thumbnail.Items.IndexOf(obj);
                         _viewmodel.RotateAt(index, degree);
                         done.Add(index);
                         Thumbnail.SelectedItems.Remove(obj);
@@ -714,7 +754,7 @@ namespace CubePdfUtility
 
         private void SelectCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            bool enabled = _viewmodel.PageCount > 0;
+            bool enabled = _viewmodel.Pages.Count > 0;
             SelectButton.IsEnabled = enabled;
             e.CanExecute = enabled;
         }
@@ -759,7 +799,7 @@ namespace CubePdfUtility
 
         private void SelectAllCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = _viewmodel.PageCount > 0;
+            e.CanExecute = _viewmodel.Pages.Count > 0;
         }
 
         private void SelectAllCommand_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -810,12 +850,12 @@ namespace CubePdfUtility
 
         private void MetadataCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = _viewmodel.PageCount > 0;
+            e.CanExecute = _viewmodel.Pages.Count > 0;
         }
 
         private void MetadataCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            var dialog = new MetadataWindow(_viewmodel, _font);
+            var dialog = new MetadataWindow(_viewmodel);
             dialog.Owner = this;
             dialog.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
             if (dialog.ShowDialog() == true) _viewmodel.Metadata = dialog.Metadata;
@@ -976,7 +1016,7 @@ namespace CubePdfUtility
 
         private void RedrawCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = _viewmodel.PageCount > 0;
+            e.CanExecute = _viewmodel.Pages.Count > 0;
         }
 
         private void RedrawCommand_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -1007,12 +1047,12 @@ namespace CubePdfUtility
 
         private void EncryptionCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = _viewmodel.PageCount > 0;
+            e.CanExecute = _viewmodel.Pages.Count > 0;
         }
 
         private void EncryptionCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            var dialog = new EncryptionWindow(_viewmodel, _font);
+            var dialog = new EncryptionWindow(_viewmodel);
             dialog.Owner = this;
             dialog.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
             if (dialog.ShowDialog() == true) _viewmodel.Encryption = dialog.Encryption;
@@ -1129,6 +1169,71 @@ namespace CubePdfUtility
 
         #endregion
 
+        /* ----------------------------------------------------------------- */
+        ///
+        /// Preview
+        ///
+        /// <summary>
+        /// プレビュー画面を表示します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        #region Preview
+
+        private void PreviewCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = _viewmodel.Pages.Count > 0;
+        }
+
+        private void PreviewCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (Thumbnail == null || Thumbnail.SelectedIndex == -1) return;
+            var dialog = new PreviewWindow(_viewmodel, Thumbnail.SelectedIndex);
+            dialog.ShowDialog();
+        }
+
+        #endregion
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// PreviewImageCommand_CanExecute
+        ///
+        /// <summary>
+        /// 抽出したイメージのプレビュー画面を表示します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        #region PreviewImage
+
+        private void PreviewImageCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = _viewmodel.Pages.Count > 0;
+        }
+
+        private void PreviewImageCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            ExecuteAsPossible(() =>
+            {
+                var items = e.Parameter as IList;
+                if (items == null) items = Thumbnail.Items;
+
+                var model = new ImagePicker();
+                foreach (var item in items)
+                {
+                    var index = Thumbnail.Items.IndexOf(item);
+                    if (index == -1) continue;
+                    model.Pages.Add(_viewmodel.GetPage(index + 1));
+                }
+
+                var view = new ThumbnailForm();
+                var presenter = new ThumbnailPresenter(view, model);
+
+                view.ShowDialog();
+            });
+        }
+
+        #endregion
+
         #endregion
 
         #region Event handlers
@@ -1198,6 +1303,24 @@ namespace CubePdfUtility
 
         /* ----------------------------------------------------------------- */
         ///
+        /// OnPreview
+        ///
+        /// <summary>
+        /// プレビュー画面を表示します。
+        /// </summary>
+        /// 
+        /// <remarks>
+        /// TODO: Preview コマンドに統一したい。
+        /// </remarks>
+        ///
+        /* ----------------------------------------------------------------- */
+        private void OnPreview(object sender, EventArgs e)
+        {
+            PreviewCommand_Executed(this, null);
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
         /// OnDrop
         ///
         /// <summary>
@@ -1223,27 +1346,6 @@ namespace CubePdfUtility
                     return;
                 }
             }
-        }
-
-        /* ----------------------------------------------------------------- */
-        ///
-        /// OnPreview
-        /// 
-        /// <summary>
-        /// プレビュー画面を開きます。
-        /// </summary>
-        ///
-        /* ----------------------------------------------------------------- */
-        private void OnPreview(object sender, EventArgs e)
-        {
-            var args = e as MouseEventArgs;
-            if (args == null) return;
-
-            var source = args.OriginalSource as Image;
-            if (Thumbnail == null || Thumbnail.SelectedIndex == -1 || source == null) return;
-
-            var dialog = new PreviewWindow(_viewmodel, Thumbnail.SelectedIndex);
-            dialog.ShowDialog();
         }
 
         /* ----------------------------------------------------------------- */
@@ -1466,7 +1568,7 @@ namespace CubePdfUtility
                 {
                     reader.Dispose();
                     Dispatcher.BeginInvoke(new Action(() => {
-                        var dialog = new PasswordWindow(path, _font);
+                        var dialog = new PasswordWindow(path);
                         dialog.Owner = this;
                         if (dialog.ShowDialog() == true) OpenFileAsync(path, dialog.Password);
                         else Refresh();
@@ -1530,7 +1632,7 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         private void OpenFileWithPassword(string path)
         {
-            var dialog = new PasswordWindow(path, _font);
+            var dialog = new PasswordWindow(path);
             dialog.Owner = this;
             if (dialog.ShowDialog() == true && CloseFile(true)) OpenFileAsync(path, dialog.Password);
         }
@@ -1576,8 +1678,16 @@ namespace CubePdfUtility
         {
             Cursor = Cursors.Wait;
             var filename = System.IO.Path.GetFileName(path);
+            var ext = System.IO.Path.GetExtension(path).ToLower();
             var message = String.Format(Properties.Resources.InsertFile, filename);
             InfoStatusBarItem.Content = message;
+
+            if (ext != ".pdf")
+            {
+                _viewmodel.InsertImage(index, path);
+                _viewmodel.History[0].Text = history;
+                return;
+            }
 
             var reader = new CubePdf.Editing.DocumentReader();
             try
@@ -1588,7 +1698,7 @@ namespace CubePdfUtility
             }
             catch (CubePdf.Data.EncryptionException /* err */)
             {
-                var dialog = new PasswordWindow(path, _font);
+                var dialog = new PasswordWindow(path);
                 dialog.Owner = this;
                 if (dialog.ShowDialog() == true) InsertFile(index, path, dialog.Password, history);
             }
@@ -1607,9 +1717,9 @@ namespace CubePdfUtility
         {
             foreach (var path in files)
             {
-                var count = _viewmodel.PageCount;
+                var count = _viewmodel.Pages.Count;
                 InsertFile(index, path, "", history);
-                index += _viewmodel.PageCount - count;
+                index += _viewmodel.Pages.Count - count;
             }
         }
 
@@ -1625,14 +1735,14 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         private void InsertFiles()
         {
-            var dialog = new InsertWindow(Thumbnail.SelectedIndex, _viewmodel.PageCount);
+            var dialog = new InsertWindow(Thumbnail.SelectedIndex, _viewmodel.Pages.Count);
             dialog.Owner = this;
             if (dialog.ShowDialog() == false) return;
             if (dialog.FileList.Count > 0)
             {
                 var index = dialog.Index;
                 var obj = (index == 0) ? InsertHead.Header
-                    : (index == _viewmodel.PageCount) ? InsertTail.Header
+                    : (index == _viewmodel.Pages.Count) ? InsertTail.Header
                     : InsertSelect.Header;
                 var files = new List<string>();
                 foreach (var info in dialog.FileList) files.Add(info.FullName);
@@ -1653,8 +1763,16 @@ namespace CubePdfUtility
         {
             Cursor = Cursors.Wait;
             var filename = System.IO.Path.GetFileName(path);
-            var message = String.Format(Properties.Resources.InsertFile, filename);
+            var ext = System.IO.Path.GetExtension(path).ToLower();
+            var message = string.Format(Properties.Resources.InsertFile, filename);
             InfoStatusBarItem.Content = message;
+
+            if (ext != ".pdf")
+            {
+                _viewmodel.InsertImage(index, path);
+                _viewmodel.History[0].Text = history;
+                return;
+            }
 
             ThreadPool.QueueUserWorkItem(new WaitCallback((Object parameter) => {
                 var reader = new CubePdf.Editing.DocumentReader();
@@ -1669,7 +1787,7 @@ namespace CubePdfUtility
                 catch (CubePdf.Data.EncryptionException /* err */)
                 {
                     Dispatcher.BeginInvoke(new Action(() => {
-                        var dialog = new PasswordWindow(path, _font);
+                        var dialog = new PasswordWindow(path);
                         dialog.Owner = this;
                         if (dialog.ShowDialog() == true) InsertFileAsync(index, path, dialog.Password, history);
                     }));
@@ -1794,7 +1912,7 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         private void Refresh()
         {
-            if (_viewmodel != null && _viewmodel.PageCount > 0)
+            if (_viewmodel != null && _viewmodel.Pages.Count > 0)
             {
                 var restricted = (_viewmodel.EncryptionStatus == CubePdf.Data.EncryptionStatus.RestrictedAccess);
 
@@ -1804,7 +1922,7 @@ namespace CubePdfUtility
                 Title = String.Format("{0}{1}{2} - {3}", filename, mstr, rstr, ProductName);
 
                 NavigationCanvas.Visibility = Visibility.Collapsed;
-                InfoStatusBarItem.Content = String.Format("{0} ページ", _viewmodel.PageCount);
+                InfoStatusBarItem.Content = String.Format("{0} ページ", _viewmodel.Pages.Count);
                 LockStatusBarItem.Visibility = restricted ? Visibility.Visible : Visibility.Collapsed;
                 Thumbnail.Focus();
             }
@@ -1893,36 +2011,6 @@ namespace CubePdfUtility
 
         /* ----------------------------------------------------------------- */
         ///
-        /// ReplaceFont
-        ///
-        /// <summary>
-        /// コンストラクタ実行時に、画面のフォントを差し替えます。
-        /// </summary>
-        ///
-        /* ----------------------------------------------------------------- */
-        private void ReplaceFont()
-        {
-            if (FontFamily.Source == "メイリオ" || FontFamily.Source.Contains("Meiryo")) return;
-
-            var fonts = new System.Drawing.Text.InstalledFontCollection();
-            foreach (var ff in fonts.Families)
-            {
-                if (ff.Name == "メイリオ" || ff.Name.Contains("Meiryo"))
-                {
-                    TextElement.FontFamilyProperty.OverrideMetadata(typeof(TextElement), new FrameworkPropertyMetadata(new FontFamily(ff.Name)));
-                    TextBlock.FontFamilyProperty.OverrideMetadata(typeof(TextBlock), new FrameworkPropertyMetadata(new FontFamily(ff.Name)));
-                    MainRibbon.FontFamily = new FontFamily(ff.Name);
-                    Thumbnail.ContextMenu.FontFamily = new FontFamily(ff.Name);
-                    FooterStatusBar.FontFamily = new FontFamily(ff.Name);
-                    NavigationCanvas.FontFamily = new FontFamily(ff.Name);
-                    _font = ff.Name;
-                    break;
-                }
-            }
-        }
-
-        /* ----------------------------------------------------------------- */
-        ///
         /// GetSortedItems
         /// 
         /// <summary>
@@ -1968,7 +2056,6 @@ namespace CubePdfUtility
 
         #region Variables
         private UserSetting _setting = new UserSetting();
-        private string _font = string.Empty;
         private CubePdf.Wpf.ListViewModel _viewmodel = new CubePdf.Wpf.ListViewModel();
         private bool _shown = false;
         private ProcessChecker _checker = null;
@@ -2010,17 +2097,19 @@ namespace CubePdfUtility
         ///
         /* ----------------------------------------------------------------- */
         #region ICommand variables
-        public static readonly ICommand Select   = new RoutedCommand("Select",   typeof(MainWindow));
-        public static readonly ICommand UnSelect = new RoutedCommand("UnSelect", typeof(MainWindow));
-        public static readonly ICommand ZoomIn   = new RoutedCommand("ZoomIn",   typeof(MainWindow));
-        public static readonly ICommand ZoomOut  = new RoutedCommand("ZoomOut",  typeof(MainWindow));
-        public static readonly ICommand ViewSize = new RoutedCommand("ViewSize", typeof(MainWindow));
-        public static readonly ICommand ViewMode = new RoutedCommand("ViewMode", typeof(MainWindow));
-        public static readonly ICommand Redraw   = new RoutedCommand("Redraw",   typeof(MainWindow));
-        public static readonly ICommand Version  = new RoutedCommand("Version",  typeof(MainWindow));
-        public static readonly ICommand Help     = new RoutedCommand("Help",     typeof(MainWindow));
-        public static readonly ICommand Web      = new RoutedCommand("Web",      typeof(MainWindow));
-        public static readonly ICommand Password = new RoutedCommand("Password", typeof(MainWindow));
+        public static readonly ICommand Select       = new RoutedCommand("Select",   typeof(MainWindow));
+        public static readonly ICommand UnSelect     = new RoutedCommand("UnSelect", typeof(MainWindow));
+        public static readonly ICommand ZoomIn       = new RoutedCommand("ZoomIn",   typeof(MainWindow));
+        public static readonly ICommand ZoomOut      = new RoutedCommand("ZoomOut",  typeof(MainWindow));
+        public static readonly ICommand ViewSize     = new RoutedCommand("ViewSize", typeof(MainWindow));
+        public static readonly ICommand ViewMode     = new RoutedCommand("ViewMode", typeof(MainWindow));
+        public static readonly ICommand Redraw       = new RoutedCommand("Redraw",   typeof(MainWindow));
+        public static readonly ICommand Version      = new RoutedCommand("Version",  typeof(MainWindow));
+        public static readonly ICommand Help         = new RoutedCommand("Help",     typeof(MainWindow));
+        public static readonly ICommand Web          = new RoutedCommand("Web",      typeof(MainWindow));
+        public static readonly ICommand Password     = new RoutedCommand("Password", typeof(MainWindow));
+        public static readonly ICommand Preview      = new RoutedCommand("Preview",  typeof(MainWindow));
+        public static readonly ICommand PreviewImage = new RoutedCommand("PreviewImage", typeof(MainWindow));
         #endregion
     }
 }
