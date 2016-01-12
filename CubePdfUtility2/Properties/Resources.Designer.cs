@@ -70,6 +70,15 @@ namespace CubePdfUtility.Properties {
         }
         
         /// <summary>
+        ///   抽出したファイルを保存するフォルダを選択して下さい。 に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string ExtractDescription {
+            get {
+                return ResourceManager.GetString("ExtractDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   PDFの挿入に失敗しました。PDFファイルが壊れていないか確認して下さい。 に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string InsertError {
@@ -93,6 +102,15 @@ namespace CubePdfUtility.Properties {
         internal static string InsertFilter {
             get {
                 return ResourceManager.GetString("InsertFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   挿入するファイルの選択 に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string InsertTitle {
+            get {
+                return ResourceManager.GetString("InsertTitle", resourceCulture);
             }
         }
         
@@ -152,7 +170,7 @@ namespace CubePdfUtility.Properties {
         }
         
         /// <summary>
-        ///   PDF ファイル(*.pdf)|*.pdf|すべてのファイル(*.*)|*.* に類似しているローカライズされた文字列を検索します。
+        ///   PDF ファイル(*.pdf)|*.pdf;*.PDF|すべてのファイル(*.*)|*.* に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string PdfFilter {
             get {

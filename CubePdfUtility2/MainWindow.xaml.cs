@@ -369,6 +369,7 @@ namespace CubePdfUtility
                         : (index == _viewmodel.Pages.Count) ? InsertTail.Header
                         : InsertSelect.Header;
                     var dialog = new System.Windows.Forms.OpenFileDialog();
+                    dialog.Title = Properties.Resources.InsertTitle;
                     dialog.Filter = Properties.Resources.InsertFilter;
                     dialog.CheckFileExists = true;
                     dialog.Multiselect = false;
@@ -484,7 +485,7 @@ namespace CubePdfUtility
 
         /* ----------------------------------------------------------------- */
         ///
-        /// Extract
+        /// ExtractImage
         ///
         /// <summary>
         /// 一部、または全部のページに含まれる画像を抽出します。
@@ -510,6 +511,7 @@ namespace CubePdfUtility
                 {
                     var items = GetSortedItems(e.Parameter as IList);
                     var dialog = new System.Windows.Forms.FolderBrowserDialog();
+                    dialog.Description = Properties.Resources.ExtractDescription;
                     if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
                     _viewmodel.ExtractImage(items, dialog.SelectedPath);
                 }
@@ -553,6 +555,7 @@ namespace CubePdfUtility
                     if (items == null) items = _viewmodel.Items;
 
                     var dialog = new System.Windows.Forms.FolderBrowserDialog();
+                    dialog.Description = Properties.Resources.ExtractDescription;
                     if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
                     _viewmodel.Split(items, dialog.SelectedPath);
                 }
@@ -1209,21 +1212,24 @@ namespace CubePdfUtility
 
         private void PreviewImageCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            var items = e.Parameter as IList;
-            if (items == null) items = Thumbnail.Items;
-
-            var model = new ImagePicker();
-            foreach (var item in items)
+            ExecuteAsPossible(() =>
             {
-                var index = Thumbnail.Items.IndexOf(item);
-                if (index == -1) continue;
-                model.Pages.Add(_viewmodel.GetPage(index + 1));
-            }
+                var items = e.Parameter as IList;
+                if (items == null) items = Thumbnail.Items;
 
-            var view = new ThumbnailForm();
-            var presenter = new ThumbnailPresenter(view, model);
+                var model = new ImagePicker();
+                foreach (var item in items)
+                {
+                    var index = Thumbnail.Items.IndexOf(item);
+                    if (index == -1) continue;
+                    model.Pages.Add(_viewmodel.GetPage(index + 1));
+                }
 
-            view.ShowDialog();
+                var view = new ThumbnailForm();
+                var presenter = new ThumbnailPresenter(view, model);
+
+                view.ShowDialog();
+            });
         }
 
         #endregion
