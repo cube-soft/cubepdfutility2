@@ -59,7 +59,7 @@
                                                  RelativeSource={RelativeSource FindAncestor,
                                                  AncestorType={x:Type ContextMenu}}}"/>
 
-                    <MenuItem Header="単一ファイルとして保存"
+                    <MenuItem Header="個別のファイルとして保存"
                               Command="{x:Static cube:ListViewCommands.Split}"
                               CommandParameter="{Binding PlacementTarget.SelectedItems,
                                                  RelativeSource={RelativeSource FindAncestor,
@@ -93,7 +93,7 @@
                     <MenuItem Header="単一ファイルとして保存"
                               Command="{x:Static cube:ListViewCommands.Extract}"/>
 
-                    <MenuItem Header="単一ファイルとして保存"
+                    <MenuItem Header="個別のファイルとして保存"
                               Command="{x:Static cube:ListViewCommands.Split}"/>
                 </MenuItem>
 
