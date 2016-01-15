@@ -265,16 +265,13 @@
                                          Command="{x:Static local:MainWindow.Select}">
 
                         <r:RibbonMenuItem Header="すべて選択"
-                                          Style="{StaticResource SelectMenuItemStyle}"
                                           Command="SelectAll"/>
 
                         <r:RibbonMenuItem Header="選択の切り替え"
-                                          Style="{StaticResource SelectMenuItemStyle}"
                                           Command="{x:Static local:MainWindow.Select}"
                                           CommandParameter="{Binding Path=SelectedItems, ElementName=Thumbnail}"/>
 
                         <r:RibbonMenuItem Header="選択の解除"
-                                          Style="{StaticResource SelectMenuItemStyle}"
                                           Command="{x:Static local:MainWindow.UnSelect}"/>
                     </r:RibbonSplitButton>
                 </r:RibbonGroup>
@@ -289,25 +286,21 @@
 
                         <r:RibbonMenuItem x:Name="InsertSelect"
                                           Header="選択位置の後ろに挿入"
-                                          Style="{StaticResource InsertMenuItemStyle}"
                                           Command="{x:Static cube:ListViewCommands.Insert}"
                                           CommandParameter="{Binding Path=SelectedIndex, ElementName=Thumbnail}"/>
 
                         <r:RibbonMenuItem x:Name="InsertHead"
                                           Header="先頭に挿入"
-                                          Style="{StaticResource InsertMenuItemStyle}"
                                           Command="{x:Static cube:ListViewCommands.Insert}"
                                           CommandParameter="{StaticResource NegativeTwo}"/>
 
                         <r:RibbonMenuItem x:Name="InsertTail"
                                           Header="末尾に挿入"
-                                          Style="{StaticResource InsertMenuItemStyle}"
                                           Command="{x:Static cube:ListViewCommands.Insert}"
                                           CommandParameter="{Binding Path=Items.Count, ElementName=Thumbnail}"/>
 
                         <r:RibbonMenuItem x:Name="InsertDetail"
                                           Header="詳細を設定して挿入"
-                                          Style="{StaticResource InsertMenuItemStyle}"
                                           Command="{x:Static cube:ListViewCommands.Insert}"/>
                     </r:RibbonSplitButton>
 
@@ -378,13 +371,11 @@
 
                         <r:RibbonMenuItem x:Name="RemoveSelect"
                                           Header="選択ページを削除"
-                                          Style="{StaticResource RemoveMenuItemStyle}"
                                           Command="{x:Static cube:ListViewCommands.Remove}"
                                           CommandParameter="{Binding Path=SelectedItems, ElementName=Thumbnail}"/>
 
                         <r:RibbonMenuItem x:Name="RemoveRange"
                                           Header="範囲を指定して削除"
-                                          Style="{StaticResource RemoveMenuItemStyle}"
                                           Command="{x:Static cube:ListViewCommands.Remove}"/>
                     </r:RibbonSplitButton>
                 </r:RibbonGroup>
