@@ -201,81 +201,12 @@
                                           Style="{StaticResource SaveAsMenuItemStyle}"
                                           Command="SaveAs"/>
                     </r:RibbonSplitButton>
-
-                    <!-- Extract -->
-                    <r:RibbonSplitButton x:Name="ExtractButton"
-                                         Label="抽出" ToolTipTitle="選択ページ全体を単一ファイルとして抽出"
-                                         Style="{StaticResource ExtractButtonStyle}"
-                                         Command="{x:Static cube:ListViewCommands.Extract}"
-                                         CommandParameter="{Binding Path=SelectedItems, ElementName=Thumbnail}">
-
-                        <r:RibbonMenuItem Header="選択ページを抽出"
-                                          Style="{StaticResource ExtractMenuItemStyle}"
-                                          Command="{x:Static cube:ListViewCommands.Extract}"
-                                          CommandParameter="{Binding Path=SelectedItems, ElementName=Thumbnail}">
-
-                            <r:RibbonMenuItem Header="ページ全体"
-                                              Style="{StaticResource ExtractMenuItemStyle}"
-                                              Command="{x:Static cube:ListViewCommands.Extract}"
-                                              CommandParameter="{Binding Path=SelectedItems, ElementName=Thumbnail}">
-                                
-                                <r:RibbonMenuItem Header="単一ファイルとして保存"
-                                                  Style="{StaticResource ExtractMenuItemStyle}" 
-                                                  Command="{x:Static cube:ListViewCommands.Extract}"
-                                                  CommandParameter="{Binding Path=SelectedItems, ElementName=Thumbnail}"/>
-                                
-                                <r:RibbonMenuItem Header="個別のファイルとして保存"
-                                                  Style="{StaticResource ExtractMenuItemStyle}"
-                                                  Command="{x:Static cube:ListViewCommands.Split}"
-                                                  CommandParameter="{Binding Path=SelectedItems, ElementName=Thumbnail}"/>
-                            </r:RibbonMenuItem>
-
-                            <r:RibbonMenuItem Header="ページに含まれる画像"
-                                              Style="{StaticResource ExtractMenuItemStyle}"
-                                              Command="{x:Static cube:ListViewCommands.ExtractImage}"
-                                              CommandParameter="{Binding Path=SelectedItems, ElementName=Thumbnail}">
-
-                                <r:RibbonMenuItem Header="プレビュー"
-                                                  Style="{StaticResource ExtractMenuItemStyle}"
-                                                  Command="{x:Static local:MainWindow.PreviewImage}"
-                                                  CommandParameter="{Binding Path=SelectedItems, ElementName=Thumbnail}"/>
-
-                                <r:RibbonMenuItem Header="全て保存"
-                                                  Style="{StaticResource ExtractMenuItemStyle}"
-                                                  Command="{x:Static cube:ListViewCommands.ExtractImage}"
-                                                  CommandParameter="{Binding Path=SelectedItems, ElementName=Thumbnail}"/>
-                            </r:RibbonMenuItem>
-                        </r:RibbonMenuItem>
-
-                        <r:RibbonMenuItem Header="全てのページを抽出"
-                                          Style="{StaticResource ExtractMenuItemStyle}">
-                            
-                            <r:RibbonMenuItem Header="ページ全体"
-                                              Style="{StaticResource ExtractMenuItemStyle}">
-                                
-                                <r:RibbonMenuItem Header="単一ファイルとして保存"
-                                                  Style="{StaticResource ExtractMenuItemStyle}"
-                                                  Command="{x:Static cube:ListViewCommands.Extract}"/>
-
-                                <r:RibbonMenuItem Header="個別のファイルとして保存"
-                                                  Style="{StaticResource ExtractMenuItemStyle}"
-                                                  Command="{x:Static cube:ListViewCommands.Split}"/>
-                            </r:RibbonMenuItem>
-
-                            <r:RibbonMenuItem Header="ページに含まれる画像"
-                                              Style="{StaticResource ExtractMenuItemStyle}"
-                                              Command="{x:Static cube:ListViewCommands.ExtractImage}">
-
-                                <r:RibbonMenuItem Header="プレビュー"
-                                                  Style="{StaticResource ExtractMenuItemStyle}"
-                                                  Command="{x:Static local:MainWindow.PreviewImage}"/>
-
-                                <r:RibbonMenuItem Header="全て保存"
-                                                  Style="{StaticResource ExtractMenuItemStyle}"
-                                                  Command="{x:Static cube:ListViewCommands.ExtractImage}"/>
-                            </r:RibbonMenuItem>
-                        </r:RibbonMenuItem>
-                    </r:RibbonSplitButton>
+                    
+                    <!-- Close -->
+                    <r:RibbonButton x:Name="CloseButton"
+                                    Label="閉じる" ToolTipTitle="ファイルを閉じる"
+                                    Style="{StaticResource CloseButtonStyle}"
+                                    Command="Close"/>
                 </r:RibbonGroup>
 
                 <r:RibbonGroup Header="やり直し" x:Name="UndoGroup">
@@ -380,6 +311,64 @@
                                           Command="{x:Static cube:ListViewCommands.Insert}"/>
                     </r:RibbonSplitButton>
 
+                    <!-- Extract -->
+                    <r:RibbonSplitButton x:Name="ExtractButton"
+                                         Label="抽出" ToolTipTitle="選択ページ全体を単一ファイルとして抽出"
+                                         Style="{StaticResource ExtractButtonStyle}"
+                                         Command="{x:Static cube:ListViewCommands.Extract}"
+                                         CommandParameter="{Binding Path=SelectedItems, ElementName=Thumbnail}">
+                        
+                        <r:RibbonMenuItem Header="ページの抽出"
+                                          Style="{StaticResource ExtractMenuItemStyle}">
+
+                            <r:RibbonMenuItem Header="選択ページ"
+                                              Command="{x:Static cube:ListViewCommands.Extract}"
+                                              CommandParameter="{Binding Path=SelectedItems, ElementName=Thumbnail}">
+                                
+                                <r:RibbonMenuItem Header="単一のファイルとして保存"
+                                                  Command="{x:Static cube:ListViewCommands.Extract}"
+                                                  CommandParameter="{Binding Path=SelectedItems, ElementName=Thumbnail}"/>
+                                
+                                <r:RibbonMenuItem Header="個別のファイルとして保存"
+                                                  Command="{x:Static cube:ListViewCommands.Split}"
+                                                  CommandParameter="{Binding Path=SelectedItems, ElementName=Thumbnail}"/>
+                            </r:RibbonMenuItem>
+
+                            <r:RibbonMenuItem Header="全てのページ">
+                                <r:RibbonMenuItem Header="単一のファイルとして保存"
+                                                  Command="{x:Static cube:ListViewCommands.Extract}"/>
+
+                                <r:RibbonMenuItem Header="個別のファイルとして保存"
+                                                  Command="{x:Static cube:ListViewCommands.Split}"/>
+                            </r:RibbonMenuItem>
+                        </r:RibbonMenuItem>
+
+                        <r:RibbonMenuItem Header="ページに含まれる画像の抽出"
+                                          Style="{StaticResource ExtractImageMenuItemStyle}">
+
+                            <r:RibbonMenuItem Header="選択ページ"
+                                              Command="{x:Static cube:ListViewCommands.ExtractImage}"
+                                              CommandParameter="{Binding Path=SelectedItems, ElementName=Thumbnail}">
+
+                                <r:RibbonMenuItem Header="プレビュー"
+                                                  Command="{x:Static local:MainWindow.PreviewImage}"
+                                                  CommandParameter="{Binding Path=SelectedItems, ElementName=Thumbnail}"/>
+
+                                <r:RibbonMenuItem Header="全て保存"
+                                                  Command="{x:Static cube:ListViewCommands.ExtractImage}"
+                                                  CommandParameter="{Binding Path=SelectedItems, ElementName=Thumbnail}"/>
+                            </r:RibbonMenuItem>
+
+                            <r:RibbonMenuItem Header="全てのページ">
+                                <r:RibbonMenuItem Header="プレビュー"
+                                                  Command="{x:Static local:MainWindow.PreviewImage}"/>
+
+                                <r:RibbonMenuItem Header="全て保存"
+                                                  Command="{x:Static cube:ListViewCommands.ExtractImage}"/>
+                            </r:RibbonMenuItem>
+                        </r:RibbonMenuItem>
+                    </r:RibbonSplitButton>
+                    
                     <!-- Remove -->
                     <r:RibbonSplitButton x:Name="RemoveButton"
                                          Label="削除" ToolTipTitle="選択ページを削除"
