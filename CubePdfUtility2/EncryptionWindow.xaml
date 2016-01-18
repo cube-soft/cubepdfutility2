@@ -111,8 +111,20 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <Button Grid.Column="1" Content="OK" IsDefault="True" Width="130" Height="30" Margin="12,12,6,12" Command="Save"/>
-            <Button Grid.Column="2" Content="キャンセル" IsCancel="True" Width="100" Height="30" Margin="6,12,12,12" Command="Close"/>
+            <Button Grid.Column="1"
+                    Content="{Binding Path=Description,
+                                      RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"
+                    Command="Save"
+                    IsDefault="True"
+                    Width="130" Height="30"
+                    Margin="12,12,6,12"/>
+            
+            <Button Grid.Column="2"
+                    Content="キャンセル"
+                    Command="Close"
+                    IsCancel="True"
+                    Width="100" Height="30"
+                    Margin="6,12,12,12"/>
         </Grid>
     </Grid>
 </Window>

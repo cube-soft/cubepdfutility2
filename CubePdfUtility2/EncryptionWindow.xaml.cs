@@ -101,6 +101,23 @@ namespace CubePdfUtility
             get { return _crypt; }
         }
 
+        /* ----------------------------------------------------------------- */
+        ///
+        /// Description
+        ///
+        /// <summary>
+        /// SaveCommand を実行した時の内容を取得します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        public string Description
+        {
+            get
+            {
+                return RootGroupBox.IsEnabled ? "OK" : "セキュリティを解除";
+            }
+        }
+
         #endregion
 
         #region Commands
@@ -118,7 +135,8 @@ namespace CubePdfUtility
 
         private void SaveCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = (Encryption == null) ||
+            e.CanExecute = !RootGroupBox.IsEnabled ||
+                           (Encryption == null) ||
                            (!Encryption.IsEnabled || IsValidPassword(OwnerPasswordBox, ConfirmOwnerPasswordBox)) &&
                            (!Encryption.IsUserPasswordEnabled || UserPasswordCheckBox.IsChecked == false || IsValidPassword(UserPasswordBox, ConfirmUserPasswordBox));
         }
