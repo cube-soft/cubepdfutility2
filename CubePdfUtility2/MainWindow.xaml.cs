@@ -220,7 +220,10 @@ namespace CubePdfUtility
 
         private void CloseCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = true;
+            var s = e.Parameter as string;
+            var exit = !string.IsNullOrEmpty(s) && s == "Exit";
+            e.CanExecute = exit || _viewmodel.Pages.Count > 0;
+            e.Handled = true;
         }
 
         private void CloseCommand_Executed(object sender, ExecutedRoutedEventArgs e)
