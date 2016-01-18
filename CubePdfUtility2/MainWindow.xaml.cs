@@ -2047,7 +2047,7 @@ namespace CubePdfUtility
         private void ChangeLogoVisibility(object sender, EventArgs e)
         {
             // NOTE: これらの値は、該当タブの項目を増やす（減らす）際に調整する必要がある。
-            var edit_tab_width = 900;
+            var edit_tab_width = 940;
             var view_tab_width = 410;
             var help_tab_width = 310;
 
