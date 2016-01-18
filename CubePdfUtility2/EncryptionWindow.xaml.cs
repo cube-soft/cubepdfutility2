@@ -65,7 +65,8 @@ namespace CubePdfUtility
         public EncryptionWindow(CubePdf.Wpf.ListViewModel viewmodel)
             : this()
         {
-            RootGroupBox.IsEnabled = (viewmodel.EncryptionStatus != CubePdf.Data.EncryptionStatus.RestrictedAccess);
+            RestrictedAccess = (viewmodel.EncryptionStatus == CubePdf.Data.EncryptionStatus.RestrictedAccess);
+            RootGroupBox.IsEnabled = !RestrictedAccess;
             _crypt = new CubePdf.Data.Encryption(viewmodel.Encryption);
             if (_crypt.Method == CubePdf.Data.EncryptionMethod.Unknown) _crypt.Method = CubePdf.Data.EncryptionMethod.Standard128;
             DataContext = _crypt;
@@ -114,9 +115,20 @@ namespace CubePdfUtility
         {
             get
             {
-                return RootGroupBox.IsEnabled ? "OK" : "セキュリティを解除";
+                return RestrictedAccess ? "セキュリティを解除" : "OK";
             }
         }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// RestrictedAccess
+        ///
+        /// <summary>
+        /// アクセスが制限されているかどうかを示す値を取得します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        public bool RestrictedAccess { get; }
 
         #endregion
 
@@ -143,6 +155,13 @@ namespace CubePdfUtility
 
         private void SaveCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
+            if (RestrictedAccess)
+            {
+                DialogResult = true;
+                Close();
+                return;
+            }
+
             if (IsUserPasswordRequired())
             {
                 ShowErrorMessage(Properties.Resources.NeedUserPassword);

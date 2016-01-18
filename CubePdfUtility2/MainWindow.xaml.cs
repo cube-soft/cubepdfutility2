@@ -19,24 +19,15 @@
 ///
 /* ------------------------------------------------------------------------- */
 using System;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Microsoft.Windows.Controls.Ribbon;
 
 namespace CubePdfUtility
@@ -1058,7 +1049,11 @@ namespace CubePdfUtility
             var dialog = new EncryptionWindow(_viewmodel);
             dialog.Owner = this;
             dialog.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
-            if (dialog.ShowDialog() == true) _viewmodel.Encryption = dialog.Encryption;
+            if (dialog.ShowDialog() == true)
+            {
+                if (_viewmodel.EncryptionStatus == CubePdf.Data.EncryptionStatus.RestrictedAccess) PasswordCommand_Executed(sender, e);
+                else _viewmodel.Encryption = dialog.Encryption;
+            }
         }
 
         #endregion
