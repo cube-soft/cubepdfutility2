@@ -50,17 +50,18 @@
             this.LayoutPanel.Name = "LayoutPanel";
             this.LayoutPanel.RowCount = 2;
             this.LayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.LayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
+            this.LayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 55F));
             this.LayoutPanel.Size = new System.Drawing.Size(634, 361);
             this.LayoutPanel.TabIndex = 0;
             // 
             // ImagesListView
             // 
+            this.ImagesListView.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.ImagesListView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ImagesListView.Location = new System.Drawing.Point(0, 0);
             this.ImagesListView.Margin = new System.Windows.Forms.Padding(0);
             this.ImagesListView.Name = "ImagesListView";
-            this.ImagesListView.Size = new System.Drawing.Size(634, 301);
+            this.ImagesListView.Size = new System.Drawing.Size(634, 306);
             this.ImagesListView.TabIndex = 0;
             this.ImagesListView.UseCompatibleStateImageBehavior = false;
             // 
@@ -71,36 +72,36 @@
             this.ButtonsPanel.Controls.Add(this.SaveButton);
             this.ButtonsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ButtonsPanel.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.ButtonsPanel.Location = new System.Drawing.Point(0, 301);
+            this.ButtonsPanel.Location = new System.Drawing.Point(0, 306);
             this.ButtonsPanel.Margin = new System.Windows.Forms.Padding(0);
             this.ButtonsPanel.Name = "ButtonsPanel";
             this.ButtonsPanel.Padding = new System.Windows.Forms.Padding(8, 10, 0, 10);
-            this.ButtonsPanel.Size = new System.Drawing.Size(634, 60);
+            this.ButtonsPanel.Size = new System.Drawing.Size(634, 55);
             this.ButtonsPanel.TabIndex = 1;
             // 
             // ExitButton
             // 
-            this.ExitButton.Location = new System.Drawing.Point(523, 13);
+            this.ExitButton.Location = new System.Drawing.Point(533, 13);
             this.ExitButton.Name = "ExitButton";
-            this.ExitButton.Size = new System.Drawing.Size(100, 35);
+            this.ExitButton.Size = new System.Drawing.Size(90, 30);
             this.ExitButton.TabIndex = 0;
             this.ExitButton.Text = "キャンセル";
             this.ExitButton.UseVisualStyleBackColor = true;
             // 
             // SaveAllButton
             // 
-            this.SaveAllButton.Location = new System.Drawing.Point(387, 13);
+            this.SaveAllButton.Location = new System.Drawing.Point(407, 13);
             this.SaveAllButton.Name = "SaveAllButton";
-            this.SaveAllButton.Size = new System.Drawing.Size(130, 35);
+            this.SaveAllButton.Size = new System.Drawing.Size(120, 30);
             this.SaveAllButton.TabIndex = 1;
             this.SaveAllButton.Text = "全て保存";
             this.SaveAllButton.UseVisualStyleBackColor = true;
             // 
             // SaveButton
             // 
-            this.SaveButton.Location = new System.Drawing.Point(251, 13);
+            this.SaveButton.Location = new System.Drawing.Point(281, 13);
             this.SaveButton.Name = "SaveButton";
-            this.SaveButton.Size = new System.Drawing.Size(130, 35);
+            this.SaveButton.Size = new System.Drawing.Size(120, 30);
             this.SaveButton.TabIndex = 2;
             this.SaveButton.Text = "選択画像の保存";
             this.SaveButton.UseVisualStyleBackColor = true;
