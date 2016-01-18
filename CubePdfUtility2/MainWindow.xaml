@@ -534,10 +534,14 @@
         <StatusBar x:Name="FooterStatusBar" 
                    Grid.Row="2" Grid.ColumnSpan="2"
                    Height="23">
-            
-            <Image x:Name="LockStatusBarItem"
-                   Source="{StaticResource LockImage}"
-                   Visibility="Collapsed"/>
+
+            <Button x:Name="LockStatusBarItem"
+                    ToolTip="パスワードを入力してセキュリティを解除"
+                    Style="{StaticResource LockButtonStyle}"
+                    Command="{x:Static local:MainWindow.Password}"
+                    Visibility="Collapsed">
+                <Image Source="{StaticResource LockImage}"/>
+            </Button>
             
             <StatusBarItem Name="InfoStatusBarItem"
                            Content=""/>
