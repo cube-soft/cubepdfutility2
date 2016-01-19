@@ -194,7 +194,7 @@
                                          Command="Save">
 
                         <r:RibbonMenuItem Header="上書き保存"
-                                          Style="{StaticResource SaveAsMenuItemStyle}"
+                                          Style="{StaticResource SaveMenuItemStyle}"
                                           Command="Save"/>
 
                         <r:RibbonMenuItem Header="名前を付けて保存"
