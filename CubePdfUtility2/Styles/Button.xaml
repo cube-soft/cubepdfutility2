@@ -8,6 +8,35 @@
     </ResourceDictionary.MergedDictionaries>
 
     <!--
+      LockButton
+    
+      ステータスバーに表示されるボタンのイメージを定義します。
+    -->
+    <ControlTemplate x:Key="FlatButtonTemplate" TargetType="{x:Type Button}">
+        <Border Width="{TemplateBinding Width}"
+                Height="{TemplateBinding Height}"
+                Background="{TemplateBinding Background}"
+                BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}">
+            
+            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                            TextElement.Foreground="{TemplateBinding Foreground}"
+                            TextElement.FontFamily="{TemplateBinding FontFamily}"
+                            TextElement.FontSize="{TemplateBinding FontSize}"
+                            TextElement.FontStretch="{TemplateBinding FontStretch}"
+                            TextElement.FontWeight="{TemplateBinding FontWeight}"/>
+        </Border>
+    </ControlTemplate>
+
+    <Style x:Key="LockButtonStyle" TargetType="{x:Type Button}">
+        <Setter Property="Background" Value="{x:Null}"/>
+        <Setter Property="BorderBrush" Value="{x:Null}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Template" Value="{StaticResource FlatButtonTemplate}"/>
+    </Style>
+    
+    <!--
       Buttons
     
       Ribbon に表示されるボタンのイメージを定義します。
@@ -38,6 +67,19 @@
         </Style.Triggers>
     </Style>
 
+    <Style x:Key="CloseButtonStyle" TargetType="{x:Type r:RibbonButton}">
+        <Style.Triggers>
+            <Trigger Property="r:RibbonButton.IsEnabled" Value="True">
+                <Setter Property="LargeImageSource" Value="{StaticResource CloseLargeImage}"/>
+                <Setter Property="SmallImageSource" Value="{StaticResource CloseSmallImage}"/>
+            </Trigger>
+            <Trigger Property="r:RibbonButton.IsEnabled" Value="False">
+                <Setter Property="LargeImageSource" Value="{StaticResource CloseDisableLargeImage}"/>
+                <Setter Property="SmallImageSource" Value="{StaticResource CloseDisableSmallImage}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <Style x:Key="ExtractButtonStyle" TargetType="{x:Type r:RibbonSplitButton}">
         <Style.Triggers>
             <Trigger Property="r:RibbonSplitButton.IsEnabled" Value="True">
@@ -45,8 +87,8 @@
                 <Setter Property="SmallImageSource" Value="{StaticResource ExtractSmallImage}"/>
             </Trigger>
             <Trigger Property="r:RibbonSplitButton.IsEnabled" Value="False">
-                <Setter Property="LargeImageSource" Value="{StaticResource ExitDisableLargeImage}"/>
-                <Setter Property="SmallImageSource" Value="{StaticResource ExitDisableSmallImage}"/>
+                <Setter Property="LargeImageSource" Value="{StaticResource ExtractDisableLargeImage}"/>
+                <Setter Property="SmallImageSource" Value="{StaticResource ExtractDisableSmallImage}"/>
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -311,6 +353,17 @@
         </Style.Triggers>
     </Style>
 
+    <Style x:Key="ExtractImageMenuItemStyle" TargetType="{x:Type r:RibbonMenuItem}">
+        <Style.Triggers>
+            <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="True">
+                <Setter Property="ImageSource" Value="{StaticResource ExtractImageSmallImage}"/>
+            </Trigger>
+            <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="False">
+                <Setter Property="ImageSource" Value="{StaticResource ExtractImageDisableSmallImage}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    
     <Style x:Key="SelectMenuItemStyle" TargetType="{x:Type r:RibbonMenuItem}">
         <Style.Triggers>
             <Trigger Property="r:RibbonMenuItem.IsEnabled" Value="True">

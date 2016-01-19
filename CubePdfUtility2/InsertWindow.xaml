@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:system="clr-namespace:System;assembly=mscorlib"
     xmlns:local="clr-namespace:CubePdfUtility"
-    Title="詳細を設定して挿入" Height="400" MinHeight="350" Width="700" MinWidth="550" Icon="/CubePdfUtility;component/app.ico"
+    Title="詳細を設定して挿入" Height="400" MinHeight="360" Width="700" MinWidth="550" Icon="/CubePdfUtility;component/app.ico"
     WindowStartupLocation="CenterOwner" WindowStyle="SingleBorderWindow" ShowInTaskbar="False">
     <Window.CommandBindings>
         <CommandBinding Command="Save"   CanExecute="SaveCommand_CanExecute"   Executed="SaveCommand_Executed"/>
@@ -32,7 +32,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <GroupBox Header="挿入位置" Margin="12,12,12,6" Grid.ColumnSpan="2">
+        <GroupBox Header="挿入位置" Margin="12,12,12,6" Grid.ColumnSpan="2" Padding="12,8,0,8">
             <StackPanel Orientation="Horizontal">
                 <RadioButton x:Name="CurrentRadioButton"   GroupName="InsertPositionGroup" Margin="3,3,12,3" IsChecked="True">選択位置の後ろ</RadioButton>
                 <RadioButton x:Name="HeadRadioButton"      GroupName="InsertPositionGroup" Margin="3,3,12,3">先頭</RadioButton>
@@ -82,25 +82,25 @@
 
             <StackPanel Grid.Column="1">
                 <Button Content="ファイルを追加..." Margin="6,6,12,3"
-                        Width="130" Height="35"
+                        Width="120" Height="30"
                         Command="{x:Static local:InsertWindow.Add}" />
 
                 <Button Content="上へ" Margin="6,3,12,3"
-                        Width="130" Height="35"
+                        Width="120" Height="30"
                         Command="{x:Static local:InsertWindow.Move}"
                         CommandParameter="{StaticResource NegativeOne}" />
 
                 <Button Content="下へ" Margin="6,3,12,3"
-                        Width="130" Height="35"
+                        Width="120" Height="30"
                         Command="{x:Static local:InsertWindow.Move}"
                         CommandParameter="{StaticResource One}" />
 
                 <Button Content="削除" Margin="6,3,12,3"
-                        Width="130" Height="35"
+                        Width="120" Height="30"
                         Command="{x:Static local:InsertWindow.Remove}" />
 
                 <Button Content="全て削除" Margin="6,3,12,6"
-                        Width="130" Height="35"
+                        Width="120" Height="30"
                         Command="{x:Static local:InsertWindow.Clear}" />
             </StackPanel>
         </Grid>
@@ -112,8 +112,8 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <Button Grid.Column="1" Content="OK" IsDefault="True" Width="130" Height="35" Margin="12,12,6,12" Command="Save"/>
-            <Button Grid.Column="2" Content="キャンセル" IsCancel="True" Width="100" Height="35" Margin="6,12,12,12" Command="Close"/>
+            <Button Grid.Column="1" Content="OK" IsDefault="True" Width="120" Height="30" Margin="12,12,6,12" Command="Save"/>
+            <Button Grid.Column="2" Content="キャンセル" IsCancel="True" Width="90" Height="30" Margin="6,12,12,12" Command="Close"/>
         </Grid>
     </Grid>
 </Window>

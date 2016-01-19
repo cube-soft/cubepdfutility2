@@ -31,6 +31,9 @@
     <ImageSource x:Key="ExtractDisableLargeImage">/CubePdfUtility;component/Images/LargeIcons/ExtractDisable.png</ImageSource>
     <ImageSource x:Key="ExtractDisableSmallImage">/CubePdfUtility;component/Images/SmallIcons/ExtractDisable.png</ImageSource>
 
+    <ImageSource x:Key="ExtractImageSmallImage">/CubePdfUtility;component/Images/SmallIcons/ExtractImage.png</ImageSource>
+    <ImageSource x:Key="ExtractImageDisableSmallImage">/CubePdfUtility;component/Images/SmallIcons/ExtractImageDisable.png</ImageSource>
+    
     <ImageSource x:Key="FontLargeImage">/CubePdfUtility;component/Images/LargeIcons/Font.png</ImageSource>
     <ImageSource x:Key="FontSmallImage">/CubePdfUtility;component/Images/SmallIcons/Font.png</ImageSource>
     <ImageSource x:Key="FontDisableLargeImage">/CubePdfUtility;component/Images/LargeIcons/FontDisable.png</ImageSource>

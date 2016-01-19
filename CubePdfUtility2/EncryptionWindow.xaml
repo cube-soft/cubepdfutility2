@@ -23,7 +23,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <GroupBox Grid.Row="0" x:Name="RootGroupBox" Margin="12,8">
+        <GroupBox Grid.Row="0" x:Name="RootGroupBox" Margin="12,8" Padding="0,12,12,12">
             <GroupBox.Header>
                 <CheckBox Content="パスワードによるセキュリティを設定する" IsChecked="{Binding IsEnabled, Mode=TwoWay}" Padding="5,0,5,5" Margin="5,5,0,5" />
             </GroupBox.Header>
@@ -104,15 +104,29 @@
             </Grid>
         </GroupBox>
 
-        <Grid Grid.Row="2" Background="{x:Static SystemColors.ControlBrush}">
+        <Grid Grid.Row="2"
+              Background="{x:Static SystemColors.ControlBrush}">
+            
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <Button Grid.Column="1" Content="OK" IsDefault="True" Width="130" Height="35" Margin="12,12,6,12" Command="Save"/>
-            <Button Grid.Column="2" Content="キャンセル" IsCancel="True" Width="100" Height="35" Margin="6,12,12,12" Command="Close"/>
+            <Button Grid.Column="1"
+                    Content="{Binding Path=Description,
+                                      RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"
+                    Command="Save"
+                    IsDefault="True"
+                    Width="120" Height="30"
+                    Margin="12,12,6,12"/>
+            
+            <Button Grid.Column="2"
+                    Content="キャンセル"
+                    Command="Close"
+                    IsCancel="True"
+                    Width="90" Height="30"
+                    Margin="6,12,12,12"/>
         </Grid>
     </Grid>
 </Window>

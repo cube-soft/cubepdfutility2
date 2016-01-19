@@ -439,6 +439,10 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\SmallIcons\ExtractImage.png" />
+    <Resource Include="Images\SmallIcons\ExtractImageDisable.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir $(SolutionDir)Release\$(PlatformName)\net40

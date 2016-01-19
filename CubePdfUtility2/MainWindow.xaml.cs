@@ -19,24 +19,15 @@
 ///
 /* ------------------------------------------------------------------------- */
 using System;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Microsoft.Windows.Controls.Ribbon;
 
 namespace CubePdfUtility
@@ -220,7 +211,10 @@ namespace CubePdfUtility
 
         private void CloseCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = true;
+            var s = e.Parameter as string;
+            var exit = !string.IsNullOrEmpty(s) && s == "Exit";
+            e.CanExecute = exit || _viewmodel.Pages.Count > 0;
+            e.Handled = true;
         }
 
         private void CloseCommand_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -1055,7 +1049,11 @@ namespace CubePdfUtility
             var dialog = new EncryptionWindow(_viewmodel);
             dialog.Owner = this;
             dialog.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
-            if (dialog.ShowDialog() == true) _viewmodel.Encryption = dialog.Encryption;
+            if (dialog.ShowDialog() == true)
+            {
+                if (_viewmodel.EncryptionStatus == CubePdf.Data.EncryptionStatus.RestrictedAccess) PasswordCommand_Executed(sender, e);
+                else _viewmodel.Encryption = dialog.Encryption;
+            }
         }
 
         #endregion
@@ -2044,7 +2042,7 @@ namespace CubePdfUtility
         private void ChangeLogoVisibility(object sender, EventArgs e)
         {
             // NOTE: これらの値は、該当タブの項目を増やす（減らす）際に調整する必要がある。
-            var edit_tab_width = 900;
+            var edit_tab_width = 940;
             var view_tab_width = 410;
             var help_tab_width = 310;
 
