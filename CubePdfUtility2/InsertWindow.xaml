@@ -18,7 +18,7 @@
     <Window.Resources>
         <system:Int32 x:Key="One">1</system:Int32>
         <system:Int32 x:Key="NegativeOne">-1</system:Int32>
-        <local:KiloByteConverter x:Key="KiloByteConverter" />
+        <local:ByteFormatConverter x:Key="ByteFormatConverter" />
     </Window.Resources>
 
     <Grid>
@@ -63,15 +63,18 @@
                     <ListView.View>
                         <GridView>
                             <GridViewColumn Header="名前" Width="180"
-                                DisplayMemberBinding="{Binding Path=Name}" />
+                                            DisplayMemberBinding="{Binding Name}" />
 
-                            <GridViewColumn Header="更新日時" Width="150"
-                                DisplayMemberBinding="{Binding Path=LastWriteTime, StringFormat=yyyy/MM/dd HH:mm:ss}"  />
+                            <GridViewColumn Header="種類" Width="90"
+                                            DisplayMemberBinding="{Binding TypeName}"/>
+                            
+                            <GridViewColumn Header="更新日時" Width="130"
+                                            DisplayMemberBinding="{Binding Path=LastWriteTime, StringFormat=yyyy/MM/dd HH:mm:ss}"  />
 
-                            <GridViewColumn Header="サイズ" Width="100">
+                            <GridViewColumn Header="サイズ" Width="80">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Path=Length, Converter={StaticResource KiloByteConverter}, StringFormat={}{0:N0} KB}" HorizontalAlignment="Right"/>
+                                        <TextBlock Text="{Binding Path=Length, Converter={StaticResource ByteFormatConverter}}" HorizontalAlignment="Right"/>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
