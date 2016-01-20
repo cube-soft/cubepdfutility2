@@ -18,6 +18,7 @@
     </Style>
 
     <Style TargetType="{x:Type r:RibbonApplicationMenu}">
+        <Setter Property="FontFamily" Value="{StaticResource MainFontFamily}"/>
         <Setter Property="Background" Value="{StaticResource MenuBackgroundBrush}"/>
         <Setter Property="BorderBrush" Value="{StaticResource TabBorderBrush}"/>
         <Setter Property="Foreground" Value="{StaticResource TabForegroundBrush}"/>

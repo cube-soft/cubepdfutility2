@@ -23,8 +23,18 @@
         <Setter Property="BorderBrush" Value="{StaticResource TabBorderBrush}" />
     </Style>
     
+    <!-- Label -->
+    <Style TargetType="{x:Type Label}">
+        <Setter Property="FontFamily" Value="{StaticResource MainFontFamily}"/>
+    </Style>
+    
     <!-- ContextMenu -->
     <Style TargetType="{x:Type ContextMenu}">
+        <Setter Property="FontFamily" Value="{StaticResource MainFontFamily}"/>
+    </Style>
+    
+    <!-- MenuItem -->
+    <Style TargetType="{x:Type MenuItem}">
         <Setter Property="FontFamily" Value="{StaticResource MainFontFamily}"/>
     </Style>
     

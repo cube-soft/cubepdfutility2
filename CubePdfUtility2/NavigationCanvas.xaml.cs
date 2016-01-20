@@ -54,24 +54,7 @@ namespace CubePdfUtility
 
         #endregion
 
-        #region Properties
-
-        /* ----------------------------------------------------------------- */
-        ///
-        /// FontFamily
-        /// 
-        /// <summary>
-        /// 使用するフォントの種類を取得、または設定します。
-        /// </summary>
-        ///
-        /* ----------------------------------------------------------------- */
-        public System.Windows.Media.FontFamily FontFamily
-        {
-            get { return _font; }
-            set { _font = value; }
-        }
-
-        #endregion
+        #region Methods
 
         /* ----------------------------------------------------------------- */
         ///
@@ -163,13 +146,10 @@ namespace CubePdfUtility
             dest.Icon = new System.Windows.Controls.Image {
                 Source = new BitmapImage(new Uri("Images/PdfFile.png", UriKind.Relative))
             };
-            if (_font != null) dest.FontFamily = _font;
             if (MenuItemClick != null) dest.Click += MenuItemClick;
             return dest;
         }
 
-        #region Variables
-        private System.Windows.Media.FontFamily _font = null;
         #endregion
     }
 }
