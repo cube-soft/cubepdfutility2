@@ -1,6 +1,8 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual C# Express 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CubePdfUtility2", "CubePdfUtility2\CubePdfUtility2.csproj", "{D137A77E-531E-4B53-B5D1-A0C4E4BE64C9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CubePdf.Data", "..\CubePdfLib\CubePdf.Data\CubePdf.Data.csproj", "{0D7B710B-67CA-4E55-844A-31C6ACEADFED}"
@@ -18,6 +20,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SplashWindow", "SplashWindow\SplashWindow.csproj", "{1606A56D-548D-4FFE-87B8-E1A0E62C93CA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CubePdf.Misc", "..\CubePdfLib\CubePdf.Misc\CubePdf.Misc.csproj", "{193B7028-1F28-462A-B172-36F485002349}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CubePdfTests", "..\CubePdfLib\CubePdfTests\CubePdfTests.csproj", "{48BA7BCA-EF0F-4DF5-8507-B990D486E440}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -136,6 +140,18 @@ Global
 		{193B7028-1F28-462A-B172-36F485002349}.Release|x64.Build.0 = Release|x64
 		{193B7028-1F28-462A-B172-36F485002349}.Release|x86.ActiveCfg = Release|x86
 		{193B7028-1F28-462A-B172-36F485002349}.Release|x86.Build.0 = Release|x86
+		{48BA7BCA-EF0F-4DF5-8507-B990D486E440}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48BA7BCA-EF0F-4DF5-8507-B990D486E440}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48BA7BCA-EF0F-4DF5-8507-B990D486E440}.Debug|x64.ActiveCfg = Debug|x64
+		{48BA7BCA-EF0F-4DF5-8507-B990D486E440}.Debug|x64.Build.0 = Debug|x64
+		{48BA7BCA-EF0F-4DF5-8507-B990D486E440}.Debug|x86.ActiveCfg = Debug|x86
+		{48BA7BCA-EF0F-4DF5-8507-B990D486E440}.Debug|x86.Build.0 = Debug|x86
+		{48BA7BCA-EF0F-4DF5-8507-B990D486E440}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48BA7BCA-EF0F-4DF5-8507-B990D486E440}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48BA7BCA-EF0F-4DF5-8507-B990D486E440}.Release|x64.ActiveCfg = Release|x64
+		{48BA7BCA-EF0F-4DF5-8507-B990D486E440}.Release|x64.Build.0 = Release|x64
+		{48BA7BCA-EF0F-4DF5-8507-B990D486E440}.Release|x86.ActiveCfg = Release|x86
+		{48BA7BCA-EF0F-4DF5-8507-B990D486E440}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

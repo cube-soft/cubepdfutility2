@@ -1,7 +1,9 @@
 ﻿<Window x:Class="CubePdfUtility.RemoveWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="ページ範囲を指定して削除" Height="200" Width="500" Icon="/CubePdfUtility;component/app.ico"
+    Title="ページ範囲を指定して削除"
+    FontFamily="Meiryo UI, Meiryo, MS UI Gothic"
+    Height="210" Width="500" Icon="/CubePdfUtility;component/app.ico"
     WindowStartupLocation="CenterOwner" WindowStyle="SingleBorderWindow" ResizeMode="NoResize">
 
     <Window.CommandBindings>
@@ -39,8 +41,8 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <Button Grid.Column="1" Content="OK" IsDefault="True" Width="100" Margin="12,12,6,12" Command="Save"/>
-            <Button Grid.Column="2" Content="キャンセル" IsCancel="True" Width="100" Margin="6,12,12,12" Command="Close"/>
+            <Button Grid.Column="1" Content="OK" IsDefault="True" Width="120" Height="30" Margin="12,12,6,12" Command="Save"/>
+            <Button Grid.Column="2" Content="キャンセル" IsCancel="True" Width="90" Height="30" Margin="6,12,12,12" Command="Close"/>
         </Grid>
     </Grid>
 </Window>

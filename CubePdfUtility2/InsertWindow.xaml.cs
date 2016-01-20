@@ -94,7 +94,7 @@ namespace CubePdfUtility
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
-        public IList<System.IO.FileInfo> FileList
+        public IList<Cube.FileSystem.FileInfo> FileList
         {
             get { return _files; }
         }
@@ -202,7 +202,7 @@ namespace CubePdfUtility
                 else
                 {
                     var dialog = new System.Windows.Forms.OpenFileDialog();
-                    dialog.Filter = Properties.Resources.PdfFilter;
+                    dialog.Filter = Properties.Resources.InsertFilter;
                     dialog.CheckFileExists = true;
                     dialog.Multiselect = true;
                     if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
@@ -374,7 +374,7 @@ namespace CubePdfUtility
             {
                 var drop = e.GetPosition(FileListView);
                 var item = e.Data.GetData(typeof(ListViewItem)) as ListViewItem;
-                var index = _files.IndexOf(item.DataContext as System.IO.FileInfo);
+                var index = _files.IndexOf(item.DataContext as Cube.FileSystem.FileInfo);
                 for (int i = 0; i < _files.Count; ++i)
                 {
                     var t = FileListView.ItemContainerGenerator.ContainerFromIndex(i) as ListViewItem;
@@ -452,11 +452,10 @@ namespace CubePdfUtility
         private void AddFile(string file)
         {
             if (string.IsNullOrEmpty(file)) return;
-            if (!System.IO.File.Exists(file) || System.IO.Path.GetExtension(file) != ".pdf") return; 
 
             try
             {
-                var info = new System.IO.FileInfo(file);
+                var info = new Cube.FileSystem.FileInfo(file);
                 foreach (var item in _files)
                 {
                     if (info.FullName == item.FullName) return;
@@ -484,7 +483,7 @@ namespace CubePdfUtility
         #endregion
 
         #region Variables
-        private ObservableCollection<System.IO.FileInfo> _files = new ObservableCollection<System.IO.FileInfo>();
+        private ObservableCollection<Cube.FileSystem.FileInfo> _files = new ObservableCollection<Cube.FileSystem.FileInfo>();
         private int _index = 0;
         private int _total = 0;
         private ListViewItem _target = null;

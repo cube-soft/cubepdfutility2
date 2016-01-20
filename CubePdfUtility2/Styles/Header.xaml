@@ -1,0 +1,63 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:r="clr-namespace:Microsoft.Windows.Controls.Ribbon;assembly=RibbonControlsLibrary"
+                    xmlns:local="clr-namespace:CubePdfUtility">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/CubePdfUtility;component/Themes/Generic.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+
+    <Style TargetType="{x:Type r:Ribbon}">
+        <Setter Property="FontFamily" Value="{StaticResource MainFontFamily}"/>
+        <Setter Property="Background" Value="{StaticResource MainBackgroundBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource MainBorderBrush}"/>
+        <Setter Property="CheckedBackground" Value="{StaticResource TabBackgroundBrush}"/>
+        <Setter Property="CheckedBorderBrush" Value="{StaticResource TabBorderBrush}"/>
+        <Setter Property="MouseOverBackground" Value="{StaticResource TabMouseOverBackgroundBrush}"/>
+    </Style>
+
+    <Style TargetType="{x:Type r:RibbonApplicationMenu}">
+        <Setter Property="FontFamily" Value="{StaticResource MainFontFamily}"/>
+        <Setter Property="Background" Value="{StaticResource MenuBackgroundBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource TabBorderBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource TabForegroundBrush}"/>
+        <Setter Property="FocusedBackground" Value="{StaticResource TabBackgroundBrush}"/>
+        <Setter Property="FocusedBorderBrush" Value="{StaticResource TabBorderBrush}"/>
+        <Setter Property="SmallImageSource" Value="{StaticResource MenuImage}"/>
+    </Style>
+    
+    <Style TargetType="{x:Type r:RibbonTab}">
+        <Setter Property="Background" Value="{StaticResource TabBackgroundBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource TabForegroundBrush}"/>
+    </Style>
+
+    <Style TargetType="{x:Type r:RibbonTabHeader}">
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="CheckedBackground" Value="{StaticResource TabBackgroundBrush}"/>
+        <Style.Triggers>
+            <Trigger Property="IsRibbonTabSelected" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource TabSelectedForegroundBrush}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="{x:Type r:RibbonGroup}">
+        <Setter Property="Foreground" Value="{StaticResource TabForegroundBrush}"/>
+        <Setter Property="MouseOverBackground" Value="{StaticResource TabBackgroundBrush}"/>
+    </Style>
+
+    <Style TargetType="{x:Type r:RibbonCheckBox}">
+        <Setter Property="CheckedBackground" Value="Transparent" />
+        <Setter Property="CheckedBorderBrush" Value="{x:Static SystemColors.ControlDarkBrush}"/>
+    </Style>
+
+    <Style TargetType="{x:Type r:RibbonGalleryItem}">
+        <Setter Property="CheckedBorderBrush" Value="{Binding Path=MouseOverBorderBrush, RelativeSource={RelativeSource Self}}"/>
+        <Setter Property="CheckedBackground" Value="{StaticResource MenuGalleryCheckedBackgroundBrush}"/>
+    </Style>
+
+    <Style TargetType="{x:Type r:RibbonContextMenu}" >
+        <Setter Property="Visibility" Value="Collapsed"/>
+    </Style>
+</ResourceDictionary>

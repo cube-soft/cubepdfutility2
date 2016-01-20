@@ -5,7 +5,10 @@
         xmlns:cube="clr-namespace:CubePdf.Wpf;assembly=CubePdf.Wpf"
         cube:WindowMenuBehavior.MinimizeBox="False"
         cube:WindowMenuBehavior.MaximizeBox="False"
-        Title="PreviewWindow" Height="300" Width="300" Icon="/CubePdfUtility;component/app.ico" ShowInTaskbar="False">
+        Title="PreviewWindow"
+        FontFamily="Meiryo UI, Meiryo, MS UI Gothic"
+        Height="300" Width="300" Icon="/CubePdfUtility;component/app.ico" ShowInTaskbar="False">
+    
     <Window.Resources>
         <cube:ImageConverter x:Key="ImageConverter"/>
     </Window.Resources>

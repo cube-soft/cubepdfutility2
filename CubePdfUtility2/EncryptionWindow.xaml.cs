@@ -62,10 +62,11 @@ namespace CubePdfUtility
         /* ----------------------------------------------------------------- */
         /// EncryptionWindow (constructor)
         /* ----------------------------------------------------------------- */
-        public EncryptionWindow(CubePdf.Wpf.ListViewModel viewmodel, string font)
+        public EncryptionWindow(CubePdf.Wpf.ListViewModel viewmodel)
             : this()
         {
-            RootGroupBox.IsEnabled = (viewmodel.EncryptionStatus != CubePdf.Data.EncryptionStatus.RestrictedAccess);
+            RestrictedAccess = (viewmodel.EncryptionStatus == CubePdf.Data.EncryptionStatus.RestrictedAccess);
+            RootGroupBox.IsEnabled = !RestrictedAccess;
             _crypt = new CubePdf.Data.Encryption(viewmodel.Encryption);
             if (_crypt.Method == CubePdf.Data.EncryptionMethod.Unknown) _crypt.Method = CubePdf.Data.EncryptionMethod.Standard128;
             DataContext = _crypt;
@@ -81,8 +82,6 @@ namespace CubePdfUtility
                 UserPasswordBox.Password = _crypt.UserPassword;
                 ConfirmUserPasswordBox.Password = _crypt.UserPassword;
             }
-
-            ReplaceFont(font);
         }
 
         #endregion
@@ -103,6 +102,34 @@ namespace CubePdfUtility
             get { return _crypt; }
         }
 
+        /* ----------------------------------------------------------------- */
+        ///
+        /// Description
+        ///
+        /// <summary>
+        /// SaveCommand を実行した時の内容を取得します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        public string Description
+        {
+            get
+            {
+                return RestrictedAccess ? "セキュリティを解除" : "OK";
+            }
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// RestrictedAccess
+        ///
+        /// <summary>
+        /// アクセスが制限されているかどうかを示す値を取得します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        public bool RestrictedAccess { get; }
+
         #endregion
 
         #region Commands
@@ -120,13 +147,21 @@ namespace CubePdfUtility
 
         private void SaveCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = (Encryption == null) ||
+            e.CanExecute = !RootGroupBox.IsEnabled ||
+                           (Encryption == null) ||
                            (!Encryption.IsEnabled || IsValidPassword(OwnerPasswordBox, ConfirmOwnerPasswordBox)) &&
                            (!Encryption.IsUserPasswordEnabled || UserPasswordCheckBox.IsChecked == false || IsValidPassword(UserPasswordBox, ConfirmUserPasswordBox));
         }
 
         private void SaveCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
+            if (RestrictedAccess)
+            {
+                DialogResult = true;
+                Close();
+                return;
+            }
+
             if (IsUserPasswordRequired())
             {
                 ShowErrorMessage(Properties.Resources.NeedUserPassword);
@@ -197,37 +232,10 @@ namespace CubePdfUtility
         private bool IsUserPasswordRequired()
         {
             return Encryption.IsEnabled &&
-                  !Encryption.Permission.FullAccess &&
+                  !Encryption.Permission.IsFullAccess &&
                    Encryption.IsUserPasswordEnabled &&
                   (UserPasswordCheckBox.IsChecked != true ||
                    OwnerPasswordBox.Password == UserPasswordBox.Password);
-        }
-
-        /* ----------------------------------------------------------------- */
-        ///
-        /// ReplaceFont
-        ///
-        /// <summary>
-        /// コンストラクタ実行時に、画面のフォントを差し替えます。
-        /// </summary>
-        ///
-        /* ----------------------------------------------------------------- */
-        private void ReplaceFont(string font)
-        {
-            if (string.IsNullOrEmpty(font)) return;
-
-            var fonts = new System.Drawing.Text.InstalledFontCollection();
-            foreach (var ff in fonts.Families)
-            {
-                if (ff.Name == font)
-                {
-                    OwnerPasswordBox.FontFamily = new System.Windows.Media.FontFamily(ff.Name);
-                    ConfirmOwnerPasswordBox.FontFamily = new System.Windows.Media.FontFamily(ff.Name);
-                    UserPasswordBox.FontFamily = new System.Windows.Media.FontFamily(ff.Name);
-                    ConfirmUserPasswordBox.FontFamily = new System.Windows.Media.FontFamily(ff.Name);
-                    break;
-                }
-            }
         }
 
         /* ----------------------------------------------------------------- */

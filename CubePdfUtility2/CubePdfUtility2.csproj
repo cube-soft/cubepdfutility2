@@ -81,45 +81,60 @@
   <PropertyGroup>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>App.manifest</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="RibbonControlsLibrary, Version=3.5.41019.1, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.Windows.Shell, Version=3.5.41019.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\RibbonControlsLibrary.dll</HintPath>
+      <HintPath>..\..\lib\Microsoft.Windows.Shell.dll</HintPath>
+    </Reference>
+    <Reference Include="RibbonControlsLibrary, Version=3.5.41019.1, Culture=neutral, PublicKeyToken=527a261def81b66c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\RibbonControlsLibrary.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Core" />
     <Reference Include="System.Windows.Interactivity, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\System.Windows.Interactivity.dll</HintPath>
+      <HintPath>..\..\lib\System.Windows.Interactivity.dll</HintPath>
     </Reference>
-    <Reference Include="System.Core" />
     <Reference Include="System.XML" />
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="Microsoft.Windows.Shell" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="BorderThicknessConverter.cs" />
+    <Compile Include="Models\BorderThicknessConverter.cs" />
+    <Compile Include="Models\ImagePicker.cs" />
+    <Compile Include="Presenters\PresenterBase.cs" />
+    <Compile Include="Presenters\ThumbnailPresenter.cs" />
+    <Compile Include="ThumbnailForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ThumbnailForm.Designer.cs">
+      <DependentUpon>ThumbnailForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="InsertWindow.xaml.cs">
       <DependentUpon>InsertWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ItemHeightConverter.cs" />
-    <Compile Include="KiloByteConverter.cs" />
+    <Compile Include="Models\ItemHeightConverter.cs" />
+    <Compile Include="Models\ByteFormatConverter.cs" />
     <Compile Include="PasswordWindow.xaml.cs">
       <DependentUpon>PasswordWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="PreviewWindow.xaml.cs">
       <DependentUpon>PreviewWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ProcessChecker.cs" />
-    <Compile Include="RecentFile.cs" />
+    <Compile Include="Models\ProcessChecker.cs" />
+    <Compile Include="Models\RecentFile.cs" />
     <Compile Include="RemoveWindow.xaml.cs">
       <DependentUpon>RemoveWindow.xaml</DependentUpon>
     </Compile>
@@ -129,11 +144,15 @@
     <Compile Include="NavigationCanvas.xaml.cs">
       <DependentUpon>NavigationCanvas.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserSetting.cs" />
+    <Compile Include="Models\UserSetting.cs" />
     <Compile Include="VersionWindow.xaml.cs">
       <DependentUpon>VersionWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="InsertWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MainContextMenu.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -145,7 +164,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ImageView.cs" />
+    <Compile Include="Models\ImageView.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -174,9 +193,25 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Themes\Generic.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="Styles\Button.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\Header.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\Misc.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Image.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="VersionWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -200,11 +235,17 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <EmbeddedResource Include="ThumbnailForm.resx">
+      <DependentUpon>ThumbnailForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="app.config" />
+    <None Include="App.manifest">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -243,18 +284,18 @@
   <ItemGroup>
     <Resource Include="Images\LargeIcons\Back.png" />
     <Resource Include="Images\LargeIcons\Close.png" />
-    <Resource Include="Images\LargeIcons\Delete.png" />
+    <Resource Include="Images\LargeIcons\Remove.png" />
     <Resource Include="Images\LargeIcons\Exit.png" />
     <Resource Include="Images\LargeIcons\Extract.png" />
     <Resource Include="Images\LargeIcons\Forward.png" />
     <Resource Include="Images\LargeIcons\Insert.png" />
     <Resource Include="Images\LargeIcons\Open.png" />
-    <Resource Include="Images\LargeIcons\Property.png" />
+    <Resource Include="Images\LargeIcons\Metadata.png" />
     <Resource Include="Images\LargeIcons\RotateLeft.png" />
     <Resource Include="Images\LargeIcons\RotateRight.png" />
     <Resource Include="Images\LargeIcons\Save.png" />
     <Resource Include="Images\LargeIcons\SaveAs.png" />
-    <Resource Include="Images\LargeIcons\Security.png" />
+    <Resource Include="Images\LargeIcons\Encryption.png" />
     <Resource Include="Images\LargeIcons\Undo.png" />
     <Resource Include="Images\LargeIcons\Version.png" />
     <Resource Include="Images\LargeIcons\ZoomIn.png" />
@@ -263,17 +304,17 @@
   <ItemGroup>
     <Resource Include="Images\SmallIcons\Back.png" />
     <Resource Include="Images\SmallIcons\Close.png" />
-    <Resource Include="Images\SmallIcons\Delete.png" />
+    <Resource Include="Images\SmallIcons\Remove.png" />
     <Resource Include="Images\SmallIcons\Extract.png" />
     <Resource Include="Images\SmallIcons\Forward.png" />
     <Resource Include="Images\SmallIcons\Insert.png" />
     <Resource Include="Images\SmallIcons\Open.png" />
-    <Resource Include="Images\SmallIcons\Property.png" />
+    <Resource Include="Images\SmallIcons\Metadata.png" />
     <Resource Include="Images\SmallIcons\RotateLeft.png" />
     <Resource Include="Images\SmallIcons\RotateRight.png" />
     <Resource Include="Images\SmallIcons\Save.png" />
     <Resource Include="Images\SmallIcons\SaveAs.png" />
-    <Resource Include="Images\SmallIcons\Security.png" />
+    <Resource Include="Images\SmallIcons\Encryption.png" />
     <Resource Include="Images\SmallIcons\Undo.png" />
   </ItemGroup>
   <ItemGroup>
@@ -328,7 +369,7 @@
   <ItemGroup>
     <Resource Include="Images\LargeIcons\BackDisable.png" />
     <Resource Include="Images\LargeIcons\CloseDisable.png" />
-    <Resource Include="Images\LargeIcons\DeleteDisable.png" />
+    <Resource Include="Images\LargeIcons\RemoveDisable.png" />
     <Resource Include="Images\LargeIcons\ExitDisable.png" />
     <Resource Include="Images\LargeIcons\ExtractDisable.png" />
     <Resource Include="Images\LargeIcons\FontDisable.png" />
@@ -336,14 +377,14 @@
     <Resource Include="Images\LargeIcons\HelpDisable.png" />
     <Resource Include="Images\LargeIcons\InsertDisable.png" />
     <Resource Include="Images\LargeIcons\OpenDisable.png" />
-    <Resource Include="Images\LargeIcons\PropertyDisable.png" />
+    <Resource Include="Images\LargeIcons\MetadataDisable.png" />
     <Resource Include="Images\LargeIcons\RedoDisable.png" />
     <Resource Include="Images\LargeIcons\RefreshDisable.png" />
     <Resource Include="Images\LargeIcons\RotateLeftDisable.png" />
     <Resource Include="Images\LargeIcons\RotateRightDisable.png" />
     <Resource Include="Images\LargeIcons\SaveAsDisable.png" />
     <Resource Include="Images\LargeIcons\SaveDisable.png" />
-    <Resource Include="Images\LargeIcons\SecurityDisable.png" />
+    <Resource Include="Images\LargeIcons\EncryptionDisable.png" />
     <Resource Include="Images\LargeIcons\SelectDisable.png" />
     <Resource Include="Images\LargeIcons\UndoDisable.png" />
     <Resource Include="Images\LargeIcons\VersionDisable.png" />
@@ -357,7 +398,7 @@
   <ItemGroup>
     <Resource Include="Images\SmallIcons\BackDisable.png" />
     <Resource Include="Images\SmallIcons\CloseDisable.png" />
-    <Resource Include="Images\SmallIcons\DeleteDisable.png" />
+    <Resource Include="Images\SmallIcons\RemoveDisable.png" />
     <Resource Include="Images\SmallIcons\ExitDisable.png" />
     <Resource Include="Images\SmallIcons\ExtractDisable.png" />
     <Resource Include="Images\SmallIcons\FontDisable.png" />
@@ -365,20 +406,26 @@
     <Resource Include="Images\SmallIcons\HelpDisable.png" />
     <Resource Include="Images\SmallIcons\InsertDisable.png" />
     <Resource Include="Images\SmallIcons\OpenDisable.png" />
-    <Resource Include="Images\SmallIcons\PropertyDisable.png" />
+    <Resource Include="Images\SmallIcons\MetadataDisable.png" />
     <Resource Include="Images\SmallIcons\RedoDisable.png" />
     <Resource Include="Images\SmallIcons\RefreshDisable.png" />
     <Resource Include="Images\SmallIcons\RotateLeftDisable.png" />
     <Resource Include="Images\SmallIcons\RotateRightDisable.png" />
     <Resource Include="Images\SmallIcons\SaveAsDisable.png" />
     <Resource Include="Images\SmallIcons\SaveDisable.png" />
-    <Resource Include="Images\SmallIcons\SecurityDisable.png" />
+    <Resource Include="Images\SmallIcons\EncryptionDisable.png" />
     <Resource Include="Images\SmallIcons\SelectDisable.png" />
     <Resource Include="Images\SmallIcons\UndoDisable.png" />
     <Resource Include="Images\SmallIcons\VersionDisable.png" />
     <Resource Include="Images\SmallIcons\WebDisable.png" />
     <Resource Include="Images\SmallIcons\ZoomInDisable.png" />
     <Resource Include="Images\SmallIcons\ZoomOutDisable.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\NavigationHeader.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\PdfFile.png" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="IWshRuntimeLibrary">
@@ -392,10 +439,8 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\NavigationHeader.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\PdfFile.png" />
+    <Resource Include="Images\SmallIcons\ExtractImage.png" />
+    <Resource Include="Images\SmallIcons\ExtractImageDisable.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
