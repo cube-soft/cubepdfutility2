@@ -12,8 +12,6 @@
     <!-- Integer -->
     <system:Int32 x:Key="NegativeTwo">-2</system:Int32>
 
-    <!-- FontFamily-->
-    
     <!-- DataResource -->
     <cube:DataResource x:Key="SelectedItems" BindingTarget="{Binding ElementName=Thumbnail, Path=SelectedItems}"/>
     <cube:DataResource x:Key="SelectedIndex" BindingTarget="{Binding ElementName=Thumbnail, Path=SelectedIndex}"/>
