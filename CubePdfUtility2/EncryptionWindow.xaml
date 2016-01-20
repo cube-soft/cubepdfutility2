@@ -3,7 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:cube="clr-namespace:CubePdf.Wpf;assembly=CubePdf.Wpf"
         xmlns:local="clr-namespace:CubePdfUtility"
-        Title="セキュリティ" Height="620" Width="550" Icon="/CubePdfUtility;component/app.ico"
+        Title="セキュリティ"
+        FontFamily="Meiryo UI, Meiryo, MS UI Gothic"
+        Height="620" Width="550" Icon="/CubePdfUtility;component/app.ico"
         WindowStartupLocation="CenterOwner" WindowStyle="SingleBorderWindow" ResizeMode="NoResize">
 
     <Window.Resources>
