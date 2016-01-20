@@ -1,11 +1,15 @@
 ﻿<Window x:Class="CubePdfUtility.InsertWindow"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:system="clr-namespace:System;assembly=mscorlib"
-    xmlns:cube="clr-namespace:CubePdf.Wpf;assembly=CubePdf.Wpf"
-    xmlns:local="clr-namespace:CubePdfUtility"
-    Title="詳細を設定して挿入" Height="400" MinHeight="360" Width="700" MinWidth="550" Icon="/CubePdfUtility;component/app.ico"
-    WindowStartupLocation="CenterOwner" WindowStyle="SingleBorderWindow" ShowInTaskbar="False">
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
+        xmlns:cube="clr-namespace:CubePdf.Wpf;assembly=CubePdf.Wpf"
+        xmlns:local="clr-namespace:CubePdfUtility"
+        Title="詳細を設定して挿入"
+        FontFamily="Meiryo UI, Meiryo, MS UI Gothic"
+        Height="400" MinHeight="360" Width="720" MinWidth="550"
+        Icon="/CubePdfUtility;component/app.ico"
+        WindowStartupLocation="CenterOwner" WindowStyle="SingleBorderWindow" ShowInTaskbar="False">
+    
     <Window.CommandBindings>
         <CommandBinding Command="Save"   CanExecute="SaveCommand_CanExecute"   Executed="SaveCommand_Executed"/>
         <CommandBinding Command="Close"  CanExecute="CloseCommand_CanExecute"  Executed="CloseCommand_Executed"/>
@@ -75,10 +79,10 @@
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
 
-                            <GridViewColumn Header="種類" Width="90"
+                            <GridViewColumn Header="種類" Width="100"
                                             DisplayMemberBinding="{Binding TypeName}"/>
                             
-                            <GridViewColumn Header="更新日時" Width="130"
+                            <GridViewColumn Header="更新日時" Width="150"
                                             DisplayMemberBinding="{Binding Path=LastWriteTime, StringFormat=yyyy/MM/dd HH:mm:ss}"/>
 
                             <GridViewColumn Header="サイズ" Width="80">
