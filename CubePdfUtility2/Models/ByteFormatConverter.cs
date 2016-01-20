@@ -1,6 +1,6 @@
 ﻿/* ------------------------------------------------------------------------- */
 ///
-/// KiloByteConverter.cs
+/// ByteFormatConverter.cs
 ///
 /// Copyright (c) 2013 CubeSoft, Inc. All rights reserved.
 ///
@@ -26,14 +26,14 @@ namespace CubePdfUtility
 {
     /* --------------------------------------------------------------------- */
     ///
-    /// KiloByteConverter
+    /// ByteFormatConverter
     /// 
     /// <summary>
-    /// KB 単位に変換するためのコンバータクラスです。
+    /// バイト数を読みやすい表記に整形するためのコンバータクラスです。
     /// </summary>
     ///
     /* --------------------------------------------------------------------- */
-    public class KiloByteConverter : IValueConverter
+    public class ByteFormatConverter : IValueConverter
     {
         /* ----------------------------------------------------------------- */
         ///
@@ -48,10 +48,22 @@ namespace CubePdfUtility
         {
             try
             {
-                var kbytes = (long)value / 1024.0;
-                return (long)Math.Ceiling(kbytes);
+                var n = (long)value;
+                var units = new string[] { "Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
+                var bytes = (double)n;
+                var index = 0;
+
+                while (bytes > 1000.0)
+                {
+                    bytes /= 1024.0;
+                    ++index;
+                    if (index >= units.Length - 1) break;
+                }
+
+                return string.Format("{0:G3} {1}", bytes, units[index]);
+
             }
-            catch (Exception /* err */) { return default(long); }
+            catch (Exception /* err */) { return string.Empty; }
         }
 
         /* ----------------------------------------------------------------- */
@@ -59,15 +71,13 @@ namespace CubePdfUtility
         /// ConvertBack
         /// 
         /// <summary>
-        /// KB 単位に変換された値を元に戻します。切り捨てられている関係で、
-        /// 完全に元の値に戻るとは限りません。
+        /// 不可逆変換なので未実装です。
         /// </summary>
         ///
         /* ----------------------------------------------------------------- */
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            try { return (long)value * 1024; }
-            catch (Exception /* err */) { return default(int); }
+            return default(long);
         }
     }
 }

@@ -127,7 +127,7 @@
       <DependentUpon>InsertWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\ItemHeightConverter.cs" />
-    <Compile Include="Models\KiloByteConverter.cs" />
+    <Compile Include="Models\ByteFormatConverter.cs" />
     <Compile Include="PasswordWindow.xaml.cs">
       <DependentUpon>PasswordWindow.xaml</DependentUpon>
     </Compile>

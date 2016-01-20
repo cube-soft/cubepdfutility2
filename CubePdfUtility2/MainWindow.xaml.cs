@@ -1536,6 +1536,11 @@ namespace CubePdfUtility
         /// ナビゲーション用の画面に関しては、非同期処理中にメニュー項目が
         /// クリックされたと誤判断される事があるため、非同期処理に移る前に
         /// 非表示に設定しています。
+        /// 
+        /// パスワードに関しては、AES256 以外の場合、ユーザパスワードでも
+        /// 表示する事は可能なので、ユーザパスワードも許容します。
+        /// AES256 の場合は、PDFLibNet の都合でオーナパスワードのみを
+        /// 許容します。
         /// </remarks>
         ///
         /* ----------------------------------------------------------------- */
@@ -1552,7 +1557,7 @@ namespace CubePdfUtility
                 try
                 {
                     reader.Open(path, password);
-                    if (NeedPassword(reader)) throw new CubePdf.Data.EncryptionException();
+                    if (NeedPassword(reader) && IsAes256(reader)) throw new CubePdf.Data.EncryptionException();
                     else Dispatcher.BeginInvoke(new Action(() => {
                         OpenFile(reader);
                         if (reader.EncryptionStatus == CubePdf.Data.EncryptionStatus.RestrictedAccess)
@@ -1669,6 +1674,9 @@ namespace CubePdfUtility
         /// ダイアログを表示してユーザに入力してもらいます。入力された
         /// パスワードが間違っていた場合は、正しいパスワードが入力されるか、
         /// またはキャンセルボタンが押下されるまでダイアログを表示し続けます。
+        /// 
+        /// Insert コマンドの場合、後からオーナパスワードを入力する
+        /// タイミングが存在しないため、オーナパスワードのみを許容します。
         /// </remarks>
         ///
         /* ----------------------------------------------------------------- */
@@ -1969,17 +1977,25 @@ namespace CubePdfUtility
         /// <summary>
         /// パスワードが必要かどうかを判断します。
         /// </summary>
-        /// 
-        /// <remarks>
-        /// AES256 の場合は、オーナーパスワード無しでは表示できないため
-        /// （PDFLibNet の関係）パスワードを要求するようにしています。
-        /// </remarks>
         ///
         /* ----------------------------------------------------------------- */
         private bool NeedPassword(CubePdf.Editing.DocumentReader reader)
         {
-            return reader.EncryptionStatus == CubePdf.Data.EncryptionStatus.RestrictedAccess &&
-                   reader.Encryption.Method == CubePdf.Data.EncryptionMethod.Aes256;
+            return reader.EncryptionStatus == CubePdf.Data.EncryptionStatus.RestrictedAccess;
+        }
+
+        /* ----------------------------------------------------------------- */
+        ///
+        /// IsAes256
+        /// 
+        /// <summary>
+        /// 暗号化方法が AES256 かどうかを判別します。
+        /// </summary>
+        ///
+        /* ----------------------------------------------------------------- */
+        private bool IsAes256(CubePdf.Editing.DocumentReader reader)
+        {
+            return reader.Encryption.Method == CubePdf.Data.EncryptionMethod.Aes256;
         }
 
         /* ----------------------------------------------------------------- */
