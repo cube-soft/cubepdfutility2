@@ -62,7 +62,8 @@ namespace CubePdfUtility
         public PreviewWindow(CubePdf.Wpf.ListViewModel viewmodel, int index)
             : this()
         {
-            var page = viewmodel.ToPage(viewmodel.Items[index]);
+            var pagenum = Math.Min(Math.Max(index + 1, 1), viewmodel.Pages.Count);
+            var page = viewmodel.GetPage(pagenum);
             Width  = page.ViewSize().Width;
             Height = page.ViewSize().Height + 20;
 
@@ -70,7 +71,6 @@ namespace CubePdfUtility
             MainViewer.DataContext = _image;
 
             var filename = System.IO.Path.GetFileName(page.FilePath);
-            var pagenum  = index + 1;
             Title = String.Format("{0}（{1}/{2} ページ）", filename, pagenum, viewmodel.Pages.Count);
         }
 

@@ -67,6 +67,9 @@ CubePDF Utility は、以下のライブラリを利用しています。
 
 ## バージョン履歴
 
+* 2016/MM/DD version 0.4.1β
+ - 「閉じる」実行後のメモリ消費量を改善
+
 * 2016/01/20 version 0.4.0β
  - CubePDF ImagePicker より画像の抽出機能を移植
  - CubePDF Page より画像の挿入機能を移植
