@@ -448,12 +448,7 @@
     <PostBuildEvent>mkdir $(SolutionDir)Release\$(PlatformName)\net40
 copy $(TargetPath) $(SolutionDir)Release\$(PlatformName)\net40\
 copy $(TargetPath).config $(SolutionDir)Release\$(PlatformName)\net40\
-copy $(TargetDir)CubePdf.*.dll $(SolutionDir)Release\$(PlatformName)\net40\
-copy $(TargetDir)itextsharp.dll $(SolutionDir)Release\$(PlatformName)\net40\
-copy $(TargetDir)Interop.IWshRuntimeLibrary.dll $(SolutionDir)Release\$(PlatformName)\net40\
-copy $(TargetDir)Microsoft.Windows.Shell.dll $(SolutionDir)Release\$(PlatformName)\net40\
-copy $(TargetDir)RibbonControlsLibrary.dll $(SolutionDir)Release\$(PlatformName)\net40\
-copy $(TargetDir)System.Windows.Interactivity.dll $(SolutionDir)Release\$(PlatformName)\net40\</PostBuildEvent>
+copy $(TargetDir)*.dll $(SolutionDir)Release\$(PlatformName)\net40\</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
