@@ -1,157 +1,141 @@
-#  CubePDF Utility
+﻿#  CubePDF Utility
 
-Copyright (c) 2013 CubeSoft, Inc. All rights reserved.
+Copyright (c) 2013 CubeSoft, Inc.  
+GNU Affero General Public License version 3 (AGPLv3)  
+support@cube-soft.jp  
+http://www.cube-soft.jp/
 
-* �J���E�z�z: ������ЃL���[�u�E�\�t�g
-* License: GNU Affero General Public License version 3 (AGPLv3)
-* Mail: support@cube-soft.jp
-* Web: http://www.cube-soft.jp/
+## はじめに
 
-## What's this
+CubPDF Utility は、既存の PDF ファイルのページ挿入や削除、文書プロパティ、各種セキュリティ機能
+などを設定・変更するためのソフトウェアです。
 
-CubPDF Utility �́A������ PDF �t�@�C���̃y�[�W�}����폜�A�����v���p�e�B�A�e��Z�L�����e�B�@�\
-�Ȃǂ�ݒ�E�ύX���邽�߂̃\�t�g�E�F�A�ł��B
-
-CubePDF Utility ���g�p���邽�߂ɂ́AMicrosoft .NetFramework 3.5 SP1 �ȏオ�C���X�g�[������Ă���K�v������܂��B
-Microsoft .NetFramework 3.5 SP1 �́A�ȉ��� URL ����_�E�����[�h���ĉ������B
+CubePDF Utility を使用するためには、Microsoft .NetFramework 3.5 SP1 以上がインストールされている必要があります。
+Microsoft .NetFramework 3.5 SP1 は、以下の URL からダウンロードして下さい。  
 http://www.microsoft.com/ja-jp/download/details.aspx?id=22
 
-### �g�p�p�@
+## 使用用法
 
-�܂��A�t�@�C�����J���{�^����h���b�O&�h���b�v��ʂ��ĕҏW������ PDF �t�@�C�����J���܂��B
-���̍ہA�I������ PDF �t�@�C���ɑ΂��āA���ɃZ�L�����e�B�@�\���ݒ肳��Ă���ꍇ�ɂ́A
-�p�X���[�h��q�˂�_�C�A���O�{�b�N�X���\������܂��̂ŁA�������p�X���[�h����͂��܂��B
-���̌�A���C����ʂ�ʂ��ĊJ���� PDF �t�@�C���ɕK�v�ȕҏW���s���A�u�㏑���ۑ��v�A�܂���
-�u���O��t���ĕۑ��v�{�^���������ƁA�ҏW���K�p���ꂽ PDF �t�@�C�����쐬����܂��B
+まず、ファイルを開くボタンやドラッグ&ドラップを通じて編集したい PDF ファイルを開きます。
+この際、選択した PDF ファイルに対して、既にセキュリティ機能が設定されている場合には、
+パスワードを尋ねるダイアログボックスが表示されますので、正しいパスワードを入力します。
+その後、メイン画面を通じて開いた PDF ファイルに必要な編集を行い、「上書き保存」、または
+「名前を付けて保存」ボタンを押すと、編集が適用された PDF ファイルが作成されます。
 
-CubePDF Utility �ŕҏW�\�Ȃ��͈̂ȉ��̒ʂ�ł��B
+CubePDF Utility で編集可能なものは以下の通りです。
 
-1. �y�[�W�ҏW
- - �}�� ... �I���ʒu/�y�[�W�擪/�y�[�W�����̂����ꂩ�� PDF �t�@�C���܂��͉摜�t�@�C����}�����܂�
- - �폜 ... �I�������y�[�W�A�܂��̓y�[�W�ԍ����w�肵�ĊY���y�[�W���폜���܂�
- - ���o ... �I�������y�[�W�A�܂��̓y�[�W�ԍ����w�肵�ĊY���y�[�W��ʂ� PDF �t�@�C���Ƃ��ĕۑ����܂�
- - ���� ... PDF �t�@�C���̃y�[�W������ύX���܂�
- - ��] ... �I�������y�[�W����]���܂�
+1. ページ編集
+    - 挿入 ... 選択位置/ページ先頭/ページ末尾のいずれかに PDF ファイルまたは画像ファイルを挿入します
+    - 削除 ... 選択したページ、またはページ番号を指定して該当ページを削除します
+    - 抽出 ... 選択したページ、またはページ番号を指定して該当ページを別の PDF ファイルとして保存します
+    - 順序 ... PDF ファイルのページ順序を変更します
+    - 回転 ... 選択したページを回転します
+2. 文書プロパティ
+    - タイトル
+    - 作成者
+    - サブタイトル
+    - キーワード
+    - ページレイアウト
+    - アプリケーション
+3. セキュリティ
+    - パスワード（オーナパスワード）
+    - PDF ファイルを開く際のパスワード（ユーザパスワード）
+    - 印刷を許可する
+    - 文書内容の変更を許可する
+    - 文書アセンブリ（ページの挿入・削除・回転）を許可する
+    - テキストや画像のコピーを許可する
+    - アクセシビリティのための内容の抽出を許可する
+    - ページの抽出を許可する
+    - 注釈の追加・編集操作を許可する
+    - フォームフィールドへの入力を許可する
 
-2. �����v���p�e�B
- - �^�C�g��
- - �쐬��
- - �T�u�^�C�g��
- - �L�[���[�h
- - �y�[�W���C�A�E�g
- - �A�v���P�[�V����
+## 使用ライブラリ
 
-3. �Z�L�����e�B
- - �p�X���[�h�i�I�[�i�p�X���[�h�j
- - PDF �t�@�C�����J���ۂ̃p�X���[�h�i���[�U�p�X���[�h�j
- - �����������
- - �������e�̕ύX��������
- - �����A�Z���u���i�y�[�W�̑}���E�폜�E��]�j��������
- - �e�L�X�g��摜�̃R�s�[��������
- - �A�N�Z�V�r���e�B�̂��߂̓��e�̒��o��������
- - �y�[�W�̒��o��������
- - ���߂̒ǉ��E�ҏW�����������
- - �t�H�[���t�B�[���h�ւ̓��͂�������
+CubePDF Utility は、以下のライブラリを利用しています。
+それぞれのライブラリについては、記載した URL から取得することができます。
 
-### �g�p���C�u����
-
-CubePDF Utility �́A�ȉ��̃��C�u�����𗘗p���Ă��܂��B
-���ꂼ��̃��C�u�����ɂ��ẮA�L�ڂ��� URL ����擾���邱�Ƃ��ł��܂��B
 * iTextSharp
-  URL: http://sourceforge.net/projects/itextsharp/
-  GNU Affero General Public License ( http://www.gnu.org/licenses/agpl.html )
+    - http://sourceforge.net/projects/itextsharp/
+    - GNU Affero General Public License
 * PDFLibNet
-  Copyright (c) Antonio Sandoval.
-  URL: http://www.codeproject.com/KB/files/xpdf_csharp.aspx
-  GNU General Public License ( http://www.gnu.org/licenses/gpl.html )
+    - GNU General Public License
+    - http://www.codeproject.com/KB/files/xpdf_csharp.aspx
+    - https://github.com/cube-soft/PDFLibNet
 
-## �o�[�W��������
+## バージョン履歴
 
-* 2016/02/19 version 0.4.1��
- - �u����v���s��̃���������ʂ����P
- - �����̃y�[�W��I�����āu�y�[�W�𒊏o���Čʂ̃t�@�C���ɕۑ��v�����s���鎞�ɔ�������s�s�����C��
- - �ۑ����Ƀu�b�N�}�[�N�̈ʒu�������s�s�����C��
- - ��]��������s��� 2 ��ȏ�ۑ������ꍇ�A��]���삪���f����Ȃ��s�s�����C��
- - �摜���o���ɓ��ߏ�񂪎�����s�s�����C��
-
-* 2016/01/20 version 0.4.0��
- - CubePDF ImagePicker ���摜�̒��o�@�\���ڐA
- - CubePDF Page ���摜�̑}���@�\���ڐA
- - �ꕔ�̊��Ńp�X���[�h�ی삳�ꂽ�t�@�C���̏㏑���Ɏ��s����s�s�����C��
- - �}�����̓I�[�i�p�X���[�h�݂̂����e����悤�ɏC��
- - �p�X���[�h�ی쎞�ɕ\������錮�}�[�N���N���b�N����ƃp�X���[�h���͉�ʂ�\������悤�ɏC��
- - �{�^���z�u��ύX
-
-* 2015/10/16 version 0.3.4��
- - �t�@�C�����ɓ���̕������܂܂�Ă���ꍇ�A�t�@�C�����J�������Ɏ��s����s�s�����C��
- - �t�@�C���̕ۑ������Ɏ��s�������Ƀt�@�C�����������Ȃ��悤�ɏC��
- - �Z�L�����e�B��ʂɂ����āA���炩�̑���𐧌����Ă���󋵂ŉ{����p�̃p�X���[�h���ȗ������ꍇ�A�G���[���b�Z�[�W��\������悤�ɏC��
- - �p�X���[�h�ی삳��Ă���t�@�C���ɑ΂��ĕҏW���s�����Ƃ������Ƀp�X���[�h���͉�ʂ�\������悤�ɏC��
-
-* 2014/09/12 version 0.3.3��
- - �}�����ɓ���̏������Ńy�[�W�����������s�s�����C��
- - PDF �o�[�W������ 1.4 �ȉ��ɐݒ�ł��Ȃ��s�s�����C��
- -�uPDF �{�����Ƀp�X���[�h��v������v�݂̂Ƀ`�F�b�N����ꂽ�ꍇ�A���[�U�p�X���[�h���ݒ肳��Ȃ��s�s�����C��
- - ���[�U�p�X���[�h�����͂��ꂽ��ԂŁu�{����p�̃p�X���[�h��ݒ肷��v�̃`�F�b�N���O�����ꍇ�A���[�U�p�X���[�h���ݒ肳��Ă��܂��s�s�����C��
- - ����̏������Ń��[�U�ݒ肪����ɓǂݍ��܂�Ȃ��s�s�����C��
- - �v���r���[��ʂ�����ĕ\������Ă��܂��s�s�����C��
- - �ŋߎg�p�������ڂ��ŏI�A�N�Z�X���Ԃō~���ɕ\������悤�ɏC��
-
-* 2014/03/05 version 0.3.2��
- - �Í������ꂽ PDF �t�@�C�����J���Ȃ��s�s�����C��
- - �A�N�e�B�u�������ʂ��ŏ�������Ă���ꍇ�ɍŏ�������������悤�ɏC��
- - �y�[�W��]���Ƀy�[�W�ԍ��̕\����������s�s�����C��
- - �X�N���[�����ɃT���l�C�����\������Ȃ��s�s�������P
-
-* 2014/02/17 version 0.3.1��
- - ���ɉ�ʂɉ��炩�� PDF �t�@�C�����J����Ă����ԂŁu�J���v�����s�����ꍇ�A�V�����E�B���h�E�ŊJ���悤�ɏC��
- - �w�肳�ꂽ PDF �t�@�C�������ɕʂ̉�ʂŊJ����Ă���ꍇ�A���̉�ʂ�\������悤�ɏC��
- - �����v���p�e�B�Ƀy�[�W���C�A�E�g��ǉ�
- - �T���l�C���̕\���T�C�Y�𒷕Ӄx�[�X�ɏC��
- - �������@���t�@�C���T�C�Y���������Ȃ�悤�ɏC��
-
-* 2013/12/18 version 0.3.0��
- - �E�B���h�E�Ԃ̃h���b�O&�h���b�v����Ńy�[�W��}���ł���悤�ɏC��
- - �h���b�O&�h���b�v�ɂ��Ō���ւ̈ړ�/�}��������C��
-
-* 2013/11/11 version 0.2.3��
- - �����t�@�C����}������@�\��ǉ�
- - ���ɊJ���Ă��� PDF �t�@�C�����d�����đ}�����鑀������e����悤�ɏC��
- - �\�����@��ύX���čĕ`��{�^�������������ɃT���l�C�����\������Ȃ��s�s�����C��
- - �t�@�C��������i�K�Ő����X�N���[���o�[�̏�Ԃ����Z�b�g����悤�ɏC��
-
-* 2013/10/03 version 0.2.2��
- - �������̎g�p�ʂ��ł��邾���}����悤�ɏC��
- - ���O��t���ĕۑ������t�@�C�����ŋߎg�p�������ڈꗗ�ɒǉ�����悤�ɏC��
-
-* 2013/08/13 version 0.2.1��
- - �����\������Ă��Ȃ����Ƀi�r�Q�[�V������ʂ�\������悤�ɏC��
- - CubePDF Utility �ŕҏW���� PDF �̃t�@�C���T�C�Y���ł��邾���������}����悤�ɏC��
- - AES256 �ňÍ������ꂽ PDF �t�@�C�����J���ƃG���[���\�������s�s�����C��
- - �p�X���[�h�_�C�A���O�Ɠ����ɃG���[���b�Z�[�W���\������Ă��܂��s�s�����C��
- - PDF �t�@�C���̃Z�L�����e�B�ݒ���Z�L�����e�B�ݒ�_�C�A���O�ɔ��f����悤�ɏC��
- - �^�O�t�� PDF�i�\�������ꂽ PDF�j�t�@�C�����J�������Ɍx����\������悤�ɏC��
- - ������Ɋւ��āA�ꕔ�� PDF �t�@�C���ŕۑ����ɃG���[�̕\������Ă����s�s�����C��
- - CubePDF Utility �����ɋN�����Ă���ꍇ�A�N�����ɃX�v���b�V����ʂ�\�����Ȃ��悤�ɏC��
- - �X�v���b�V����ʂɃo�[�W��������\������悤�ɏC��
-
-* 2013/08/13 version 0.2.0��
- - �t�@�C���̕ۑ����ɒ��߂₵���蓙�̕t���I�ȏ�񂪏��������s�s�����C��
- - ���������[�N���������Ă����s�s�����C��
- - ��ʂɕ\������Ă��镔���i�y�[�W�j�̃T���l�C����D�悵�ĕ`�悷��悤�ɏC��
- - ���o��� PDF �t�@�C���� Ctrl �N���b�N�������Ԃŕۑ�����Ă��܂��s�s�����C��
- - �I����Ԃ̃T���l�C�����_�u���N���b�N�������Ƀv���r���[��ʂ��J���Ȃ��s�s�����C��
- - ���ɊJ���Ă��� PDF �t�@�C�����d�����đ}�����悤�Ƃ���ƃG���[���b�Z�[�W��\������悤�ɏC��
-
-* 2013/06/17 version 0.1.2��
- - .NET Framework 4�A����� 4.5 �ɑΉ�
- - �㏑���ۑ����ďI�����A���炩�̗��R�ŏ㏑���ۑ��Ɏ��s�����ꍇ�Ƀ��b�Z�[�W��\������悤�ɏC��
-
-* 2013/06/06 version 0.1.1��
- - �N�����ɃX�v���b�V����ʂ�\������悤�ɏC��
- - �p�\�R���N�����A�܂��̓A�v���P�[�V�����N�����ɃA�b�v�f�[�g�̊m�F���s���悤�ɏC��
- - PDF �t�@�C�����}�E�X�E�N���b�N���ɁuCubePDF Utility �ŊJ���v�ƌ������j���[��ǉ�
- - ����̊��ŁA�A�v���P�[�V�����I�����ɃG���[����������s�s�����C��
-
-* 2013/05/20 version 0.1.0��
- - �ŏ��̌��J�o�[�W����
+* 2016/02/19 version 0.4.1β
+    - 「閉じる」実行後のメモリ消費量を改善
+    - 複数のページを選択して「ページを抽出して個別のファイルに保存」を実行する時に発生する不都合を修正
+    - 保存時にブックマークの位置がずれる不都合を修正
+    - 回転操作を実行後に 2 回以上保存した場合、回転操作が反映されない不都合を修正
+    - 画像抽出時に透過情報が失われる不都合を修正
+* 2016/01/20 version 0.4.0β
+    - CubePDF ImagePicker より画像の抽出機能を移植
+    - CubePDF Page より画像の挿入機能を移植
+    - 一部の環境でパスワード保護されたファイルの上書きに失敗する不都合を修正
+    - 挿入時はオーナパスワードのみを許容するように修正
+    - パスワード保護時に表示される鍵マークをクリックするとパスワード入力画面を表示するように修正
+    - ボタン配置を変更
+* 2015/10/16 version 0.3.4β
+    - ファイル名に特定の文字が含まれている場合、ファイルを開く処理に失敗する不都合を修正
+    - ファイルの保存処理に失敗した時にファイルが消失しないように修正
+    - セキュリティ画面において、何らかの操作を制限している状況で閲覧専用のパスワードを省略した場合、エラーメッセージを表示するように修正
+    - パスワード保護されているファイルに対して編集を行おうとした時にパスワード入力画面を表示するように修正
+* 2014/09/12 version 0.3.3β
+    - 挿入時に特定の条件下でページ順序がずれる不都合を修正
+    - PDF バージョンを 1.4 以下に設定できない不都合を修正
+    -「PDF 閲覧時にパスワードを要求する」のみにチェックを入れた場合、ユーザパスワードが設定されない不都合を修正
+    - ユーザパスワードが入力された状態で「閲覧専用のパスワードを設定する」のチェックを外した場合、ユーザパスワードが設定されてしまう不都合を修正
+    - 特定の条件下でユーザ設定が正常に読み込まれない不都合を修正
+    - プレビュー画面が誤って表示されてしまう不都合を修正
+    - 最近使用した項目を最終アクセス時間で降順に表示するように修正
+* 2014/03/05 version 0.3.2β
+    - 暗号化された PDF ファイルが開けない不都合を修正
+    - アクティブ化する画面が最小化されている場合に最小化を解除するように修正
+    - ページ回転時にページ番号の表示が消える不都合を修正
+    - スクロール時にサムネイルが表示されない不都合を改善
+* 2014/02/17 version 0.3.1β
+    - 既に画面に何らかの PDF ファイルが開かれている状態で「開く」を実行した場合、新しいウィンドウで開くように修正
+    - 指定された PDF ファイルが既に別の画面で開かれている場合、その画面を表示するように修正
+    - 文書プロパティにページレイアウトを追加
+    - サムネイルの表示サイズを長辺ベースに修正
+    - 結合方法をファイルサイズが小さくなるように修正
+* 2013/12/18 version 0.3.0β
+    - ウィンドウ間のドラッグ&ドロップ操作でページを挿入できるように修正
+    - ドラッグ&ドロップによる最後尾への移動/挿入操作を修正
+* 2013/11/11 version 0.2.3β
+    - 複数ファイルを挿入する機能を追加
+    - 既に開いている PDF ファイルを重複して挿入する操作を許容するように修正
+    - 表示方法を変更して再描画ボタンを押した時にサムネイルが表示されない不都合を修正
+    - ファイルを閉じた段階で垂直スクロールバーの状態をリセットするように修正
+* 2013/10/03 version 0.2.2β
+    - メモリの使用量をできるだけ抑えるように修正
+    - 名前を付けて保存したファイルを最近使用した項目一覧に追加するように修正
+* 2013/08/13 version 0.2.1β
+    - 何も表示されていない時にナビゲーション画面を表示するように修正
+    - CubePDF Utility で編集した PDF のファイルサイズをできるだけ小さく抑えるように修正
+    - AES256 で暗号化された PDF ファイルを開くとエラーが表示される不都合を修正
+    - パスワードダイアログと同時にエラーメッセージが表示されてしまう不都合を修正
+    - PDF ファイルのセキュリティ設定をセキュリティ設定ダイアログに反映するように修正
+    - タグ付き PDF（構造化された PDF）ファイルを開いた時に警告を表示するように修正
+    - しおりに関して、一部の PDF ファイルで保存時にエラーの表示されていた不都合を修正
+    - CubePDF Utility が既に起動している場合、起動時にスプラッシュ画面を表示しないように修正
+    - スプラッシュ画面にバージョン情報を表示するように修正
+* 2013/08/13 version 0.2.0β
+    - ファイルの保存時に注釈やしおり等の付加的な情報が消去される不都合を修正
+    - メモリリークが発生していた不都合を修正
+    - 画面に表示されている部分（ページ）のサムネイルを優先して描画するように修正
+    - 抽出後の PDF ファイルが Ctrl クリックした順番で保存されてしまう不都合を修正
+    - 選択状態のサムネイルをダブルクリックした時にプレビュー画面が開かない不都合を修正
+    - 既に開いている PDF ファイルを重複して挿入しようとするとエラーメッセージを表示するように修正
+* 2013/06/17 version 0.1.2β
+    - .NET Framework 4、および 4.5 に対応
+    - 上書き保存して終了時、何らかの理由で上書き保存に失敗した場合にメッセージを表示するように修正
+* 2013/06/06 version 0.1.1β
+    - 起動時にスプラッシュ画面を表示するように修正
+    - パソコン起動時、またはアプリケーション起動時にアップデートの確認を行うように修正
+    - PDF ファイルをマウス右クリック時に「CubePDF Utility で開く」と言うメニューを追加
+    - 特定の環境で、アプリケーション終了時にエラーが発生する不都合を修正
+* 2013/05/20 version 0.1.0β
+    - 最初の公開バージョン
